@@ -7,13 +7,16 @@ import org.springframework.beans.factory.annotation.Autowired
 
 import com.example.demo.repo.Repository
 import com.example.demo.model.User
+import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PostMapping
 
 @RestController
+@RequestMapping("webTest")
 class WebController {
     @Autowired
     lateinit var repository: Repository
 
-    @RequestMapping("/save")
+    @PostMapping("/save")
     fun save(): String {
         repository.save(User("Jack", "Smith"))
         repository.save(User("Jill", "Anderson"))
@@ -22,12 +25,12 @@ class WebController {
         return "Done"
     }
 
-    @RequestMapping("/findall")
+    @GetMapping("/findall")
     fun findAll(): MutableIterable<User> = repository.findAll()
 
-    @RequestMapping("/findbyid/{id}")
+    @GetMapping("/findbyid/{id}")
     fun findById(@PathVariable id: Long) = repository.findById(id)
 
-    @RequestMapping("/findbylastname/{lastName}")
+    @GetMapping("/findbylastname/{lastName}")
     fun findByLastName(@PathVariable lastName: String): Iterable<User> = repository.findByLastName(lastName)
 }
