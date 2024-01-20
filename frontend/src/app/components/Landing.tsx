@@ -4,8 +4,8 @@ import { StarIcon } from "@heroicons/react/16/solid"
 
 export default function Landing() {
   return (
-    <div className='grid grid-cols-12 gap-4 h-max bg-[#75aadb] relative z-10'>
-      <div className="z-20 absolute top-0 left-0 right-0 bottom-0 text-center text-xl py-40 justify-center">
+    <div className='grid grid-cols-12 gap-4 h-screen bg-[#75aadb] relative z-10'>
+      <div className="z-20 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center text-xl py-40 justify-center">
         <div className="grid justify-items-center mt-4 gap-8">
           <div className="w-1/2 text-[#FCBF45]">
             <StarIcon className="w-10 sm:w-16 mx-auto"/>
@@ -27,7 +27,7 @@ export default function Landing() {
       {
         Array(12).fill(0).map((_, i) => (
           <div key={i} className='relative'>
-            <div className="w-full h-dvh bg-[#83b2df]"></div>
+            <div className="w-full h-screen bg-[#83b2df]"></div>
           </div>
         ))
       }
