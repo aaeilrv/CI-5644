@@ -37,21 +37,21 @@ export default function FAQ() {
     setSelected(index)
   }
 
-
   return (
     <div className='w-full h-screen flex items-center justify-center bg-gradient-to-bl from-[#DA291C] from-50% to-[#046A38] to-50% space-x-20'>
-      <div className="font-bold text-white space-y-4 w-5/6 h-5/6 md:h-1/2 p-2 md:p-4 md:w-1/2 overflow-scroll no-scrollbar border-4 rounded-lg">
-        <h1 className="text-4xl sm:text-5xl uppercase">FAQ</h1>
-        <div className="space-y-10">
+      <div className="text-white space-y-4 w-5/6 h-5/6 md:h-1/2 p-2 md:p-4 md:w-1/2 overflow-scroll no-scrollbar rounded-lg bg-white bg-opacity-5">
+        <h1 className="font-bold text-4xl sm:text-5xl uppercase">F.A.Q</h1>
+        <div className="space-y-2 text-white md:divide-y divide-white divide-opacity-30">
         {
           faq_data.map((faq_data, index) => (
-            <div key={index}>
-              <button className="text-2xl display:flex text-left align-item:left" onClick = {() => toggle(index)}>
+            <div key={index} className="py-4">
+              <button className="font-bold flex text-left align-left justify-between w-full" onClick = {() => toggle(index)}>
+                <h5>
                   {faq_data.Q}
-                  <span> { selected == index ? "-" : "+"} </span>
+                </h5>
+                <h5 className="px-2 md:px-10"><span> { selected == index ? "-" : "+"} </span></h5>
               </button>
-              <div className ={
-              selected == index ? "text-white text-wrap heigth: auto max-heigth: 999px transition-all 1.5s cubic-bezier:(1,0,1,0) " : "text-white text-wrap overflow: hidden transition-all 1.5s cubic-bezier:(0,1,0,1)"}>
+              <div className ={selected == index ? "text-wrap heigth: auto max-heigth: 999px transition-all 1.5s cubic-bezier:(1,0,1,0) " : " text-wrap overflow: hidden transition-all 1.5s cubic-bezier:(0,1,0,1)"}>
                 {faq_data.A}
               </div>
             </div>

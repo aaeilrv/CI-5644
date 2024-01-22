@@ -30,10 +30,10 @@ export default function Testimonials() {
         </div>
 
         {/* Testimonials */}
-        <div className={`grid grid-cols-1 md:grid-cols-4 gap-10 mt-10 place-content-end p-4 md:p-0`}>
+        <div className={`grid grid-cols-1 md:grid-cols-4 gap-10 mt-10 place-content-end px-8`}>
           {
             testimonials.map((testimonial, index) => (
-              <div className="relative block md:w-48 md:h-64 p-2 border-4 border-[#ce1939] rounded-lg text-white overflow-scroll no-scrollbar" key={index}>
+              <div className="relative block md:w-48 md:h-64 p-2 border-2 md:border-4 border-[#CE1939] rounded-lg text-white overflow-scroll no-scrollbar" key={index}>
                 <h5 className="mb-2 font-bold italic">&quot;{testimonial.comment}&quot;</h5>
                 <p className="font-normal text-left">-{testimonial.author}</p>
               </div>
