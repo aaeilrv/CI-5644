@@ -23,7 +23,7 @@ const testimonials = [
 export default function Testimonials() {
 
   return (
-    <div className='bg-[#202437] min-h-screen flex items-center justify-center space-x-10 overflow-hidden py-10'>
+    <div className='min-h-screen flex items-center justify-center space-x-10 overflow-hidden py-10 bg-gradient-to-tl from-[#21304D] from-50% to-[#182640] to-50%'>
       <div className="grid grid-cols-1 justify-items-center">
         <div className="text-white">
           <h1 className="font-bold text-4xl sm:text-5xl uppercase">Testimonios</h1>
