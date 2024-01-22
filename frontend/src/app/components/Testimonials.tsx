@@ -21,9 +21,6 @@ const testimonials = [
 
 
 export default function Testimonials() {
-  const lg_num_testimonials = testimonials.length >= 8 ? 8: testimonials.length
-  const md_num_testimonials = testimonials.length >= 4 ? 4: testimonials.length
-  const sm_num_testimonials = testimonials.length >= 4 ? 4: testimonials.length
 
   return (
     <div className='bg-[#202437] min-h-screen flex items-center justify-center space-x-10 overflow-hidden py-10'>
@@ -32,11 +29,11 @@ export default function Testimonials() {
           <h1 className="font-bold text-4xl sm:text-5xl uppercase">Testimonios</h1>
         </div>
 
-        {/* Comentarios */}
-        <div className={`grid grid-cols-1 sm:grid-cols-${sm_num_testimonials} md:grid-cols-${md_num_testimonials} lg:grid-cols-${lg_num_testimonials} gap-10 mt-10 place-content-end`}>
+        {/* Testimonials */}
+        <div className={`grid grid-cols-1 md:grid-cols-4 gap-10 mt-10 place-content-end p-4 md:p-0`}>
           {
             testimonials.map((testimonial, index) => (
-              <div className="relative block w-48 h-64 p-2 border-8 border-[#ce1939] rounded-lg text-white overflow-scroll no-scrollbar" key={index}>
+              <div className="relative block md:w-48 md:h-64 p-2 border-4 border-[#ce1939] rounded-lg text-white overflow-scroll no-scrollbar" key={index}>
                 <h5 className="mb-2 font-bold italic">&quot;{testimonial.comment}&quot;</h5>
                 <p className="font-normal text-left">-{testimonial.author}</p>
               </div>
