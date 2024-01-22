@@ -48,7 +48,6 @@ export default function FAQ() {
         }
         </div>
       </div>
-
       {/* Barajitas */}
       <div className="hidden md:flex">
         <div className="relative">
