@@ -54,15 +54,22 @@ class ControllerTest(@Autowired val mockMvc: MockMvc) {
     * */
     @Test
     fun checkGetUsers() {
-        val Users : MutableIterable<User> = mutableListOf(
+        val users : MutableIterable<User> = mutableListOf(
             User(
-            firstName = "Alo", lastName = "FinalAlo", id = 1
-        ),
+                firstName = "Simon",
+                lastName = "Bolivar",
+                username = "sbolivar",
+                emailAddress = "sbolivar@dominio.com",
+            ),
             User(
-                firstName = "Alo2", lastName = "FinalAlo2", id = 2
-            ))
+                firstName = "Simon",
+                lastName = "Rodriguez",
+                username = "srodriguez",
+                emailAddress = "srodriguez@dominio.com",
+            ),
+        )
 
-        every { repository.findAll() } returns Users
+        every { repository.findAll() } returns users
 
         mockMvc.perform(MockMvcRequestBuilders.get("/webTest/findall"))
             .andExpect(MockMvcResultMatchers.status().isOk())

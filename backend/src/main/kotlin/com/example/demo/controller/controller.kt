@@ -18,9 +18,9 @@ class WebController {
 
     @PostMapping("/save")
     fun save(): String {
-        repository.save(User("Jack", "Smith"))
-        repository.save(User("Jill", "Anderson"))
-        repository.save(User("Daddy", "Yankee"))
+        repository.save(User(firstName = "Simon", lastName = "Bolivar", username = "sbolivar", emailAddress = "sbolivar@dominio.com"))
+        // repository.save(User("Jill", "Anderson"))
+        //repository.save(User("Daddy", "Yankee"))
 
         return "Done"
     }
