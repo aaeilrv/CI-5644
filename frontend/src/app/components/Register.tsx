@@ -4,6 +4,8 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 
 import { axiosHookWithoutToken } from "../../hooks/axiosHook";
+import { zodResolver } from "@hookform/resolvers/zod";
+
 
 type RegisterValues = {
   username: string;
@@ -11,18 +13,75 @@ type RegisterValues = {
   email: string;
   password: string;
   confirmPassword: string;
-
-
 };
 
 // Prondodo react-hook-form con zod
-const registerSchema = {
-  username: z.string().min(4,{message: "El nombre de usuario es requerido"}).max(30),
-  name: z.string().min(4).max(30),
-  email: z.string().email().min(4).max(250),
-  password: z.string().min(4,{message: "La contraseña debe tener al menos 4 caracteres"}).max(25),
-  confirmPassword: z.string().min(4).max(25),
-}
+const registerSchema = z
+  .object({
+    username: z
+      .string()
+      .min(4, {
+        message: "El nombre de usuario debe tener al menos 4 caracteres",
+      })
+      .max(30, {
+        message: "El nombre de usuario debe tener menos de 30 caracteres",
+      }),
+    name: z
+      .string()
+      .min(4, {
+        message: "El nombre de usuario debe tener al menos 4 caracteres",
+      })
+      .max(30, {
+        message: "El nombre de usuario debe tener menos de 30 caracteres",
+      }),
+    email: z
+      .string()
+      .email({ message: "El correo electrónico no es valido" })
+      .min(4, {
+        message: "El correo electrónico debe tener al menos 4 caracteres",
+      })
+      .max(250, {
+        message: "El correo electronico debe tener menos de 250 caracteres",
+      }),
+    password: z
+      .string()
+      .min(4, { message: "La contraseña debe tener al menos 4 caracteres" })
+      .max(25, { message: "La contraseña debe tener menos de 25 caracteres" }),
+    confirmPassword: z
+      .string()
+      .min(4, {
+        message:
+          "La confirmacion de contraseña debe tener al menos 4 caracteres",
+      })
+      .max(25, {
+        message:
+          "La confirmacion de contraseña debe tener  menos de 25 caracteres",
+      }),
+  }).superRefine((args,ctx) => {
+    if (args.password !== args.confirmPassword) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "Las contraseñas no coinciden",
+        path: ["confirmPassword"],
+      })
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "Las contraseñas no coinciden",
+        path: ["password"],
+      })
+      return false;
+    }
+    return true;
+  })
+
+  // .refine((data) => {
+  //   return data.password === data.confirmPassword;
+  // },{
+  //   message: "Las contraseñas no coinciden",
+  //   path: ["confirmPassword"],
+  // })
+
+type registerSchemaType = z.infer<typeof registerSchema>;
 
 export const Register = () => {
   const [passwordEye, setPasswordEye] = useState(false);
@@ -31,14 +90,13 @@ export const Register = () => {
   // const [emialDefaultVal, setEmialDefaultVal] = useState('')
   // const [passwordDefaultVal, setPasswordDefaultVal] = useState('')
 
-
-
   const {
     register,
     handleSubmit,
     watch,
     formState: { errors, isValid, isDirty },
-  } = useForm<RegisterValues>({
+  } = useForm<registerSchemaType>({
+    resolver: zodResolver(registerSchema),
     mode: "onChange",
   });
 
@@ -103,32 +161,15 @@ export const Register = () => {
 
         <div className="flex justify-center">
           <form className="flex flex-col w-2/3" onSubmit={onSubmit}>
-          <div className="flex flex-col mt-12">
-              <label className="text-white font-semibold text-lg">Nombre de usuario</label>
+            <div className="flex flex-col mt-12">
+              <label className="text-white font-semibold text-lg">
+                Nombre de usuario
+              </label>
 
               <input
                 type="text"
                 className="bg-transparent border-b-2  outline-none text-white"
-                {...register("username", {
-                  required: {
-                    value: true,
-                    message: "El nombre de usuario es requerido",
-                  },
-                  pattern: {
-                    value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                    message: "El nombre de usuario no es valido",
-                  },
-                  minLength: {
-                    value: 4,
-                    message:
-                      "El nombre de usuario debe tener al menos 4 caracteres",
-                  },
-                  maxLength: {
-                    value: 30,
-                    message:
-                      "El nombre de usuario debe tener menos de 30 caracteres",
-                  },
-                })}
+                {...register("username")}
               ></input>
               {errors.username && (
                 <span className="text-red-500 text-sm">
@@ -142,26 +183,7 @@ export const Register = () => {
               <input
                 type="text"
                 className="bg-transparent border-b-2  outline-none text-white"
-                {...register("name", {
-                  required: {
-                    value: true,
-                    message: "El nombre es requerido",
-                  },
-                  pattern: {
-                    value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                    message: "El nombre no es valido",
-                  },
-                  minLength: {
-                    value: 4,
-                    message:
-                      "El nombre debe tener al menos 4 caracteres",
-                  },
-                  maxLength: {
-                    value: 30,
-                    message:
-                      "El nombre debe tener menos de 30 caracteres",
-                  },
-                })}
+                {...register("name")}
               ></input>
               {errors.name && (
                 <span className="text-red-500 text-sm">
@@ -175,26 +197,7 @@ export const Register = () => {
               <input
                 type="text"
                 className="bg-transparent border-b-2  outline-none text-white"
-                {...register("email", {
-                  required: {
-                    value: true,
-                    message: "El correo electrónico es requerido",
-                  },
-                  pattern: {
-                    value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                    message: "El correo electrónico no es valido",
-                  },
-                  minLength: {
-                    value: 4,
-                    message:
-                      "El correo electrónico debe tener al menos 4 caracteres",
-                  },
-                  maxLength: {
-                    value: 250,
-                    message:
-                      "El correo electronico debe tener menos de 250 caracteres",
-                  },
-                })}
+                {...register("email")}
               ></input>
               {errors.email && (
                 <span className="text-red-500 text-sm">
@@ -213,22 +216,7 @@ export const Register = () => {
                   <input
                     type="text"
                     className="bg-transparent border-b-2 border-white outline-none text-white w-full"
-                    {...register("password", {
-                      required: {
-                        value: true,
-                        message: "La contraseña es requerida",
-                      },
-                      minLength: {
-                        value: 4,
-                        message:
-                          "La contraseña debe tener al menos 4 caracteres",
-                      },
-                      maxLength: {
-                        value: 25,
-                        message:
-                          "La contraseña debe tener menos de 25 caracteres",
-                      },
-                    })}
+                    {...register("password")}
                   ></input>
 
                   <svg
@@ -248,22 +236,7 @@ export const Register = () => {
                   <input
                     type="password"
                     className="bg-transparent border-b-2 border-white outline-none text-white w-full"
-                    {...register("password", {
-                      required: {
-                        value: true,
-                        message: "La contraseña es requerida",
-                      },
-                      minLength: {
-                        value: 4,
-                        message:
-                          "La contraseña debe tener al menos 4 caracteres",
-                      },
-                      maxLength: {
-                        value: 25,
-                        message:
-                          "La contraseña debe tener menos de 25 caracteres",
-                      },
-                    })}
+                    {...register("password")}
                   ></input>
 
                   <svg
@@ -300,26 +273,7 @@ export const Register = () => {
                   <input
                     type="text"
                     className="bg-transparent border-b-2 border-white outline-none text-white w-full"
-                    {...register("confirmPassword", {
-                      required: {
-                        value: true,
-                        message: "La contraseña es requerida",
-                      },
-                      minLength: {
-                        value: 4,
-                        message:
-                          "La contraseña debe tener al menos 4 caracteres",
-                      },
-                      maxLength: {
-                        value: 25,
-                        message:
-                          "La contraseña debe tener menos de 25 caracteres",
-                      },
-                      validate: (val: string) => {
-                        if (watch("password") != val)
-                          return "Las contraseñas no coinciden";
-                      },
-                    })}
+                    {...register("confirmPassword")}
                   ></input>
 
                   <svg
@@ -339,26 +293,7 @@ export const Register = () => {
                   <input
                     type="password"
                     className="bg-transparent border-b-2 border-white outline-none text-white w-full"
-                    {...register("confirmPassword", {
-                      required: {
-                        value: true,
-                        message: "La contraseña es requerida",
-                      },
-                      minLength: {
-                        value: 4,
-                        message:
-                          "La contraseña debe tener al menos 4 caracteres",
-                      },
-                      maxLength: {
-                        value: 25,
-                        message:
-                          "La contraseña debe tener menos de 25 caracteres",
-                      },
-                      validate: (val: string) => {
-                        if (watch("password") != val)
-                          return "Las contraseñas no coinciden";
-                      },
-                    })}
+                    {...register("confirmPassword")}
                   ></input>
 
                   <svg
