@@ -117,6 +117,16 @@ export const Register = () => {
 
     console.log({ loginBody });
 
+    //  Ejemplo de como hacer una peticion al backend
+    // const testBackend = await axiosHookWithoutToken('get','webTest/findall')
+
+    // if (testBackend?.status !== 'success') {
+    //   console.log(testBackend!.message)
+    //   return
+    // }
+
+    // console.log(testBackend)
+
     // const loginResponse = await axiosHookWithoutToken(
     //   "post",
     //   "signin/admins",

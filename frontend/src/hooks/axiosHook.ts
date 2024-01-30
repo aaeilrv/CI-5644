@@ -1,10 +1,10 @@
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 
 const instanceWithoutToken = axios.create({
-  baseURL: "http://localhost:3000/api/",
+  baseURL: "http://localhost:8080/",
 });
 
-export const axiosHookWithoutToken = async (request, url, body) => {
+export const axiosHookWithoutToken = async (request:string, url:string, body?:unknown) => {
   switch (request) {
     case "get":
       try {
@@ -15,11 +15,13 @@ export const axiosHookWithoutToken = async (request, url, body) => {
           response: getResponse,
         };
       } catch (error) {
+        if (error instanceof AxiosError || error instanceof Error) {
         return {
           status: "error",
           message: error.message,
         };
       }
+    }
 
     case "post":
       try {
@@ -30,11 +32,13 @@ export const axiosHookWithoutToken = async (request, url, body) => {
           response: postResponse,
         };
       } catch (error) {
+        if (error instanceof AxiosError || error instanceof Error) {
         return {
           status: "error",
           message: error.message,
         };
       }
+    }
 
     case "put":
       try {
@@ -44,11 +48,13 @@ export const axiosHookWithoutToken = async (request, url, body) => {
           response: putResponse,
         };
       } catch (error) {
+        if (error instanceof AxiosError || error instanceof Error) {
         return {
           status: "error",
           message: error.message,
         };
       }
+    }
 
     case "delete":
       try {
@@ -58,11 +64,13 @@ export const axiosHookWithoutToken = async (request, url, body) => {
           response: deleteResponse,
         };
       } catch (error) {
+        if (error instanceof AxiosError || error instanceof Error) {
         return {
           status: "error",
           message: error.message,
         };
       }
+    }
 
     case "patch":
       try {
@@ -72,12 +80,13 @@ export const axiosHookWithoutToken = async (request, url, body) => {
           response: patchResponse,
         };
       } catch (error) {
-        console.log({ error });
+        if (error instanceof AxiosError || error instanceof Error) {
         return {
           status: "error",
           message: error.message,
         };
       }
+    }
 
     default:
       break;
