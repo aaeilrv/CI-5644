@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor
 import lombok.Data
 import lombok.NoArgsConstructor
 import lombok.AccessLevel;
+import org.springframework.format.annotation.DateTimeFormat
+import java.time.LocalDate
 
 @Data
 @Entity
@@ -17,6 +19,10 @@ open class User(
 
     @Column(nullable = false, length = 100)
     private val lastName: String,
+
+    @Column
+    @DateTimeFormat(style = "dd/MM/yyyy")
+    private val birthDay: LocalDate,
 
     @Column(nullable = false, length = 32)
     private val username: String,

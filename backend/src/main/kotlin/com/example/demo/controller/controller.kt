@@ -9,6 +9,8 @@ import com.example.demo.repo.Repository
 import com.example.demo.model.User
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 
 @RestController
 @RequestMapping("webTest")
@@ -18,7 +20,16 @@ class WebController {
 
     @PostMapping("/save")
     fun save(): String {
-        repository.save(User(firstName = "Simon", lastName = "Bolivar", username = "sbolivar", emailAddress = "sbolivar@dominio.com"))
+        val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
+        repository.save(
+            User(
+                firstName = "Simon",
+                lastName = "Bolivar",
+                birthDay = LocalDate.parse("30/01/2024", formatter),
+                username = "sbolivar",
+                emailAddress = "sbolivar@dominio.com"
+            )
+        )
         // repository.save(User("Jill", "Anderson"))
         //repository.save(User("Daddy", "Yankee"))
 

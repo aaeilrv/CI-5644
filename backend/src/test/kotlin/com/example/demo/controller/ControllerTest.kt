@@ -4,11 +4,7 @@ import com.example.demo.model.User
 import com.example.demo.repo.Repository
 import com.ninjasquad.springmockk.MockkBean
 import io.mockk.every
-import org.aspectj.lang.annotation.Before
 import org.junit.jupiter.api.Test
-import org.mockito.InjectMocks
-import org.mockito.Mock
-import org.mockito.MockitoAnnotations
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
 import org.springframework.http.MediaType
@@ -16,6 +12,8 @@ import org.springframework.http.MediaType
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 
 
 @WebMvcTest
@@ -54,16 +52,19 @@ class ControllerTest(@Autowired val mockMvc: MockMvc) {
     * */
     @Test
     fun checkGetUsers() {
+        val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
         val users : MutableIterable<User> = mutableListOf(
             User(
                 firstName = "Simon",
                 lastName = "Bolivar",
+                birthDay = LocalDate.parse("30/01/2024", formatter),
                 username = "sbolivar",
                 emailAddress = "sbolivar@dominio.com",
             ),
             User(
                 firstName = "Simon",
                 lastName = "Rodriguez",
+                birthDay = LocalDate.parse("30/01/2024", formatter),
                 username = "srodriguez",
                 emailAddress = "srodriguez@dominio.com",
             ),
