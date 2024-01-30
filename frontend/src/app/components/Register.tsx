@@ -3,6 +3,8 @@ import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
+import { axiosHookWithoutToken } from "../../hooks/axiosHook";
+
 type RegisterValues = {
   username: string;
   name: string;
@@ -28,6 +30,8 @@ export const Register = () => {
 
   // const [emialDefaultVal, setEmialDefaultVal] = useState('')
   // const [passwordDefaultVal, setPasswordDefaultVal] = useState('')
+
+
 
   const {
     register,
