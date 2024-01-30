@@ -31,6 +31,7 @@ open class User(
     private val emailAddress: String? = null,
 
     @Id
-    @GeneratedValue
-    private val id: Long = -1
+    @Column(name = "users_id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private val id: Long? = null
 )
