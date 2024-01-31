@@ -18,14 +18,14 @@ open class User(
     @Column(nullable = false, length = 100)
     private val lastName: String,
 
-    @Column
+    @Column(nullable = false, length = 100)
     private val birthDay: String,
 
     @Column(nullable = false, length = 32)
     private val username: String,
 
-    @Column(name = "email_address")
-    private val emailAddress: String? = null,
+    @Column(nullable = false, length = 100)
+    private val emailAddress: String,
 
     @Id
     @Column(name = "user_id")
@@ -45,12 +45,6 @@ open class User(
 
     @ManyToMany(mappedBy = "likedUsers")
     private val likes: List<Exchange> = mutableListOf(),
-
-//    @OneToMany(mappedBy = "sender", fetch = FetchType.LAZY, cascade = [(CascadeType.ALL)])
-//    private val user_senders: List<Exchange> = mutableListOf(),
-//
-//    @OneToMany(mappedBy = "receiver", fetch = FetchType.LAZY, cascade = [(CascadeType.ALL)])
-//    private val user_receivers: List<Exchange> = mutableListOf(),
 
     @OneToMany(mappedBy = "user_purchase", fetch = FetchType.LAZY, cascade = [(CascadeType.ALL)])
     private val user_purchases: List<Purchase> = mutableListOf()
@@ -80,13 +74,7 @@ class Card(
     private val owners: List<User> = mutableListOf(),
 
     @ManyToMany(mappedBy = "likedCards")
-    private val likes: List<Exchange> = mutableListOf(),
-
-//    @OneToMany(mappedBy = "senderCard", fetch = FetchType.LAZY, cascade = [(CascadeType.ALL)])
-//    private val card_senders: List<Exchange> = mutableListOf(),
-//
-//    @OneToMany(mappedBy = "receiverCard", fetch = FetchType.LAZY, cascade = [(CascadeType.ALL)])
-//    private val card_receivers: List<Exchange> = mutableListOf()
+    private val likes: List<Exchange> = mutableListOf()
 )
 
 @Data
@@ -148,23 +136,7 @@ class Exchange(
         joinColumns = [JoinColumn(name = "exchange_id")],
         inverseJoinColumns = [JoinColumn(name = "card_id")]
     )
-    private val likedCards: List<Card> = mutableListOf(),
-
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "sender_id")
-//    private val sender: User,
-//
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "receiver_id")
-//    private val receiver: User,
-
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "sender_card_id")
-//    private val senderCard: Card,
-//
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "receiver_card_id")
-//    private val receiverCard: Card
+    private val likedCards: List<Card> = mutableListOf()
 )
 
 @Data
