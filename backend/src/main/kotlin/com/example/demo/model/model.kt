@@ -112,9 +112,6 @@ class Payment(
     @Column(nullable = false, length = 100)
     private val cardHolderName: String,
 
-    @ManyToMany(mappedBy = "cards")
-    private val owners: List<User> = mutableListOf(),
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private val cardHolder: User,
