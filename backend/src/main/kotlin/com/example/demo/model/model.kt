@@ -1,36 +1,26 @@
 package com.example.demo.model
 
+import com.example.demo.controller.dto.CreateUserRequest
 import jakarta.persistence.*
-import lombok.AllArgsConstructor
-import lombok.Data
-import lombok.NoArgsConstructor
-import lombok.AccessLevel;
 
-@Data
+
 @Entity
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
-@NoArgsConstructor
 @Table(name = "users")
-open class User(
-    @Column(nullable = false, length = 100)
-    private val firstName: String,
+open class User (
+    @Column(nullable = false, length = 100) private var firstName: String,
 
-    @Column(nullable = false, length = 100)
-    private val lastName: String,
+    @Column(nullable = false, length = 100) private var lastName: String,
 
-    @Column(nullable = false, length = 100)
-    private val birthDay: String,
+    @Column(nullable = false, length = 100) private var birthDay: String,
 
-    @Column(nullable = false, length = 32)
-    private val username: String,
+    @Column(nullable = false, length = 32) private var username: String,
 
-    @Column(nullable = false, length = 100)
-    private val emailAddress: String,
+    @Column(nullable = false, length = 100) private var emailAddress: String,
 
     @Id
     @Column(name = "user_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private val id: Long? = null,
+    private val id: Long?,
 
     @ManyToMany
     @JoinTable(
@@ -48,18 +38,49 @@ open class User(
 
     @OneToMany(mappedBy = "user_purchase", fetch = FetchType.LAZY, cascade = [(CascadeType.ALL)])
     private val user_purchases: List<Purchase> = mutableListOf()
-)
+) {
+    fun getId(): Long {
+        return this.id!!
+    }
 
-@Data
+    fun getFirstName(): String {
+        return this.firstName
+    }
+
+    fun getLastName(): String {
+        return this.lastName
+    }
+
+    fun getBirthDay(): String {
+        return this.birthDay
+    }
+
+    fun getUsername(): String {
+        return this.username
+    }
+
+    fun getEmailAddress(): String {
+        return this.emailAddress
+    }
+
+    constructor() : this("", "", "", "", "", null)
+    constructor(request: CreateUserRequest) : this(
+        request.firstName,
+        request.lastName,
+        request.birthDay,
+        request.username,
+        request.emailAddress,
+        null
+    )
+}
+
 @Entity
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
-@NoArgsConstructor
 @Table(name = "cards")
 class Card(
     @Id
     @Column(name = "card_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private val id: Long? = null,
+    private val id: Long?,
 
     @Column(nullable = false, length = 100)
     private val name: String,
@@ -75,18 +96,19 @@ class Card(
 
     @ManyToMany(mappedBy = "likedCards")
     private val likes: List<Exchange> = mutableListOf()
-)
+) {
+    constructor() : this(null, "", -1, "") {
 
-@Data
+    }
+}
+
 @Entity
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
-@NoArgsConstructor
 @Table(name = "payments")
 class Payment(
     @Id
     @Column(name = "payment_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private val id: Long? = null,
+    private val id: Long?,
 
     @Column(nullable = false, length = 100)
     private val cardNumber: String,
@@ -102,22 +124,23 @@ class Payment(
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
-    private val cardHolder: User,
+    private val cardHolder: User = User(),
 
     @OneToOne(mappedBy = "payment")
-    private val purchase: Purchase
-)
+    private val purchase: Purchase? = null
+) {
+    constructor() : this(null, "", "", "", "") {
 
-@Data
+    }
+}
+
 @Entity
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
-@NoArgsConstructor
 @Table(name = "exchanges")
 class Exchange(
     @Id
     @Column(name = "exchange_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private val id: Long? = null,
+    private val id: Long?,
 
     @Column(nullable = false, length = 100)
     private val date: String,
@@ -137,18 +160,19 @@ class Exchange(
         inverseJoinColumns = [JoinColumn(name = "card_id")]
     )
     private val likedCards: List<Card> = mutableListOf()
-)
+) {
+    constructor() : this(null, "") {
 
-@Data
+    }
+}
+
 @Entity
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
-@NoArgsConstructor
 @Table(name = "purchases")
 class Purchase(
     @Id
     @Column(name = "purchase_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private val id: Long? = null,
+    private val id: Long?,
 
     @Column(nullable = false, length = 100)
     private val date: String,
@@ -161,9 +185,13 @@ class Purchase(
 
     @OneToOne(cascade = [(CascadeType.ALL)])
     @JoinColumn(name = "payment_id", referencedColumnName = "payment_id")
-    private val payment: Payment,
+    private val payment: Payment? = null,
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_purchase_id")
-    private val user_purchase: User
-)
+    private val user_purchase: User = User()
+) {
+    constructor() : this(null, "", 0, 0.0) {
+
+    }
+}
