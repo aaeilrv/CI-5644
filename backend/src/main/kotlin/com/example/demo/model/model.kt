@@ -1,5 +1,6 @@
 package com.example.demo.model
 
+import com.example.demo.controller.dto.CreateCardRequest
 import com.example.demo.controller.dto.CreateUserRequest
 import jakarta.persistence.*
 
@@ -28,7 +29,7 @@ open class User (
         joinColumns = [JoinColumn(name = "user_id")],
         inverseJoinColumns = [JoinColumn(name = "card_id")]
     )
-    private val cards: List<Card> = mutableListOf(),
+    private var cards: MutableList<Card> = mutableListOf(),
 
     @OneToMany(mappedBy = "cardHolder", fetch = FetchType.LAZY, cascade = [(CascadeType.ALL)])
     private val user_cards: List<Payment> = mutableListOf(),
@@ -63,6 +64,14 @@ open class User (
         return this.emailAddress
     }
 
+    fun setCardsOwned(list:MutableList<Card>){
+        this.cards = list
+    }
+
+    fun getCardsOwned(): MutableList<Card>{
+        return this.cards
+    }
+
     constructor() : this("", "", "", "", "", null)
     constructor(request: CreateUserRequest) : this(
         request.firstName,
@@ -83,7 +92,7 @@ class Card(
     private val id: Long?,
 
     @Column(nullable = false, length = 100)
-    private val name: String,
+    private var name: String,
 
     @Column(nullable = false)
     private val playerNumber: Int,
@@ -91,14 +100,45 @@ class Card(
     @Column(nullable = false, length = 100)
     private val playerPosition: String,
 
+    @Column(nullable = false, length = 100)
+    private val country:String,
+
     @ManyToMany(mappedBy = "cards")
     private val owners: List<User> = mutableListOf(),
 
     @ManyToMany(mappedBy = "likedCards")
     private val likes: List<Exchange> = mutableListOf()
 ) {
-    constructor() : this(null, "", -1, "") {
+    constructor() : this(null, "", -1, "","")
+    constructor(request: CreateCardRequest) : this(
+        null,
+        request.name,
+        request.playerNumber,
+        request.playerPosition,
+        request.country
+    )
+    fun getId(): Long {
+        return this.id!!
+    }
 
+    fun getName(): String {
+        return this.name
+    }
+
+    fun getPlayerPosition(): String {
+        return this.playerPosition
+    }
+
+    fun getPlayerNumber(): Int {
+        return this.playerNumber
+    }
+
+    fun getCountry(): String {
+        return this.country
+    }
+
+    fun setName(newName:String){
+        this.name = newName
     }
 }
 

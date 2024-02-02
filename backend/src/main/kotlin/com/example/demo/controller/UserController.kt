@@ -1,14 +1,14 @@
 package com.example.demo.controller
 
+import com.example.demo.controller.dto.AddCardToOwnerRequest
 import com.example.demo.controller.dto.CreateUserRequest
-import com.example.demo.controller.dto.UserDTO
+import com.example.demo.model.Card
 import com.example.demo.model.User
 import com.example.demo.service.UserService
-import jakarta.persistence.Entity
+import com.example.demo.service.CardService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.Pageable
 import org.springframework.http.HttpStatus
-import org.springframework.http.HttpStatusCode
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.server.ResponseStatusException
@@ -20,11 +20,24 @@ class UserController {
     @Autowired
     lateinit var userService: UserService
 
+    @Autowired
+    lateinit var cardService: CardService
+
     @PostMapping
     fun createUser(@RequestBody request: CreateUserRequest): ResponseEntity<User> {
         return ResponseEntity.ok(userService.create(User(request)))
     }
-
+    @PostMapping("/createMultipleUsers")
+    fun createUsers(@RequestBody request: List<CreateUserRequest>): String {
+        for(r: CreateUserRequest in request) {
+            userService.create(User(r))
+        }
+        return "done" + request.size
+    }
+    //@PostMapping
+    // fun helloW(): String{
+    //     return "Hello"
+    // }
     @GetMapping("/{id}")
     fun getUserById(@PathVariable id: Long): ResponseEntity<User> {
         val userOpt = userService.getById(id)
@@ -38,5 +51,36 @@ class UserController {
     @GetMapping()
     fun getAllUsers(pageable: Pageable): List<User> {
         return userService.getAll(pageable)
+    }
+
+
+    @GetMapping("cardsOwned/{id}")
+    fun getCardsOwned(@PathVariable id: Long):List<Card>?{
+        return userService.getCardsOwnedById(id)
+    }
+
+    @GetMapping("progress/{id}")
+    fun progress(@PathVariable id: Long):String{
+        return userService.getProgress(id)
+    }
+    @GetMapping("progress")
+    fun getProgressForAll(pageable: Pageable): List<String>{
+        val listProgress:MutableList<String> = mutableListOf()
+        val allUser = userService.getAll(pageable)
+        for(user:User in allUser){
+            listProgress.add("${user.getUsername()}: " + userService.getProgress(user.getId()))
+        }
+        return listProgress
+    }
+
+    @PatchMapping()
+    fun addCard(@RequestBody request: AddCardToOwnerRequest):ResponseEntity<User>{
+        val cardOpt = cardService.getById(request.cardId)
+        if (cardOpt.isPresent) {
+            val newCard:User? = userService.updateCardsOwnedList(request.ownerId,cardOpt.get())
+            return ResponseEntity.ok(newCard)
+        } else {
+            throw ResponseStatusException(HttpStatus.NOT_FOUND, "User with ${request.ownerId} not found")
+        }
     }
 }
