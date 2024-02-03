@@ -86,14 +86,22 @@
 			<plugin>
 				<groupId>org.jetbrains.kotlin</groupId>
 				<artifactId>kotlin-maven-plugin</artifactId>
+				<version>${kotlin.version}</version>
 				<configuration>
 					<args>
 						<arg>-Xjsr305=strict</arg>
 					</args>
 					<compilerPlugins>
-						<plugin>spring</plugin>
+						<!-- Or "spring" for the Spring support -->
+						<plugin>all-open</plugin>
 					</compilerPlugins>
+					<pluginOptions>
+						<!-- Each annotation is placed on its own line -->
+						<option>all-open:annotation=com.my.Annotation</option>
+						<option>all-open:annotation=com.their.AnotherAnnotation</option>
+					</pluginOptions>
 				</configuration>
+
 				<dependencies>
 					<dependency>
 						<groupId>org.jetbrains.kotlin</groupId>

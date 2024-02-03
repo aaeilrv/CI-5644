@@ -4,11 +4,7 @@ import com.example.demo.model.User
 import com.example.demo.repo.Repository
 import com.ninjasquad.springmockk.MockkBean
 import io.mockk.every
-import org.aspectj.lang.annotation.Before
 import org.junit.jupiter.api.Test
-import org.mockito.InjectMocks
-import org.mockito.Mock
-import org.mockito.MockitoAnnotations
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
 import org.springframework.http.MediaType
@@ -16,7 +12,6 @@ import org.springframework.http.MediaType
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
-
 
 @WebMvcTest
 class ControllerTest(@Autowired val mockMvc: MockMvc) {
@@ -54,15 +49,24 @@ class ControllerTest(@Autowired val mockMvc: MockMvc) {
     * */
     @Test
     fun checkGetUsers() {
-        val Users : MutableIterable<User> = mutableListOf(
+        val users : MutableIterable<User> = mutableListOf(
             User(
-            firstName = "Alo", lastName = "FinalAlo", id = 1
-        ),
+                firstName = "Simon",
+                lastName = "Bolivar",
+                birthDay = "30/01/2024",
+                username = "sbolivar",
+                emailAddress = "sbolivar@dominio.com",
+            ),
             User(
-                firstName = "Alo2", lastName = "FinalAlo2", id = 2
-            ))
+                firstName = "Simon",
+                lastName = "Rodriguez",
+                birthDay = "30/01/2024",
+                username = "srodriguez",
+                emailAddress = "srodriguez@dominio.com",
+            ),
+        )
 
-        every { repository.findAll() } returns Users
+        every { repository.findAll() } returns users
 
         mockMvc.perform(MockMvcRequestBuilders.get("/webTest/findall"))
             .andExpect(MockMvcResultMatchers.status().isOk())
