@@ -82,7 +82,7 @@ class UserController {
             val newCard:User? = userService.updateCardsOwnedList(request.ownerId,cardOpt.get())
             return ResponseEntity.ok(newCard)
         } else {
-            throw ResponseStatusException(HttpStatus.NOT_FOUND, "User with ${request.ownerId} not found")
+            throw ResponseStatusException(HttpStatus.NOT_FOUND, "Card with ${request.cardId} not found")
         }
     }
 }
