@@ -34,10 +34,6 @@ class UserController {
         }
         return "done" + request.size
     }
-    //@PostMapping
-    // fun helloW(): String{
-    //     return "Hello"
-    // }
     @GetMapping("/{id}")
     fun getUserById(@PathVariable id: Long): ResponseEntity<User> {
         val userOpt = userService.getById(id)
@@ -46,6 +42,12 @@ class UserController {
         } else {
             throw ResponseStatusException(HttpStatus.NOT_FOUND, "User with $id not found")
         }
+    }
+
+    @GetMapping("/leaders")
+    fun getLeaders(pageable: Pageable):List<String>{
+        val allUser = userService.getAll(pageable)
+        return userService.getLeaders(allUser)
     }
 
     @GetMapping()
