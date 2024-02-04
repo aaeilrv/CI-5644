@@ -27,7 +27,7 @@ export default function Navbar() {
           {/*Login*/}
           <div>
           <div className="flex justify-end">
-            <a href="#" className="hidden md:flex font-bold text-xl">Entrar</a>
+            <a href="api/auth/login" className="hidden md:flex font-bold text-xl">Entrar</a>
           </div>
 
           {/* Mobile */}
