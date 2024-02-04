@@ -61,17 +61,7 @@ class UserService (@Autowired private val userRepository: UserRepository) {
 
     public fun getAll(pageable: Pageable): List<User> {
         val userEntities = userRepository.findAll(pageable)
-        val users = userEntities.map { userEntity ->
-            User(
-                id = userEntity.getId(),
-                firstName = userEntity.getFirstName(),
-                lastName = userEntity.getLastName(),
-                birthDay = userEntity.getBirthDay(),
-                username = userEntity.getUsername(),
-                emailAddress = userEntity.getEmailAddress(),
-                cards = userEntity.getCardsOwned()
-            )
-        }
+        val users = userEntities.map { it }
         return users.content
     }
 

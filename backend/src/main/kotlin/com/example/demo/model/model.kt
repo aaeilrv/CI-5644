@@ -3,6 +3,7 @@ package com.example.demo.model
 import com.example.demo.controller.dto.CreateCardRequest
 import com.example.demo.controller.dto.CreateUserRequest
 import jakarta.persistence.*
+import java.math.BigDecimal
 
 
 @Entity
@@ -12,56 +13,57 @@ open class User (
 
     @Column(nullable = false, length = 100) private var lastName: String,
 
-    @Column(nullable = false, length = 100) private var birthDay: String,
+    @Column(nullable = false, length = 100) private var birthday: java.sql.Date,
 
     @Column(nullable = false, length = 32) private var username: String,
 
-    @Column(nullable = false, length = 100) private var emailAddress: String,
+    @Column(nullable = false, length = 100) private var email: String,
 
     @Id
-    @Column(name = "user_id")
+    @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private val id: Long?,
 
     @ManyToMany
     @JoinTable(
-        name = "card_owner",
+        name = "ownership",
         joinColumns = [JoinColumn(name = "user_id")],
         inverseJoinColumns = [JoinColumn(name = "card_id")]
     )
     private var cards: MutableList<Card> = mutableListOf(),
 
     @OneToMany(mappedBy = "cardHolder", fetch = FetchType.LAZY, cascade = [(CascadeType.ALL)])
-    private val user_cards: List<Payment> = mutableListOf(),
-
-    @ManyToMany(mappedBy = "likedUsers")
-    private val likes: List<Exchange> = mutableListOf(),
+    private val userCards: List<Payment> = mutableListOf(),
 
     @OneToMany(mappedBy = "user_purchase", fetch = FetchType.LAZY, cascade = [(CascadeType.ALL)])
-    private val user_purchases: List<Purchase> = mutableListOf()
+    private val userPurchases: List<Purchase> = mutableListOf()
 ) {
-    fun getId(): Long {
+    open fun getId(): Long {
         return this.id!!
     }
 
-    fun getFirstName(): String {
+    open fun getFirstName(): String {
         return this.firstName
     }
 
-    fun getLastName(): String {
+    open fun getLastName(): String {
         return this.lastName
     }
 
-    fun getBirthDay(): String {
-        return this.birthDay
+    open fun getFullName(): String {
+        return (this.firstName + " " + this.lastName)
     }
 
-    fun getUsername(): String {
+    open fun getBirthDay(): java.sql.Date {
+        return this.birthday
+    }
+
+    open fun getUsername(): String {
         return this.username
     }
 
-    fun getEmailAddress(): String {
-        return this.emailAddress
+    open fun getEmailAddress(): String {
+        return this.email
     }
 
     fun setCardsOwned(list:MutableList<Card>){
@@ -72,11 +74,13 @@ open class User (
         return this.cards
     }
 
-    constructor() : this("", "", "", "", "", null)
+   
+    constructor() : this("", "", java.sql.Date(-1), "", "",null)
+
     constructor(request: CreateUserRequest) : this(
         request.firstName,
         request.lastName,
-        request.birthDay,
+        java.sql.Date.valueOf(request.birthDay),
         request.username,
         request.emailAddress,
         null
@@ -84,10 +88,10 @@ open class User (
 }
 
 @Entity
-@Table(name = "cards")
+@Table(name = "card")
 class Card(
     @Id
-    @Column(name = "card_id")
+    @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private val id: Long?,
 
@@ -106,8 +110,6 @@ class Card(
     @ManyToMany(mappedBy = "cards")
     private val owners: List<User> = mutableListOf(),
 
-    @ManyToMany(mappedBy = "likedCards")
-    private val likes: List<Exchange> = mutableListOf()
 ) {
     constructor() : this(null, "", -1, "","")
     constructor(request: CreateCardRequest) : this(
@@ -143,10 +145,10 @@ class Card(
 }
 
 @Entity
-@Table(name = "payments")
+@Table(name = "payment_information")
 class Payment(
     @Id
-    @Column(name = "payment_id")
+    @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private val id: Long?,
 
@@ -156,11 +158,11 @@ class Payment(
     @Column(nullable = false, length = 100)
     private val bank: String,
 
-    @Column(nullable = false, length = 100)
+    @Column(nullable = false, length = 8)
     private val expirationDate: String,
 
     @Column(nullable = false, length = 100)
-    private val cardHolderName: String,
+    private val cardholderName: String,
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
@@ -175,63 +177,60 @@ class Payment(
 }
 
 @Entity
-@Table(name = "exchanges")
+@Table(name = "exchange")
 class Exchange(
     @Id
-    @Column(name = "exchange_id")
+    @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private val id: Long?,
 
     @Column(nullable = false, length = 100)
-    private val date: String,
+    private val date: java.sql.Date,
 
-    @ManyToMany
-    @JoinTable(
-        name = "user_like",
-        joinColumns = [JoinColumn(name = "exchange_id")],
-        inverseJoinColumns = [JoinColumn(name = "user_id")]
-    )
-    private val likedUsers: List<User> = mutableListOf(),
+    @ManyToOne
+    @JoinColumn(name = "owner_id", nullable = false)
+    private val owner: User,
 
-    @ManyToMany
-    @JoinTable(
-        name = "card_like",
-        joinColumns = [JoinColumn(name = "exchange_id")],
-        inverseJoinColumns = [JoinColumn(name = "card_id")]
-    )
-    private val likedCards: List<Card> = mutableListOf()
+    @ManyToOne
+    @JoinColumn(name = "card_id", nullable = false)
+    private val exchangedCard: Card,
+
+    @ManyToOne
+    @JoinColumn(name = "receiver_id", nullable = false)
+    private val receiver: User,
+
+    @Column(name = "number_of_cards_traded", nullable = false)
+    private val exchangedAmount: Int
+
 ) {
-    constructor() : this(null, "") {
+    constructor() : this(null, java.sql.Date(-1), User(), Card(), User(), -1) {
 
     }
 }
 
 @Entity
-@Table(name = "purchases")
+@Table(name = "purchase")
 class Purchase(
     @Id
-    @Column(name = "purchase_id")
+    @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private val id: Long?,
 
-    @Column(nullable = false, length = 100)
-    private val date: String,
-
     @Column(nullable = false)
-    private val quantity: Int,
-
-    @Column(nullable = false)
-    private val price: Double,
+    private val price: BigDecimal,
 
     @OneToOne(cascade = [(CascadeType.ALL)])
-    @JoinColumn(name = "payment_id", referencedColumnName = "payment_id")
+    @JoinColumn(name = "payment_id", referencedColumnName = "id")
     private val payment: Payment? = null,
 
+    @Column(name = "purchase_date", nullable = false)
+    private val date: java.sql.Date = java.sql.Date(-1),
+
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_purchase_id")
+    @JoinColumn(name = "user_id")
     private val user_purchase: User = User()
 ) {
-    constructor() : this(null, "", 0, 0.0) {
+    constructor() : this(null, BigDecimal(0.0)) {
 
     }
 }
