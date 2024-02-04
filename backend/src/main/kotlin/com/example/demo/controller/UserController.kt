@@ -8,6 +8,8 @@ import com.example.demo.service.UserService
 import com.example.demo.service.CardService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.Pageable
+import org.springframework.data.domain.Page
+import org.springframework.data.web.PageableDefault
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
@@ -53,10 +55,16 @@ class UserController {
         return userService.getAll(pageable)
     }
 
-
+/*
     @GetMapping("cardsOwned/{id}")
     fun getCardsOwned(@PathVariable id: Long):List<Card>?{
         return userService.getCardsOwnedById(id)
+    }
+*/
+
+    @GetMapping("cardsOwned/{id}")
+    fun getCardsOwned(@PathVariable id: Long, pageable: Pageable): Page<Card>? {
+        return userService.getCardsOwnedById(id, pageable)
     }
 
     @GetMapping("progress/{id}")

@@ -1,27 +1,22 @@
 package com.example.demo.service
 
-import com.example.demo.controller.dto.CreateUserRequest
-import com.example.demo.controller.dto.UserDTO
 import com.example.demo.model.User
 import com.example.demo.model.Card
 import com.example.demo.repo.UserRepository
 import com.example.demo.repo.CardRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.Pageable
-import org.springframework.http.ResponseEntity
+import org.springframework.data.domain.Page
 import org.springframework.stereotype.Service
 import java.util.*
-import com.example.demo.service.CardService
 import org.springframework.http.HttpStatus
-import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.server.ResponseStatusException
 import java.math.BigDecimal
 import java.math.RoundingMode
-import java.util.stream.Collectors
 
 
 @Service
-class UserService (@Autowired private val userRepository: UserRepository) {
+class UserService(@Autowired private val userRepository: UserRepository, @Autowired private val cardRepository: CardRepository) {
 //    public fun findAll(): List<UserDTO> {
 //        return userRepository.findAll()
 //            .stream()
@@ -36,7 +31,7 @@ class UserService (@Autowired private val userRepository: UserRepository) {
     public fun getById(id: Long): Optional<User> {
         return userRepository.findById(id)
     }
-
+/*
     public fun getCardsOwnedById(id:Long):List<Card>?{
         val exists: Optional<User> = getById(id)
         if(exists.isPresent){
@@ -47,6 +42,22 @@ class UserService (@Autowired private val userRepository: UserRepository) {
             return null
         }
     }
+
+*/
+
+
+    public fun getCardsOwnedById(id:Long, pageable: Pageable): Page<Card>? {
+        val exists: Optional<User> = getById(id)
+        if(exists.isPresent){
+            val user:User = exists.get()
+            return cardRepository.findByOwners(user, pageable)
+        }
+        else{
+            return null
+        }
+    }
+
+
 
     public fun updateCardsOwnedList(id: Long,card:Card): User?{
         val exists: Optional<User> = getById(id)
