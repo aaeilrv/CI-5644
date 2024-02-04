@@ -78,9 +78,9 @@
 				<groupId>org.flywaydb</groupId>
 				<artifactId>flyway-maven-plugin</artifactId>
 				<configuration>
-					<url>jdbc:postgresql://localhost:5433/album</url>
-					<user>root</user>
-					<password>root</password>
+					<url>jdbc:postgresql://localhost:5432/TestHerrWeb</url>
+					<user>ci5644user</user>
+					<password>ci5644redteam</password>
 				</configuration>
 			</plugin>
 			<plugin>

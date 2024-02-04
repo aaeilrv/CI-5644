@@ -19,6 +19,8 @@ open class User (
 
     @Column(nullable = false, length = 100) private var email: String,
 
+    @Column(nullable = false,length = 50) private var password: String,
+
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -75,7 +77,7 @@ open class User (
     }
 
    
-    constructor() : this("", "", java.sql.Date(-1), "", "",null)
+    constructor() : this("", "", java.sql.Date(-1), "", "","",null)
 
     constructor(request: CreateUserRequest) : this(
         request.firstName,
@@ -83,6 +85,7 @@ open class User (
         java.sql.Date.valueOf(request.birthDay),
         request.username,
         request.emailAddress,
+        request.password,
         null
     )
 }
