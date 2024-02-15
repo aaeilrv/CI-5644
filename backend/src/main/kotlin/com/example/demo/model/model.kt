@@ -8,20 +8,25 @@ import java.math.BigDecimal
 @Entity
 @Table(name = "users")
 open class User (
-    @Column(nullable = false, length = 100) private var firstName: String,
-
-    @Column(nullable = false, length = 100) private var lastName: String,
-
-    @Column(nullable = false, length = 100) private var birthday: java.sql.Date,
-
-    @Column(nullable = false, length = 32) private var username: String,
-
-    @Column(nullable = false, length = 100) private var email: String,
-
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private val id: Long?,
+
+    @Column(nullable = false, length = 100)
+    private var firstName: String,
+
+    @Column(nullable = false, length = 100)
+    private var lastName: String,
+
+    @Column(nullable = false, length = 100)
+    private var birthday: java.sql.Date,
+
+    @Column(nullable = false, length = 32)
+    private var username: String,
+
+    @Column(nullable = false, length = 100)
+    private var email: String,
 
     @ManyToMany
     @JoinTable(
@@ -65,14 +70,14 @@ open class User (
         return this.email
     }
 
-    constructor() : this("", "", java.sql.Date(-1), "", "",null)
+    constructor() : this(null, "", "", java.sql.Date(-1), "", "")
     constructor(request: CreateUserRequest) : this(
+        null,
         request.firstName,
         request.lastName,
         java.sql.Date.valueOf(request.birthDay),
         request.username,
-        request.emailAddress,
-        null
+        request.emailAddress
     )
 }
 
