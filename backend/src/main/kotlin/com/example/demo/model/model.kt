@@ -147,26 +147,30 @@ class Exchange(
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private val id: Long?,
 
-    @Column(nullable = false, length = 100)
-    private val date: java.sql.Date,
+    @Column(name = "exchange_status", nullable = false)
+    private val status: Int, // 0: pending, 1: accepted, 2: rejected, 3: canceled, 4: completed
+
+    @Column(name = "created_at", nullable = false)
+    private val createdAt: java.sql.Date,
 
     @ManyToOne
-    @JoinColumn(name = "owner_id", nullable = false)
-    private val owner: User,
+    @JoinColumn(name = "sender_id", nullable = false)
+    private val sender: User,
 
     @ManyToOne
-    @JoinColumn(name = "card_id", nullable = false)
-    private val exchangedCard: Card,
+    @JoinColumn(name = "offered_card_id", nullable = false)
+    private val offeredCard: Card,
 
     @ManyToOne
-    @JoinColumn(name = "receiver_id", nullable = false)
-    private val receiver: User,
+    @JoinColumn(name = "requested_card_id")
+    private val requestedCard: Card?,
 
-    @Column(name = "number_of_cards_traded", nullable = false)
-    private val exchangedAmount: Int
+    @ManyToOne
+    @JoinColumn(name = "receiver_id")
+    private val receiver: User?,
 
 ) {
-    constructor() : this(null, java.sql.Date(-1), User(), Card(), User(), -1) {
+    constructor() : this(null, -1, java.sql.Date(-1), User(), Card(), null, null) {
 
     }
 }
