@@ -6,7 +6,7 @@ import { Bars3Icon } from "@heroicons/react/16/solid";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-export default function Navbar() {
+export default function NavbarInApp() {
   const [open, setOpen] = useState(false);
   const pathName = usePathname();
   console.log(pathName);
@@ -23,8 +23,8 @@ export default function Navbar() {
 
             {/*Link*/}
             <div className="hidden md:flex justify-center space-x-5 font-medium">
-              <Link href="/landing/register" className="mr-4">
-                Registro
+              <Link href="/dashboard/profile" className="mr-4">
+                Perfil
               </Link>
             </div>
 
@@ -32,10 +32,10 @@ export default function Navbar() {
             <div>
               <div className="flex justify-end">
                 <Link
-                  href="/landing"
+                  href="/api/auth/logout"
                   className="hidden md:flex font-bold text-xl"
                 >
-                  Entrar
+                  Logout
                 </Link>
               </div>
 
