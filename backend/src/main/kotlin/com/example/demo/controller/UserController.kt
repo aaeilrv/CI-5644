@@ -4,14 +4,16 @@ import com.example.demo.controller.dto.AddCardToOwnerRequest
 import com.example.demo.controller.dto.CreateUserRequest
 import com.example.demo.model.Card
 import com.example.demo.model.User
-import com.example.demo.service.UserService
 import com.example.demo.service.CardService
+import com.example.demo.service.UserService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.Pageable
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.server.ResponseStatusException
+import java.security.Principal
+
 
 @RestController
 @RequestMapping("v1/user")
@@ -84,5 +86,10 @@ class UserController {
         } else {
             throw ResponseStatusException(HttpStatus.NOT_FOUND, "Card with ${request.cardId} not found")
         }
+    }
+
+    @GetMapping("/hello-oauth")
+    fun hello(@RequestHeader("x-token") token: String): String {
+        return "Hello, " + token
     }
 }
