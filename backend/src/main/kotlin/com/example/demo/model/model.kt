@@ -2,6 +2,7 @@ package com.example.demo.model
 
 import com.example.demo.controller.dto.CreateUserRequest
 import jakarta.persistence.*
+import java.io.Serializable
 import java.math.BigDecimal
 
 
@@ -28,13 +29,8 @@ open class User (
     @Column(nullable = false, length = 100)
     private var email: String,
 
-    @ManyToMany
-    @JoinTable(
-        name = "ownership",
-        joinColumns = [JoinColumn(name = "user_id")],
-        inverseJoinColumns = [JoinColumn(name = "card_id")]
-    )
-    private val ownedCards: List<Card> = mutableListOf(),
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = [(CascadeType.ALL)])
+    private val cards: Set<UserCard> = mutableSetOf(), // El conjunto de cartas que tiene el usuario
 
     @OneToMany(mappedBy = "cardHolder", fetch = FetchType.LAZY, cascade = [(CascadeType.ALL)])
     private val userCards: List<Payment> = mutableListOf(),
@@ -98,13 +94,40 @@ class Card(
     @Column(nullable = false, length = 100)
     private val playerPosition: String,
 
-    @ManyToMany(mappedBy = "ownedCards")
-    private val owners: List<User> = mutableListOf(),
+    @OneToMany(mappedBy = "card", fetch = FetchType.LAZY, cascade = [(CascadeType.ALL)])
+    private val users: Set<UserCard> = mutableSetOf(),
 
 ) {
     constructor() : this(null, "", "", "") {
 
     }
+}
+
+@Entity
+@Table(name = "user_card")
+@IdClass(UserCardPk::class)
+class UserCard(
+    @Id
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private val user: User,
+
+    @Id
+    @ManyToOne
+    @JoinColumn(name = "card_id")
+    private val card: Card,
+
+    @Column(name = "quantity", nullable = false)
+    private val quantity: Int, // El número de cartas que tiene el usuario de tipo (card id)
+) {
+    constructor() : this(User(), Card(), 0) {
+
+    }
+}
+
+class UserCardPk : Serializable {
+    private val user: Long? = null
+    private val card: Long? = null
 }
 
 @Entity
