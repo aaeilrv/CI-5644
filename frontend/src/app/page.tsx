@@ -4,10 +4,25 @@ import FAQ from "./components/FAQ"
 import Testimonials from "./components/Testimonials"
 import Contact from "./components/Contact"
 
+const navbar_links = [
+  {
+    href: "#faq",
+    text: "FAQs",
+  },
+  {
+    href: "#testimonials",
+    text: "Testimonios",
+  },
+  {
+    href: "#contact",
+    text: "Contacto",
+  },
+];
+
 export default function Home() {
   return (
     <>
-      <Navbar/>
+      <Navbar navigation_links={navbar_links}/>
       <div id="home">
         <Landing/>
       </div>

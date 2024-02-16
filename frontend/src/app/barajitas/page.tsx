@@ -22,18 +22,13 @@ const navbar = [
   },
 ];
 
-export default function Dashboard() {
+export default function Barajitas() {
   const { user, isLoading } = useUser();
-
   if (isLoading) return <div>Loading...</div>;
 
   return (
-    <>
-      <Navbar navigation_links={navbar}/>
-      <div className="py-16 px-8">
-        Probando el sistema de routing nuevo de nextjs. Esto es el dashboard (?)
-        {user && <p>Usuario: {user.name}</p>}
-      </div>
-    </>
+    <div className="bg-[#75aadb] h-full w-full overflow-hidden">
+        owo
+    </div>
   );
 }
