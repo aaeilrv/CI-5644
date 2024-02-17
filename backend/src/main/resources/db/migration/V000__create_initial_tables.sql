@@ -11,7 +11,7 @@ CREATE TABLE IF NOT EXISTS users (
     first_name VARCHAR(100) NOT NULL,
     last_name VARCHAR(100) NOT NULL,
     email VARCHAR(100) NOT NULL,
-    password VARCHAR(100) NOT NULL,
+    password VARCHAR(100),
     birthday DATE NOT NULL,
     username VARCHAR(20) NOT NULL UNIQUE
 );
@@ -60,6 +60,5 @@ CREATE TABLE IF NOT EXISTS ownership(
     id BIGSERIAL PRIMARY KEY,
     user_id BIGINT NOT NULL REFERENCES users(id),
     card_id BIGINT NOT NULL REFERENCES card(id),
-    number_of_cards_owned INTEGER NOT NULL CHECK(number_of_cards_owned > 0),
     UNIQUE(user_id, card_id)
 );

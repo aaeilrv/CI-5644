@@ -19,7 +19,7 @@ export default function Landing() {
             <h2 className="text-4xl sm:text-5xl">conoce a otros fanáticos</h2>
           </div>
           <button className="bg-[#FCBF45] py-3 px-4 font-semibold rounded-xl w-1/8">
-            <a href="/#">Regístrate</a>
+            <a href="/landing/register">Regístrate</a>
           </button>
         </div>
       </div>
