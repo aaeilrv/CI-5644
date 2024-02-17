@@ -2,6 +2,7 @@ package com.example.demo.controller
 
 import com.example.demo.controller.dto.CreateCardRequest
 import com.example.demo.controller.dto.CardDTO
+import com.example.demo.controller.dto.UserWhoOwnsCardDTO
 import com.example.demo.model.Card
 import com.example.demo.model.User
 import com.example.demo.service.CardService
@@ -22,8 +23,8 @@ class CardController {
     lateinit var cardService: CardService
 
     @PostMapping
-    fun createCard(@RequestBody request: CreateCardRequest): ResponseEntity<Card> {
-        return ResponseEntity.ok(cardService.create(Card(request)))
+    fun createCard(@RequestBody request: CreateCardRequest): ResponseEntity<CardDTO> {
+        return ResponseEntity.ok(CardDTO(cardService.create(Card(request))))
     }
 
     @PostMapping("createMultipleCards")
@@ -34,7 +35,13 @@ class CardController {
         return "done"+request.size
     }
     @GetMapping()
-    fun getAllCard(pageable: Pageable): List<Card> {
-        return cardService.getAll(pageable)
+    fun getAllCard(pageable: Pageable): List<CardDTO> {
+        return cardService.getAll(pageable).map {CardDTO(it)}
     }
+
+    @GetMapping("ownersOfCard/{cardId}")
+    fun getCardOwners(@PathVariable cardId: Long): List<UserWhoOwnsCardDTO>? {
+        return cardService.getOwnersById(cardId)?.map {UserWhoOwnsCardDTO(it)}
+    }
+
 }

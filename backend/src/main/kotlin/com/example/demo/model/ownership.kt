@@ -15,12 +15,10 @@ class Ownership(
 
     @ManyToOne
     @JoinColumn(name = "user_id")
-    @JsonBackReference
     private val user: User,
 
     @ManyToOne
     @JoinColumn(name = "card_id")
-    @JsonBackReference
     private val card: Card,
 
     @Column(name = "number_of_cards_owned", nullable = false)

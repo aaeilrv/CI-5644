@@ -36,7 +36,6 @@ class Card(
     private var country: String,
 
     @OneToMany(mappedBy = "card", fetch = FetchType.LAZY, cascade = [(CascadeType.ALL)])
-    @JsonManagedReference
     private var users: Set<Ownership> = mutableSetOf(),
 
     ) {
@@ -56,6 +55,8 @@ class Card(
     fun getPlayerPosition(): FieldPosition = this.playerPosition
     fun getPlayerNumber(): Short = this.playerNumber
     fun getCountry(): String = this.country
+    fun getPhotoURL(): String? = this.photoURL
+    fun getUsers(): MutableList<Ownership> = this.users.toMutableList()
     fun setName(newName: String) {
         this.name = newName
     }

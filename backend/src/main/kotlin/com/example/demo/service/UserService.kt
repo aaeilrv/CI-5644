@@ -40,11 +40,11 @@ class UserService (@Autowired private val userRepository: UserRepository,
         return userRepository.findById(id)
     }
 
-    public fun getCardsOwnedById(id:Long):List<Card>?{
+    public fun getCardsOwnedById(id:Long):List<Ownership>?{
         val exists: Optional<User> = getById(id)
         if(exists.isPresent){
             val user:User = exists.get()
-            return user.getCardsOwned().map {cardOwnership -> cardOwnership.getCard()}
+            return user.getCardsOwned()
         }
         else{
             return null
@@ -52,7 +52,6 @@ class UserService (@Autowired private val userRepository: UserRepository,
     }
 
     public fun updateCardsOwnedList(id: Long, card : Card): User?{
-        println("Entrando a updateCardsOwnedList")
         val exists: Optional<User> = getById(id)
         if(exists.isPresent){
             val user: User = exists.get()

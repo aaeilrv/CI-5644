@@ -30,7 +30,6 @@ open class User (
     private var email: String,
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = [(CascadeType.ALL)])
-    @JsonManagedReference
     private var cards: Set<Ownership> = mutableSetOf(), // El conjunto de cartas que tiene el usuario
 
     @OneToMany(mappedBy = "cardHolder", fetch = FetchType.LAZY, cascade = [(CascadeType.ALL)])
