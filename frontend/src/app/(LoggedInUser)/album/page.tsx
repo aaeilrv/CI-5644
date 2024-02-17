@@ -2,6 +2,7 @@
 import { useUser } from "@auth0/nextjs-auth0/client";
 import Image from "next/image";
 import Pagination from "@/app/components/pagination";
+import Link from "next/link";
 
 const navbar = [
   {
@@ -115,9 +116,9 @@ export default function Barajitas() {
     <div>
       <div className="w-11/12 mx-auto">
         <div className="mb-10 w-full flex justify-between space-x-4 items-center">
-          <h1 className="font-bold text-xl">{country_name}</h1>
+          <h1 className="font-bold text-4xl">{country_name}</h1>
           <button className="rounded bg-indigo-500 px-2 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500">
-            <h1>¡Compra barajitas!</h1>
+            <Link href="/buy">¡Compra barajitas!</Link>
           </button>
         </div>
         <div className="grid grid-cols-5 gap-10">

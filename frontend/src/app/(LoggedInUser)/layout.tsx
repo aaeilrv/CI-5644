@@ -28,8 +28,7 @@ export default function LoggedInLayout({ children }: {
   const pathname = usePathname()
 
   const navigation = [
-    { name: 'Inicio', href: '#', icon: HomeIcon, current: pathname === '/dashboard' },
-    { name: 'Mi álbum', href: '#', icon: BookOpenIcon, current: pathname === '/album' },
+    { name: 'Mi álbum', href: '/album', icon: BookOpenIcon, current: pathname === '/album' },
     { name: 'Intercambio', href: '#', icon: ArrowPathIcon, current: pathname === '/exchange' },
     { name: 'Comprar barajitas', href: '#', icon: CreditCardIcon, current: pathname === '/buy' },
     { name: 'Perfil', href: '#', icon: UserIcon, current: pathname === '/profile' },
