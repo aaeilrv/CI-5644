@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.Pageable
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import org.springframework.security.core.Authentication
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.server.ResponseStatusException
 import java.security.Principal
@@ -48,6 +49,7 @@ class UserController {
 
     @GetMapping("/leaders")
     fun getLeaders(pageable: Pageable):List<String>{
+        println("Llega al controlador")
         val allUser = userService.getAll(pageable)
         return userService.getLeaders(allUser)
     }
@@ -89,7 +91,10 @@ class UserController {
     }
 
     @GetMapping("/hello-oauth")
-    fun hello(@RequestHeader("x-token") token: String): String {
-        return "Hello, " + token
+    fun hello(authentication: Authentication): String {
+        println("Llega al controlador")
+        println(authentication)
+        val tokenDecoded = authentication.principal
+        return "Hello, $tokenDecoded"
     }
 }
