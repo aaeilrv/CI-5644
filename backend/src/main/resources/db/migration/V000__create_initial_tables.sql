@@ -21,16 +21,17 @@ CREATE TABLE IF NOT EXISTS card(
     name VARCHAR(50) NOT NULL,
     player_position FIELD_POSITION NOT NULL,
     player_number SMALLINT NOT NULL,
-    photo VARCHAR(255) NOT NULL
+    photo_url VARCHAR(255) NOT NULL
 );
 
+--Consultar con Jonathan, aparentemente almacenar tarjetas de crédito no es buena práctica
 CREATE TABLE IF NOT EXISTS credit_card(
     id BIGSERIAL PRIMARY KEY,
     user_id BIGINT NOT NULL REFERENCES users(id),
     expiration_date DATE NOT NULL,
     card_number VARCHAR(16) NOT NULL UNIQUE,
     cardholder_name VARCHAR(20) NOT NULL,
-    bank VARCHAR(20) NOT NULL
+    bank VARCHAR(20) NOT NULL,
     card_type CREDIT_CARD_TYPE NOT NULL
 );
 
@@ -39,9 +40,7 @@ CREATE TABLE IF NOT EXISTS purchase(
     purchase_timestamp TIMESTAMP NOT NULL,
     user_id BIGINT NOT NULL REFERENCES users(id),
     packets_purchased INT NOT NULL CHECK(packets_purchased > 0),
-    base_amount NUMERIC GENERATED ALWAYS AS (packets_purchased*5) NOT NULL, --Precio hipotetico de $5 por paquete
-    tax_amount NUMERIC GENERATED ALWAYS AS (base_amount*1.12) NOT NULL, --considerando solo IVA por poner ejemplo
-    total_amount NUMERIC GENERATED ALWAYS AS (base_amount + tax_amount) NOT NULL,
+    base_amount NUMERIC GENERATED ALWAYS AS (packets_purchased*5) STORED, --Precio hipotetico de $5 por paquete
     credit_card_id BIGINT NOT NULL REFERENCES credit_card(id)
 );
 
@@ -50,10 +49,11 @@ CREATE TABLE IF NOT EXISTS exchange_request(
     requester_id BIGINT NOT NULL REFERENCES users(id),
     recipient_id BIGINT NOT NULL REFERENCES users(id),
     offered_card_id BIGINT NOT NULL REFERENCES card(id),
-    offered_card_amount INT NOT NULL CHECK(number_of_offered_card > 0),
+    offered_card_amount INT NOT NULL CHECK(offered_card_amount > 0),
     requested_card_id BIGINT NOT NULL REFERENCES card(id),
-    requested_card_amount INT NOT NULL CHECK(number_of_requested_card > 0),
-    request_status EXCHANGE_REQUEST_STATUS NOT NULL
+    requested_card_amount INT NOT NULL CHECK(requested_card_amount > 0),
+    request_status EXCHANGE_REQUEST_STATUS NOT NULL,
+    created_at TIMESTAMP NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS ownership(
