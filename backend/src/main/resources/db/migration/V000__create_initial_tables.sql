@@ -21,6 +21,7 @@ CREATE TABLE IF NOT EXISTS card(
     name VARCHAR(50) NOT NULL,
     player_position FIELD_POSITION NOT NULL,
     player_number SMALLINT NOT NULL,
+    country VARCHAR(100) NOT NULL,
     photo_url VARCHAR(255) NOT NULL
 );
 
