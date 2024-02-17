@@ -2,6 +2,7 @@ package com.example.demo.controller
 
 import com.example.demo.controller.dto.CreateCardRequest
 import com.example.demo.controller.dto.CardDTO
+import com.example.demo.controller.dto.UserDTO
 import com.example.demo.controller.dto.UserWhoOwnsCardDTO
 import com.example.demo.model.Card
 import com.example.demo.model.User
@@ -37,6 +38,16 @@ class CardController {
     @GetMapping()
     fun getAllCard(pageable: Pageable): List<CardDTO> {
         return cardService.getAll(pageable).map {CardDTO(it)}
+    }
+
+    @GetMapping("/{id}")
+    fun getUserById(@PathVariable id: Long): ResponseEntity<CardDTO> {
+        val cardOpt = cardService.getById(id)
+        if (cardOpt.isPresent) {
+            return ResponseEntity.ok(CardDTO(cardOpt.get()))
+        } else {
+            throw ResponseStatusException(HttpStatus.NOT_FOUND, "User with $id not found")
+        }
     }
 
     @GetMapping("ownersOfCard/{cardId}")
