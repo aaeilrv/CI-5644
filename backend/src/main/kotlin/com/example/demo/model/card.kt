@@ -2,9 +2,13 @@ package com.example.demo.model
 
 import jakarta.persistence.*
 import com.example.demo.controller.dto.CreateCardRequest
+import com.fasterxml.jackson.annotation.JsonBackReference
+import com.fasterxml.jackson.annotation.JsonManagedReference
+import org.hibernate.annotations.Type
+import org.hibernate.dialect.PostgreSQLEnumJdbcType
 
 public enum class FieldPosition {
-    GOALKEEPER, MIDFIELD, DEFENSE, FORWARD
+    GOALKEEPER, MIDFIELDER, DEFENDER, FORWARD
 }
 
 @Entity
@@ -24,7 +28,7 @@ class Card(
     @Column(name = "photo_url", nullable = true)
     private var photoURL: String?,
 
-    @Column(name= "player_position", nullable = false, columnDefinition = "field_position")
+    @Column(name= "player_position", nullable = false, columnDefinition = "varchar")
     @Enumerated(EnumType.STRING)
     private var playerPosition: FieldPosition,
 
@@ -32,17 +36,18 @@ class Card(
     private var country: String,
 
     @OneToMany(mappedBy = "card", fetch = FetchType.LAZY, cascade = [(CascadeType.ALL)])
+    @JsonManagedReference
     private var users: Set<Ownership> = mutableSetOf(),
 
     ) {
-    constructor() : this(null, "", -1, "", FieldPosition.MIDFIELD, "")
+    constructor() : this(null, "", -1, "", FieldPosition.MIDFIELDER, "")
 
     constructor(request: CreateCardRequest): this(
         null,
         request.name,
         request.playerNumber,
         request.photoURL,
-        request.playerPosition,
+        FieldPosition.valueOf(request.playerPosition.uppercase()),
         request.country
     )
 

@@ -1,6 +1,8 @@
 package com.example.demo.model
 
 import com.example.demo.controller.dto.CreateUserRequest
+import com.fasterxml.jackson.annotation.JsonBackReference
+import com.fasterxml.jackson.annotation.JsonManagedReference
 import jakarta.persistence.*
 
 
@@ -28,13 +30,14 @@ open class User (
     private var email: String,
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = [(CascadeType.ALL)])
-    private val cards: Set<Ownership> = mutableSetOf(), // El conjunto de cartas que tiene el usuario
+    @JsonManagedReference
+    private var cards: Set<Ownership> = mutableSetOf(), // El conjunto de cartas que tiene el usuario
 
     @OneToMany(mappedBy = "cardHolder", fetch = FetchType.LAZY, cascade = [(CascadeType.ALL)])
-    private val userCreditCards: List<CreditCard> = mutableListOf(),
+    private var userCreditCards: List<CreditCard> = mutableListOf(),
 
     @OneToMany(mappedBy = "purchasingUser", fetch = FetchType.LAZY, cascade = [(CascadeType.ALL)])
-    private val userPurchases: List<Purchase> = mutableListOf()
+    private var userPurchases: List<Purchase> = mutableListOf()
 ) {
     open fun getId(): Long {
         return this.id!!
@@ -49,7 +52,7 @@ open class User (
     }
 
     open fun getFullName(): String {
-        return (this.firstName + " " + this.lastName)
+        return ("${this.firstName} ${this.lastName}")
     }
 
     open fun getBirthDay(): java.sql.Date {
@@ -63,6 +66,8 @@ open class User (
     open fun getEmailAddress(): String {
         return this.email
     }
+
+    open fun getCardsOwned(): MutableList<Ownership> = this.cards.toMutableList()
 
     constructor() : this(null, "", "", java.sql.Date(-1), "", "")
     constructor(request: CreateUserRequest) : this(

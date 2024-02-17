@@ -1,9 +1,12 @@
-CREATE TYPE EXCHANGE_REQUEST_STATUS AS ENUM ('pending', 'accepted', 'rejected');
-CREATE TYPE CREDIT_CARD_TYPE AS ENUM ('visa', 'mastercard');
-CREATE TYPE FIELD_POSITION AS ENUM ('goalkeeper',
-                                    'midfield',
-                                    'defense',
-                                    'forward');
+CREATE TYPE EXCHANGE_REQUEST_STATUS AS ENUM ('PENDING', 'ACCEPTED', 'REJECTED');
+CREATE TYPE CREDIT_CARD_TYPE AS ENUM ('VISA', 'MASTERCARD');
+CREATE TYPE FIELD_POSITION AS ENUM ('GOALKEEPER',
+                                    'MIDFIELDER',
+                                    'DEFENDER',
+                                    'FORWARD');
+CREATE CAST (VARCHAR AS FIELD_POSITION) WITH INOUT AS IMPLICIT;
+CREATE CAST (VARCHAR AS EXCHANGE_REQUEST_STATUS) WITH INOUT AS IMPLICIT;
+CREATE CAST (VARCHAR AS CREDIT_CARD_TYPE) WITH INOUT AS IMPLICIT;
 
 
 CREATE TABLE IF NOT EXISTS users (
@@ -22,7 +25,7 @@ CREATE TABLE IF NOT EXISTS card(
     player_position FIELD_POSITION NOT NULL,
     player_number SMALLINT NOT NULL,
     country VARCHAR(100) NOT NULL,
-    photo_url VARCHAR(255) NOT NULL
+    photo_url VARCHAR(255)
 );
 
 --Consultar con Jonathan, aparentemente almacenar tarjetas de crédito no es buena práctica
@@ -61,5 +64,6 @@ CREATE TABLE IF NOT EXISTS ownership(
     id BIGSERIAL PRIMARY KEY,
     user_id BIGINT NOT NULL REFERENCES users(id),
     card_id BIGINT NOT NULL REFERENCES card(id),
+    number_of_cards_owned INT NOT NULL,
     UNIQUE(user_id, card_id)
 );

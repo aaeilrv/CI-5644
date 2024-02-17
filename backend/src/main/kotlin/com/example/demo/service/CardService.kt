@@ -26,15 +26,7 @@ class CardService(@Autowired private val cardRepository: CardRepository) {
 
     public fun getAll(pageable: Pageable): List<Card> {
         val cardEntities = cardRepository.findAll(pageable)
-        val cards = cardEntities.map { cardEntity ->
-            Card(
-                id = cardEntity.getId(),
-                name = cardEntity.getName(),
-                playerPosition = cardEntity.getPlayerPosition(),
-                playerNumber = cardEntity.getPlayerNumber(),
-                country = cardEntity.getCountry()
-            )
-        }
+        val cards = cardEntities.map { it }
         return cards.content
     }
     public fun changeName(id:Long, name:String): Card?{

@@ -5,7 +5,7 @@ import com.example.demo.model.FieldPosition
 data class CreateCardRequest (
     val name: String,
     val playerNumber: Short,
-    val playerPosition: FieldPosition,
+    val playerPosition: String,
     val photoURL: String?,
     val country:String
 )
