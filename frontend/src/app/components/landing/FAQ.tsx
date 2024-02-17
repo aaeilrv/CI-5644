@@ -1,6 +1,6 @@
 "use client";
 import Image from "next/image";
-import { useState } from "react"
+import { SetStateAction, useState } from "react"
 
 const faq_data = [
   {
@@ -29,7 +29,7 @@ const faq_data = [
 export default function FAQ() {
   const [selected, setSelected] = useState(null)
 
-  const toggle = (index) => {
+  const toggle = (index: number | SetStateAction<null>) => {
     if(selected == index){
       return setSelected(null)
     }

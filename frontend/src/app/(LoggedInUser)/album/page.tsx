@@ -1,10 +1,7 @@
 "use client";
 import { useUser } from "@auth0/nextjs-auth0/client";
-import Link from "next/link";
-import Navbar from "../components/Navbar";
 import Image from "next/image";
-import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/16/solid";
-import { AdjustmentsHorizontalIcon } from "@heroicons/react/20/solid";
+import Pagination from "@/app/components/pagination";
 
 const navbar = [
   {
@@ -111,37 +108,27 @@ const barajitas_temporal = [
 export default function Barajitas() {
   const { user, isLoading } = useUser();
   if (isLoading) return <div>Loading...</div>;
+  const country_name = "Argentina";
 
   return (
   <>
-    <Navbar navigation_links={navbar} />
-    <div className='w-full h-full flex flex-col items-center justify-center bg-gradient-to-b from-[#75aadb] to-[#4b749c]'>
-      <div className="py-10 mt-14 w-full px-10 flex justify-between space-x-4 items-center">
-        <button className="flex text-white space-x-2 ml-20">
-          <AdjustmentsHorizontalIcon className="w-6 h-6 text-white"/>
-          <p className="font-semibold">Filtrar</p>
+    <div>
+      <div className="w-11/12 mx-auto">
+        <div className="mb-10 w-full flex justify-between space-x-4 items-center">
+          <h1 className="font-bold text-xl">{country_name}</h1>
+          <button className="rounded bg-indigo-500 px-2 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500">
+            <h1>¡Compra barajitas!</h1>
           </button>
-        <Link href="/compra" className="bg-[#FCBF45] py-3 px-4 font-semibold rounded-xl mr-4 mt-4">¡Compra barajitas!</Link>
-      </div>
-
-      {/* Barajitas */}
-      <div className="w-11/12">
-        <div className="w-11/12 mx-auto">
-          <div className="grid grid-cols-5 gap-10">
-            {barajitas_temporal.map((barajita, index) => (
-              <div className="rounded-lg bg-white p-2 drop-shadow-md hover:bg-slate-300" key={index}>
-                <Image src={barajita.photo} alt={barajita.name} className="w-full" width={1080} height={1080} />
-              </div>
-            ))}
-          </div>
+        </div>
+        <div className="grid grid-cols-5 gap-10">
+          {barajitas_temporal.map((barajita, index) => (
+            <div className="rounded-lg bg-white p-2 drop-shadow-md hover:bg-slate-300" key={index}>
+              <Image src={barajita.photo} alt={barajita.name} className="w-full" width={1080} height={1080} />
+            </div>
+          ))}
         </div>
       </div>
-
-      {/* Pagination */}
-      <div className="mb-4 mt-4 space-x-10">
-        <button><ChevronLeftIcon className="w-10 h-10 text-white" /></button>
-        <button><ChevronRightIcon className="w-10 h-10 text-white" /></button>
-      </div>
+      <Pagination/>
     </div>
   </>
   );

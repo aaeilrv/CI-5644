@@ -1,7 +1,6 @@
 "use client";
 import { useUser } from "@auth0/nextjs-auth0/client";
-import Link from "next/link";
-import Navbar from "../components/Navbar";
+import Navbar from "../../components/Navbar";
 
 const navbar = [
   {
