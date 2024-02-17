@@ -26,6 +26,7 @@ class Ownership(
 ) {
     constructor() : this(null, User(), Card(), 0)
 
+    fun getId(): Long? = this.id
     fun getCard(): Card = this.card
     fun getUser(): User = this.user
     fun getNumberOwned(): Int = this.numberOwned
