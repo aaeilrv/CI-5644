@@ -3,6 +3,10 @@ import { useUser } from "@auth0/nextjs-auth0/client";
 import Image from "next/image";
 import Pagination from "@/app/components/pagination";
 import Link from "next/link";
+import localfont from '@next/font/local';
+import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/outline";
+
+const ProtestRiot = localfont({ src: '../../../assets/fonts/ProtestRiot-Regular.ttf'});
 
 const navbar = [
   {
@@ -114,22 +118,29 @@ export default function Barajitas() {
   return (
   <>
     <div>
-      <div className="w-11/12 mx-auto">
+      <div className="w-full mx-auto">
         <div className="mb-10 w-full flex justify-between space-x-4 items-center">
-          <h1 className="font-bold text-4xl">{country_name}</h1>
+          <h1 className={`text-5xl text-white ${ProtestRiot.className}`}>{country_name}</h1>
           <button className="rounded bg-indigo-500 px-2 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500">
             <Link href="/buy">¡Compra barajitas!</Link>
           </button>
         </div>
-        <div className="grid grid-cols-5 gap-10">
-          {barajitas_temporal.map((barajita, index) => (
-            <div className="rounded-lg bg-white p-2 drop-shadow-md hover:bg-slate-300" key={index}>
-              <Image src={barajita.photo} alt={barajita.name} className="w-full" width={1080} height={1080} />
-            </div>
-          ))}
+        <div className="flex justify-between items-center space-x-4">
+          <button>
+            <ChevronLeftIcon className="h-6 w-6 text-white hover:text-gray-200" />
+          </button>
+          <div className="grid grid-cols-5 gap-10">
+            {barajitas_temporal.map((barajita, index) => (
+              <div className="rounded-lg bg-white p-2 drop-shadow-md hover:bg-slate-300" key={index}>
+                <Image src={barajita.photo} alt={barajita.name} className="w-full" width={1080} height={1080} />
+              </div>
+            ))}
+          </div>
+          <button>
+            <ChevronRightIcon className="h-6 w-6 text-white hover:text-gray-200" />
+          </button>
         </div>
       </div>
-      <Pagination/>
     </div>
   </>
   );

@@ -2,6 +2,11 @@
 @tailwind components;
 @tailwind utilities;
 
+body {
+    @apply bg-gradient-to-l from-[#81bbe6] to-[#ab9ee6] ;
+    
+}
+
 @layer base {
     html {
         font-family: "Montserrat", system-ui, sans-serif;

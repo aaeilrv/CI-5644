@@ -2,7 +2,7 @@
 import '../../styles/globals.css'
 import React, { ReactNode } from 'react';
 import Link from 'next/link';
-import { UserProvider } from '@auth0/nextjs-auth0/client';
+import { UserProvider, useUser } from '@auth0/nextjs-auth0/client';
 import { Fragment, useState } from 'react'
 import { Dialog, Transition } from '@headlessui/react'
 import { usePathname } from 'next/navigation';
@@ -26,13 +26,14 @@ export default function LoggedInLayout({ children }: {
 }) {
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const pathname = usePathname()
+  const { user, isLoading} = useUser();
 
   const navigation = [
     { name: 'Mi álbum', href: '/album', icon: BookOpenIcon, current: pathname === '/album' },
-    { name: 'Intercambio', href: '#', icon: ArrowPathIcon, current: pathname === '/exchange' },
+    { name: 'Intercambio', href: '/exchange', icon: ArrowPathIcon, current: pathname === '/exchange' },
     { name: 'Comprar barajitas', href: '#', icon: CreditCardIcon, current: pathname === '/buy' },
-    { name: 'Perfil', href: '#', icon: UserIcon, current: pathname === '/profile' },
-    { name: 'Cerrar Sesión', href: '#', icon: ArrowLeftStartOnRectangleIcon, current: false },
+    { name: 'Perfil', href: '/profile', icon: UserIcon, current: pathname === '/profile' },
+    { name: 'Cerrar Sesión', href: '/api/auth/logout', icon: ArrowLeftStartOnRectangleIcon, current: false },
   ]
 
   return (
@@ -80,7 +81,7 @@ export default function LoggedInLayout({ children }: {
                   </Transition.Child>
 
                   {/* Sidebar mobile */}
-                  <div className="flex grow flex-col gap-y-5 overflow-y-auto bg-white px-6 pb-2">
+                  <div className="flex grow flex-col gap-y-5 overflow-y-auto border-[#c7d3e1] bg-[#d6dfea] px-6 pb-2">
                     <div className="flex h-16 shrink-0 items-center">
                       <Link href="/" className="flex">
                         <BookOpenIcon className="w-8" />
@@ -104,7 +105,7 @@ export default function LoggedInLayout({ children }: {
                                 >
                                   <item.icon
                                     className={classNames(
-                                      item.current ? 'text-indigo-600' : 'text-gray-400 group-hover:text-indigo-600',
+                                      item.current ? 'text-indigo-600' : 'text-gray-700 group-hover:text-indigo-600',
                                       'h-6 w-6 shrink-0'
                                     )}
                                     aria-hidden="true"
@@ -126,13 +127,18 @@ export default function LoggedInLayout({ children }: {
 
         {/* Sidebar desktop */}
         <div className="hidden lg:fixed lg:inset-y-0 lg:z-50 lg:flex lg:w-72 lg:flex-col">
-          <div className="flex grow flex-col gap-y-5 overflow-y-auto border-r border-gray-200 bg-white px-6">
+          <div className="flex grow flex-col gap-y-5 overflow-y-auto border-r border-[#c7d3e1] bg-[#d6dfea] px-6">
             <div className="flex h-16 shrink-0 items-center">
               <Link href="/" className="flex">
                 <BookOpenIcon className="w-8" />
                 <div className="font-bold text-2xl">Barajitas</div>
               </Link>
             </div>
+            
+            <div className='w-full flex justify-center'>
+              <h1 className='font-bold text-2xl'>¡Hola, {user?.name}!</h1>
+            </div>
+
             <nav className="flex flex-1 flex-col">
               <ul role="list" className="flex flex-1 flex-col gap-y-7">
                 <li>
@@ -150,7 +156,7 @@ export default function LoggedInLayout({ children }: {
                         >
                           <item.icon
                             className={classNames(
-                              item.current ? 'text-indigo-600' : 'text-gray-400 group-hover:text-indigo-600',
+                              item.current ? 'text-indigo-600' : 'text-gray-700 group-hover:text-indigo-600',
                               'h-6 w-6 shrink-0'
                             )}
                             aria-hidden="true"
@@ -166,7 +172,7 @@ export default function LoggedInLayout({ children }: {
           </div>
         </div>
 
-        <div className="sticky top-0 z-40 flex items-center gap-x-6 bg-white px-4 py-4 shadow-sm sm:px-6 lg:hidden">
+        <div className="sticky top-0 z-40 flex items-center gap-x-6 border-[#c7d3e1] bg-[#d6dfea] px-4 py-4 shadow-sm sm:px-6 lg:hidden">
           <button type="button" className="-m-2.5 p-2.5 text-gray-700 lg:hidden" onClick={() => setSidebarOpen(true)}>
             <Bars3Icon className="h-6 w-6" aria-hidden="true" />
           </button>

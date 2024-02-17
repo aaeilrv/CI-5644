@@ -45,21 +45,21 @@ const Navbar: React.FC<NavbarProps> = ({ navigation_links }) => {
               {
                 user ? (
                   <div className="flex justify-end">
-                    <Link
+                    <a
                       href="/api/auth/logout"
                       className="hidden md:flex font-bold text-xl"
                     >
                       Logout
-                    </Link>
+                    </a>
                   </div>
                 ) : (
                   <div className="flex justify-end">
-                    <Link
+                    <a
                       href="/api/auth/login"
                       className="hidden md:flex font-bold text-xl"
                     >
                       Login
-                    </Link>
+                    </a>
                   </div>
                 )
               }
@@ -86,19 +86,19 @@ const Navbar: React.FC<NavbarProps> = ({ navigation_links }) => {
               ))
             }
             {user ? (
-              <Link
+              <a
                 href="/api/auth/logout"
                 className="block py-2 font-bold text-xl px-4 rounded-xl hover:bg-white hover:bg-opacity-50"
                 >
                 Logout
-              </Link>
+              </a>
             ) : (
-              <Link
+              <a
                 href="/landing"
                 className="block py-2 font-bold text-xl px-4 rounded-xl hover:bg-white hover:bg-opacity-50"
               >
                 Entrar
-              </Link>
+              </a>
             )}
           </div>
         </div>
