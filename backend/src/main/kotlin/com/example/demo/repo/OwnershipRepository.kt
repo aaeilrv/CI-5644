@@ -17,5 +17,5 @@ interface OwnershipRepository: JpaRepository<Ownership, Long> {
 
 @Repository
 interface OwnershipRepository: JpaRepository<Ownership, Long> {
-    fun findByUserOrderByCard_Country(user: User, pageable: Pageable): Page<Ownership>
+    fun findByUserOrderByCardCountry(user: User, pageable: Pageable): Page<Ownership>
 }

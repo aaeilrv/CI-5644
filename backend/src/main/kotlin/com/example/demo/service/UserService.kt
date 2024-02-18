@@ -47,7 +47,7 @@ class UserService (@Autowired private val userRepository: UserRepository,
         if(exists.isPresent) {
             val user: User = exists.get()
             //return ownershipRepository.findByUser(user, pageable)
-            return ownershipRepository.findByUserOrderByCard_Country(user, pageable)
+            return ownershipRepository.findByUserOrderByCardCountry(user, pageable)
         }
         else{
             return null
