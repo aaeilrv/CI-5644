@@ -6,8 +6,16 @@ import org.springframework.stereotype.Repository
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import com.example.demo.model.User
-
+import org.springframework.data.domain.Sort
+/*
 @Repository
 interface OwnershipRepository: JpaRepository<Ownership, Long> {
     public fun findByUser(user: User, pageable: Pageable): Page<Ownership>
+}
+
+ */
+
+@Repository
+interface OwnershipRepository: JpaRepository<Ownership, Long> {
+    fun findByUserOrderByCard_Country(user: User, pageable: Pageable): Page<Ownership>
 }

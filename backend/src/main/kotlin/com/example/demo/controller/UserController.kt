@@ -64,6 +64,12 @@ class UserController {
         return userService.getCardsOwnedById(id, pageable)?.map {ownership -> CardOwnedByUserDTO(ownership)}
     }
 
+    /*
+    @GetMapping("cardsOwned/{id}")
+    fun getCardsOwned(@PathVariable id: Long, pageable: Pageable): Page<Card>? {
+        return userService.getCardsOwnedById(id, pageable)
+    }
+*/
     @GetMapping("progress/{id}")
     fun progress(@PathVariable id: Long):String{
         return userService.getProgress(id)

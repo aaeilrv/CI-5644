@@ -7,20 +7,23 @@ data class CardOwnedByUserDTO(
     private val playerName: String,
     private val playerPosition: String,
     private val playerNumber: Short,
-    private val numberOwned: Int
+    private val numberOwned: Int,
+    private val country: String
 ) {
     fun getCardId(): Long = this.cardId
     fun getPlayerName(): String = this.playerName
     fun getPlayerPosition(): String = this.playerPosition
     fun getPlayerNumber(): Short = this.playerNumber
     fun getNumberOwned(): Int = this.numberOwned
+    fun getCountry(): String = this.country
 
     constructor(ownershipObject: Ownership): this(
         ownershipObject.getCard().getId(),
         ownershipObject.getCard().getName(),
         ownershipObject.getCard().getPlayerPosition().toString(),
         ownershipObject.getCard().getPlayerNumber(),
-        ownershipObject.getNumberOwned()
+        ownershipObject.getNumberOwned(),
+        ownershipObject.getCard().getCountry()
     )
 }
 
