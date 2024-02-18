@@ -9,6 +9,7 @@ import com.example.demo.model.User
 import com.example.demo.service.UserService
 import com.example.demo.service.CardService
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -59,8 +60,8 @@ class UserController {
 
 
     @GetMapping("cardsOwned/{id}")
-    fun getCardsOwned(@PathVariable id: Long):List<CardOwnedByUserDTO>?{
-        return userService.getCardsOwnedById(id)?.map {ownership -> CardOwnedByUserDTO(ownership)}
+    fun getCardsOwned(@PathVariable id: Long, pageable: Pageable): Page<CardOwnedByUserDTO>?{
+        return userService.getCardsOwnedById(id, pageable)?.map {ownership -> CardOwnedByUserDTO(ownership)}
     }
 
     @GetMapping("progress/{id}")

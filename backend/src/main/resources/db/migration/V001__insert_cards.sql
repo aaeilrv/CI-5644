@@ -1,4 +1,4 @@
-INSERT INTO card (name, player_position, player_number, country, photo_url) VALUES 
+INSERT INTO card (name, player_position, player_number, country, photo_url) VALUES
 ('Lionel Messi', 'FORWARD', 10, 'Argentina', 'URL_to_Player_Photo'),
 ('Cristiano Ronaldo', 'FORWARD', 7, 'Portugal', 'URL_to_Player_Photo'),
 ('Neymar Jr', 'FORWARD', 10, 'Brazil', 'URL_to_Player_Photo'),

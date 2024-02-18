@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Service
 import java.util.*
 import com.example.demo.service.CardService
+import org.springframework.data.domain.Page
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.server.ResponseStatusException
@@ -40,11 +41,11 @@ class UserService (@Autowired private val userRepository: UserRepository,
         return userRepository.findById(id)
     }
 
-    public fun getCardsOwnedById(id:Long):List<Ownership>?{
+    public fun getCardsOwnedById(id:Long, pageable: Pageable): Page<Ownership>?{
         val exists: Optional<User> = getById(id)
-        if(exists.isPresent){
-            val user:User = exists.get()
-            return user.getCardsOwned()
+        if(exists.isPresent) {
+            val user: User = exists.get()
+            return ownershipRepository.findByUser(user, pageable)
         }
         else{
             return null
