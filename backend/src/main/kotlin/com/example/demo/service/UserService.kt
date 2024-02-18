@@ -93,17 +93,17 @@ class UserService (@Autowired private val userRepository: UserRepository,
             throw ResponseStatusException(HttpStatus.NOT_FOUND, "User with $id not found")
         }
     }
-    fun getLeaders(allUser: List<User>):MutableList<String> {
-        val listLeaders:MutableList<Pair<String,String>> = mutableListOf()
+  fun getLeaders(allUser: List<User>):MutableList<String> {
+        val listLeaders:MutableList<Pair<User,String>> = mutableListOf()
         var counter = 1
         for (user: User in allUser) {
-            listLeaders.add(user.getUsername() to getProgress(user.getId()))
+            listLeaders.add(user to getProgress(user.getId()))
         }
         listLeaders.sortBy { it.second }
         listLeaders.reverse()
         val listLeadersForPrinting: MutableList<String> = mutableListOf()
-        for (leaders: Pair<String, String> in listLeaders) {
-            listLeadersForPrinting.add("${counter}. ${leaders.first}")
+        for (leaders: Pair<User, String> in listLeaders) {
+            listLeadersForPrinting.add("${counter}. ${leaders.first.getUsername()} ${leaders.first.getCardsOwned().size} barajitas")
             counter += 1
         }
         return listLeadersForPrinting
