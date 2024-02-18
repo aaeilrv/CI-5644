@@ -5,7 +5,9 @@ import com.example.demo.controller.dto.UserDTO
 import com.example.demo.model.User
 import com.example.demo.model.Card
 import com.example.demo.repo.UserRepository
+import com.example.demo.model.Ownership
 import com.example.demo.repo.CardRepository
+import com.example.demo.repo.OwnershipRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.Pageable
 import org.springframework.http.ResponseEntity
@@ -21,7 +23,8 @@ import java.util.stream.Collectors
 
 
 @Service
-class UserService (@Autowired private val userRepository: UserRepository) {
+class UserService (@Autowired private val userRepository: UserRepository,
+                   @Autowired private val ownershipRepository: OwnershipRepository) {
 //    public fun findAll(): List<UserDTO> {
 //        return userRepository.findAll()
 //            .stream()
@@ -37,7 +40,7 @@ class UserService (@Autowired private val userRepository: UserRepository) {
         return userRepository.findById(id)
     }
 
-    public fun getCardsOwnedById(id:Long):List<Card>?{
+    public fun getCardsOwnedById(id:Long):List<Ownership>?{
         val exists: Optional<User> = getById(id)
         if(exists.isPresent){
             val user:User = exists.get()
@@ -48,13 +51,26 @@ class UserService (@Autowired private val userRepository: UserRepository) {
         }
     }
 
-    public fun updateCardsOwnedList(id: Long,card:Card): User?{
+    public fun updateCardsOwnedList(id: Long, card : Card): User?{
         val exists: Optional<User> = getById(id)
         if(exists.isPresent){
-            val oldUser:User = exists.get()
-            oldUser.getCardsOwned().add(card)
-            val newUser:User = userRepository.save(oldUser)
-            return create(newUser)
+            val user: User = exists.get()
+            //See if user already owns card
+            val ownershipValue: Ownership? = user.getCardsOwned().firstOrNull {it.getCard().getId() == card.getId()}
+            if (ownershipValue == null) {
+                val newOwnershipValue = Ownership(
+                    null,
+                    user,
+                    card,
+                    1
+                )
+                user.getCardsOwned().add(newOwnershipValue)
+                ownershipRepository.save(newOwnershipValue)
+            } else {
+                ownershipValue.setNumberOwned(ownershipValue.getNumberOwned() + 1)
+                ownershipRepository.save(ownershipValue)
+            }
+            return userRepository.save(user)
         }
         return null
     }
