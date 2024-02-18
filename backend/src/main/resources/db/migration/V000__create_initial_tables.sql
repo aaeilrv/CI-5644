@@ -8,7 +8,14 @@ CREATE CAST (VARCHAR AS FIELD_POSITION) WITH INOUT AS IMPLICIT;
 CREATE CAST (VARCHAR AS EXCHANGE_REQUEST_STATUS) WITH INOUT AS IMPLICIT;
 CREATE CAST (VARCHAR AS CREDIT_CARD_TYPE) WITH INOUT AS IMPLICIT;
 
-CREATE INDEX IF NOT EXISTS idx_card_country ON card(country);
+CREATE INDEX IF NOT EXISTS idx_user_id_username ON users(id, username);
+CREATE INDEX IF NOT EXISTS idx_exchange_owner_id_receiver_id ON exchange_request(recipient_id, requester_id);
+CREATE INDEX IF NOT EXISTS idx_exchange_request_status ON exchange_request(request_status);
+CREATE INDEX IF NOT EXISTS idx_ownership_user_id_card_id ON ownership(user_id, card_id);
+CREATE INDEX IF NOT EXISTS idx_purchase_user_id_credit_card_id ON purchase(user_id,credit_card_id);
+CREATE INDEX IF NOT EXISTS idx_payment_information_user_id ON credit_card(user_id);
+CREATE INDEX IF NOT EXISTS idx_card_id_country ON card(id,country);
+
 
 
 CREATE TABLE IF NOT EXISTS users (
