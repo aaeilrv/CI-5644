@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import localfont from '@next/font/local';
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/outline";
+import Button from "@/app/components/Button";
 
 const ProtestRiot = localfont({ src: '../../../assets/fonts/ProtestRiot-Regular.ttf'});
 
@@ -57,7 +58,7 @@ const barajitas_temporal = [
     player_number: 22,
     country: "Argentina",
     player_position: "Delantero",
-    photo: "https://i.pinimg.com/564x/4c/66/cd/4c66cd446bb0776d0c77a4c9e1cfc226.jpg"
+    photo: "/static/images/emptycard.png"
   },
   {
     id: 4,
@@ -81,7 +82,7 @@ const barajitas_temporal = [
     player_number: 22,
     country: "Argentina",
     player_position: "Delantero",
-    photo: "https://i.pinimg.com/564x/f5/dc/f2/f5dcf27a4d99b060d3f6219f1cdeeef2.jpg"
+    photo: "/static/images/emptycard.png"
   },
   {
     id: 7,
@@ -120,9 +121,7 @@ export default function Barajitas() {
       <div className="w-full mx-auto">
         <div className="mb-10 w-full flex justify-between space-x-4 items-center">
           <h1 className={`text-5xl text-white ${ProtestRiot.className}`}>{country_name}</h1>
-          <button className="rounded bg-indigo-500 px-2 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500">
-            <Link href="/buy">¡Compra barajitas!</Link>
-          </button>
+          <Button link="/buy" text="¡Compra barajitas!" />
         </div>
         <div className="flex justify-between items-center space-x-4">
           <button>

@@ -29,7 +29,7 @@ export default function Collection() {
   
   return (
     <div className="flex justify-center">
-      <div className="space-y-4 w-9/12 justify-center">
+      <div className="space-y-4 w-9/12 justify-center mb-10">
         <h1 className="text-2xl font-bold mb-10 mt-10">Barajitas disponibles:</h1>
         <div className="grid grid-cols-5 gap-10">
           {!loading && cards.map((barajita, index) => (

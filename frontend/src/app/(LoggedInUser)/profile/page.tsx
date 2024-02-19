@@ -8,10 +8,9 @@ export default function Profile() {
 
   return (
 
-    <div className="flex font-sans">
-      <div className="flex w-full h-full rounded-lg bg-[#d6dfea] p-4 drop-shadow-md">
-        <div className="bg-white p-2 rounded-lg w-1/4">
-          <Image src="https://pbs.twimg.com/media/GGiSlEFbUAAsh7p?format=jpg&name=900x900" alt="" width={1080} height={1080} loading="lazy" />
+    <div className="flex w-full h-full rounded-lg bg-[#d6dfea] p-4 drop-shadow-md">
+        <div className="bg-white p-2 rounded-lg w-48">
+          <Image src="https://i.pinimg.com/564x/4b/9b/14/4b9b1469f4246f41384258c827d1d445.jpg" alt="" width={1080} height={1080} loading="lazy" />
         </div>
         <div className="p-4 space-y-10">
           <div className="flex flex-wrap">
@@ -34,7 +33,6 @@ export default function Profile() {
           </div>
         </div>
       </div>
-    </div>
     
   );
 }

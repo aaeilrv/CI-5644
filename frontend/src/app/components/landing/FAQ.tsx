@@ -63,13 +63,13 @@ export default function FAQ() {
       <div className="hidden md:flex">
         <div className="relative">
           <div className="absolute p-2 bg-white rounded-lg shadow z-50">
-            <Image src="/static/images/cristiano_barajita.png" width={200} height={40} alt={"Cristiano"}/>
+            <Image src="/static/images/cards/Cristiano Ronaldo.jpeg" width={200} height={40} alt={"Cristiano"}/>
           </div>
           <div className="absolute top-0 left-0 bg-white rounded-lg p-2 ml-16 z-40" style={{ transform: 'rotate(20deg)' }}>
-            <Image src="/static/images/messi_barajita.png" width={200} height={40} alt={"Messi"}/>
+            <Image src="/static/images/cards/Lionel Messi.jpeg" width={200} height={40} alt={"Messi"}/>
           </div>
           <div className="top-0 left-0 bg-white rounded-lg p-2 ml-24 z-30" style={{ transform: 'rotate(45deg)' }}>
-            <Image src="/static/images/mbappe_barajita.png" width={200} height={40} alt={"Mbappe"}/>
+            <Image src="/static/images/cards/Kylian Mbappé.jpeg" width={200} height={40} alt={"Mbappe"}/>
           </div>
         </div>
       </div>
