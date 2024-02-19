@@ -1,9 +1,6 @@
 package com.example.demo.controller
 
-import com.example.demo.controller.dto.AddCardToOwnerRequest
-import com.example.demo.controller.dto.CardOwnedByUserDTO
-import com.example.demo.controller.dto.CreateUserRequest
-import com.example.demo.controller.dto.UserDTO
+import com.example.demo.controller.dto.*
 import com.example.demo.model.Card
 import com.example.demo.model.User
 import com.example.demo.service.UserService
@@ -48,7 +45,7 @@ class UserController {
     }
 
     @GetMapping("/leaders")
-    fun getLeaders(pageable: Pageable):List<String>{
+    fun getLeaders(pageable: Pageable):List<LeaderboardResponse> {
         val allUser = userService.getAll(pageable)
         return userService.getLeaders(allUser)
     }

@@ -1,6 +1,7 @@
 package com.example.demo.service
 
 import com.example.demo.controller.dto.CreateUserRequest
+import com.example.demo.controller.dto.LeaderboardResponse
 import com.example.demo.controller.dto.UserDTO
 import com.example.demo.model.User
 import com.example.demo.model.Card
@@ -95,17 +96,23 @@ class UserService (@Autowired private val userRepository: UserRepository,
             throw ResponseStatusException(HttpStatus.NOT_FOUND, "User with $id not found")
         }
     }
-  fun getLeaders(allUser: List<User>):MutableList<String> {
-        val listLeaders:MutableList<Pair<User,String>> = mutableListOf()
+    fun getLeaders(allUser: List<User>): List<LeaderboardResponse> {
+        val listLeaders: MutableList<Pair<User, String>> = mutableListOf()
         var counter = 1
         for (user: User in allUser) {
             listLeaders.add(user to getProgress(user.getId()))
         }
         listLeaders.sortBy { it.second }
         listLeaders.reverse()
-        val listLeadersForPrinting: MutableList<String> = mutableListOf()
+        val listLeadersForPrinting: MutableList<LeaderboardResponse> = mutableListOf()
         for (leaders: Pair<User, String> in listLeaders) {
-            listLeadersForPrinting.add("${counter}. ${leaders.first.getUsername()} ${leaders.first.getCardsOwned().size} barajitas")
+            listLeadersForPrinting.add(
+                    LeaderboardResponse(
+                            counter,
+                            leaders.first.getUsername(),
+                            leaders.first.getCardsOwned().size
+                    )
+            )
             counter += 1
         }
         return listLeadersForPrinting
