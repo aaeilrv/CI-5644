@@ -1,5 +1,5 @@
 INSERT INTO card (name, player_position, player_number, country, photo_url) VALUES
-('Lionel Messi', 'FORWARD', 10, 'Argentina', '/cards/Lionel Messi.jpeg'),
+('Lionel Messi', 'FORWARD', 10, 'Argentina', 'https://i.pinimg.com/736x/f3/5b/fd/f35bfdfea8114351f2a262edc25561f3.jpg'),
 ('Cristiano Ronaldo', 'FORWARD', 7, 'Portugal', '/cards/Cristiano Ronaldo.jpeg'),
 ('Neymar Jr', 'FORWARD', 10, 'Brazil', '/cards/Neymar Jr.jpeg'),
 ('Kylian Mbappé', 'FORWARD', 10, 'France', '/cards/Kylian Mbappé.jpeg'),
