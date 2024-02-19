@@ -1,7 +1,6 @@
 "use client";
 import { useUser } from "@auth0/nextjs-auth0/client";
 import Image from "next/image";
-import Pagination from "@/app/components/pagination";
 import Link from "next/link";
 import localfont from '@next/font/local';
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/outline";
