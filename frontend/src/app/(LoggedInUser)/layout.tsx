@@ -170,7 +170,7 @@ export default function LoggedInLayout({ children }: {
             </div>
             
             <div className='w-full flex justify-center'>
-              <h1 className='font-bold text-2xl'>¡Hola, {user?.name}!</h1>
+              <h1 className='font-bold text-2xl'>¡Hola, {user?.nickname}!</h1>
             </div>
 
             <nav className="flex flex-1 flex-col">
