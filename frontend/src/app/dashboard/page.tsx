@@ -6,6 +6,7 @@ import { getJwtToken } from "../helpers/getJwtToken";
 export default async  function Dashboard() {
 
   const token = await getJwtToken()
+  
 
   return (
     <>

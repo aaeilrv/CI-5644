@@ -6,10 +6,26 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 
 export default function Profile() {
-  const {user, isLoading} = useUser()
-  const token = sessionStorage.getItem('token')
+  const {user, isLoading,} = useUser()
+  const [token, setToken] = useState('')
+
+  useEffect(() => {
+    getToken()
+  },[])
 
 
+  const getToken = async () => {
+    await fetch('/api/auth/token').then(res => res.json()).then(data => {
+      console.log(data)
+      data.token
+      setToken(data.token)
+      sessionStorage.setItem('token', data.token)
+    }).catch(err => console.log(err))
+    console.log(token)
+
+  }
+
+  console.log(token)
   if (isLoading) return <div>Loading...</div>
 
   return (
