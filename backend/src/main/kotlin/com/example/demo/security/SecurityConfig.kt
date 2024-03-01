@@ -25,6 +25,7 @@ class SecurityConfig : WebSecurityConfiguration() {
         val withIssuer: OAuth2TokenValidator<Jwt> = JwtValidators.createDefaultWithIssuer(issuer)
         val withAudience: OAuth2TokenValidator<Jwt> = DelegatingOAuth2TokenValidator(withIssuer, audienceValidator)
         jwtDecoder.setJwtValidator(withAudience)
+        println(jwtDecoder)
         return jwtDecoder
     }
 

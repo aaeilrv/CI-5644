@@ -21,11 +21,10 @@ export default function Profile() {
       setToken(data.token)
       sessionStorage.setItem('token', data.token)
     }).catch(err => console.log(err))
-    console.log(token)
+
 
   }
 
-  console.log(token)
   if (isLoading) return <div>Loading...</div>
 
   return (

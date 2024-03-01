@@ -14,6 +14,8 @@ import org.springframework.security.core.Authentication
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.server.ResponseStatusException
 import java.security.Principal
+import com.example.demo.security.SecurityConfig
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken
 
 
 @RestController
@@ -91,8 +93,9 @@ class UserController {
     }
 
     @GetMapping("/hello-oauth")
-    fun hello(@RequestHeader("Authorization") token:  String): String {
+    fun hello(@RequestHeader("Authorization") token:  String, principal: JwtAuthenticationToken): String {
         println("Llega al controlador")
+        println(principal.tokenAttributes)
         return "Hello, $token"
     }
 }
