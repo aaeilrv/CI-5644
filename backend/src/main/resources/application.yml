@@ -1,0 +1,27 @@
+auth0:
+  audience: { https://barajitas.com }
+spring:
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: https://dev-crxb1uekqycez2b5.us.auth0.com/
+  datasource:
+    url: jdbc:postgresql://localhost:5432/TestHerrWeb
+    username: ci5644user
+    password: ci5644redteam
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    generate-ddl: true
+  flyway:
+    enabled: true
+    baseline-version: 000
+    locations: classpath:db/migration
+    default-schema: public
+    create-schemas: true
+logging:
+  level:
+    org:
+      hibernate:
+        SQL: DEBUG

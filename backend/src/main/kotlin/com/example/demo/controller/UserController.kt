@@ -1,12 +1,12 @@
 package com.example.demo.controller
 
-import com.example.demo.controller.dto.AddCardToOwnerRequest
-import com.example.demo.controller.dto.CreateUserRequest
+import com.example.demo.controller.dto.*
 import com.example.demo.model.Card
 import com.example.demo.model.User
 import com.example.demo.service.CardService
 import com.example.demo.service.UserService
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -18,6 +18,7 @@ import com.example.demo.security.SecurityConfig
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken
 
 
+@CrossOrigin(value = ["http://localhost:3000"])
 @RestController
 @RequestMapping("v1/user")
 class UserController {
@@ -29,44 +30,49 @@ class UserController {
     lateinit var cardService: CardService
 
     @PostMapping
-    fun createUser(@RequestBody request: CreateUserRequest): ResponseEntity<User> {
-        return ResponseEntity.ok(userService.create(User(request)))
+    fun createUser(@RequestBody request: CreateUserRequest): ResponseEntity<UserDTO> {
+        return ResponseEntity.ok(UserDTO(userService.create(User(request))))
     }
     @PostMapping("/createMultipleUsers")
     fun createUsers(@RequestBody request: List<CreateUserRequest>): String {
         for(r: CreateUserRequest in request) {
             userService.create(User(r))
         }
-        return "done" + request.size
+        return "done " + request.size
     }
     @GetMapping("/{id}")
-    fun getUserById(@PathVariable id: Long): ResponseEntity<User> {
+    fun getUserById(@PathVariable id: Long): ResponseEntity<UserDTO> {
         val userOpt = userService.getById(id)
         if (userOpt.isPresent) {
-            return ResponseEntity.ok(userOpt.get())
+            return ResponseEntity.ok(UserDTO(userOpt.get()))
         } else {
             throw ResponseStatusException(HttpStatus.NOT_FOUND, "User with $id not found")
         }
     }
 
     @GetMapping("/leaders")
-    fun getLeaders(pageable: Pageable):List<String>{
-        println("Llega al controlador")
+    fun getLeaders(pageable: Pageable):List<LeaderboardResponse> {
         val allUser = userService.getAll(pageable)
         return userService.getLeaders(allUser)
     }
 
     @GetMapping()
-    fun getAllUsers(pageable: Pageable): List<User> {
-        return userService.getAll(pageable)
+    fun getAllUsers(pageable: Pageable): List<UserDTO> {
+        return userService.getAll(pageable).map {user -> UserDTO(user)}
     }
 
 
     @GetMapping("cardsOwned/{id}")
-    fun getCardsOwned(@PathVariable id: Long):List<Card>?{
-        return userService.getCardsOwnedById(id)
+    fun getCardsOwned(@PathVariable id: Long, pageable: Pageable): Page<CardOwnedByUserDTO>?{
+        return userService.getCardsOwnedById(id, pageable)?.map {ownership -> CardOwnedByUserDTO(ownership)}
     }
 
+    /*
+    @GetMapping("cardsOwned/{id}")
+    fun getCardsOwned(@PathVariable id: Long, pageable: Pageable): Page<Card>? {
+        return userService.getCardsOwnedById(id, pageable)
+    }
+*/
     @GetMapping("progress/{id}")
     fun progress(@PathVariable id: Long):String{
         return userService.getProgress(id)
@@ -82,11 +88,11 @@ class UserController {
     }
 
     @PatchMapping()
-    fun addCard(@RequestBody request: AddCardToOwnerRequest):ResponseEntity<User>{
+    fun addCard(@RequestBody request: AddCardToOwnerRequest):ResponseEntity<UserDTO>{
         val cardOpt = cardService.getById(request.cardId)
         if (cardOpt.isPresent) {
-            val newCard:User? = userService.updateCardsOwnedList(request.ownerId,cardOpt.get())
-            return ResponseEntity.ok(newCard)
+            val userWithNewCard: User? = userService.updateCardsOwnedList(request.ownerId,cardOpt.get())
+            return ResponseEntity.ok(if (userWithNewCard == null) null else UserDTO(userWithNewCard))
         } else {
             throw ResponseStatusException(HttpStatus.NOT_FOUND, "Card with ${request.cardId} not found")
         }

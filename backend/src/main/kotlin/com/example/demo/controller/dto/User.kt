@@ -1,8 +1,9 @@
 package com.example.demo.controller.dto
 
 import java.io.Serializable
+import com.example.demo.model.User
 
-class UserDTO (
+data class UserDTO (
     private val id: Long,
     private val firstName: String,
     private val lastName: String,
@@ -10,6 +11,15 @@ class UserDTO (
     private val username: String,
     private val emailAddress: String
 ): Serializable {
+
+    constructor(userObject: User): this(
+        userObject.getId(),
+        userObject.getFirstName(),
+        userObject.getLastName(),
+        userObject.getBirthDay().toString(),
+        userObject.getUsername(),
+        userObject.getEmailAddress()
+    )
     fun getId(): Long {
         return this.id
     }

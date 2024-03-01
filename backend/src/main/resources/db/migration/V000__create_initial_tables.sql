@@ -1,3 +1,13 @@
+CREATE TYPE EXCHANGE_REQUEST_STATUS AS ENUM ('PENDING', 'ACCEPTED', 'REJECTED');
+CREATE TYPE CREDIT_CARD_TYPE AS ENUM ('VISA', 'MASTERCARD');
+CREATE TYPE FIELD_POSITION AS ENUM ('GOALKEEPER',
+                                    'MIDFIELDER',
+                                    'DEFENDER',
+                                    'FORWARD');
+CREATE CAST (VARCHAR AS FIELD_POSITION) WITH INOUT AS IMPLICIT;
+CREATE CAST (VARCHAR AS EXCHANGE_REQUEST_STATUS) WITH INOUT AS IMPLICIT;
+CREATE CAST (VARCHAR AS CREDIT_CARD_TYPE) WITH INOUT AS IMPLICIT;
+
 CREATE TABLE IF NOT EXISTS users (
     id BIGSERIAL PRIMARY KEY,
     first_name VARCHAR(100) NOT NULL,
@@ -11,44 +21,56 @@ CREATE TABLE IF NOT EXISTS users (
 CREATE TABLE IF NOT EXISTS card(
     id BIGSERIAL PRIMARY KEY,
     name VARCHAR(50) NOT NULL,
-    player_position VARCHAR(30) NOT NULL,
-    player_number INT NOT NULL,
+    player_position FIELD_POSITION NOT NULL,
+    player_number SMALLINT NOT NULL,
     country VARCHAR(100) NOT NULL,
-    photo VARCHAR(100)
+    photo_url VARCHAR(255)
 );
 
-CREATE TABLE IF NOT EXISTS payment_information(
+--Consultar con Jonathan, aparentemente almacenar tarjetas de crédito no es buena práctica
+CREATE TABLE IF NOT EXISTS credit_card(
     id BIGSERIAL PRIMARY KEY,
     user_id BIGINT NOT NULL REFERENCES users(id),
-    expiration_date VARCHAR(8) NOT NULL,
+    expiration_date DATE NOT NULL,
     card_number VARCHAR(16) NOT NULL UNIQUE,
-    security_code VARCHAR(3) NOT NULL,
     cardholder_name VARCHAR(20) NOT NULL,
-    bank VARCHAR(20) NOT NULL
+    bank VARCHAR(20) NOT NULL,
+    card_type CREDIT_CARD_TYPE NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS purchase(
     id BIGSERIAL PRIMARY KEY,
-    purchase_date DATE NOT NULL,
+    purchase_timestamp TIMESTAMP NOT NULL,
     user_id BIGINT NOT NULL REFERENCES users(id),
-    price NUMERIC NOT NULL CHECK(price > 0),
-    payment_id BIGINT NOT NULL REFERENCES payment_information(id)
-    --package_id INTEGER NOT NULL REFERENCES package(id)
-    --UNIQUE(user_id, package_id)
+    packets_purchased INT NOT NULL CHECK(packets_purchased > 0),
+    base_amount NUMERIC GENERATED ALWAYS AS (packets_purchased*5) STORED, --Precio hipotetico de $5 por paquete
+    credit_card_id BIGINT NOT NULL REFERENCES credit_card(id)
 );
 
-CREATE TABLE IF NOT EXISTS exchange(
+CREATE TABLE IF NOT EXISTS exchange_request(
     id BIGSERIAL PRIMARY KEY,
-    date DATE NOT NULL,
-    owner_id BIGINT NOT NULL REFERENCES users(id),
-    card_id BIGINT NOT NULL REFERENCES card(id),
-    receiver_id BIGINT NOT NULL REFERENCES users(id),
-    number_of_cards_traded INTEGER NOT NULL CHECK(number_of_cards_traded > 0)
+    requester_id BIGINT NOT NULL REFERENCES users(id),
+    recipient_id BIGINT NOT NULL REFERENCES users(id),
+    offered_card_id BIGINT NOT NULL REFERENCES card(id),
+    offered_card_amount INT NOT NULL CHECK(offered_card_amount > 0),
+    requested_card_id BIGINT NOT NULL REFERENCES card(id),
+    requested_card_amount INT NOT NULL CHECK(requested_card_amount > 0),
+    request_status EXCHANGE_REQUEST_STATUS NOT NULL,
+    created_at TIMESTAMP NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS ownership(
     id BIGSERIAL PRIMARY KEY,
     user_id BIGINT NOT NULL REFERENCES users(id),
     card_id BIGINT NOT NULL REFERENCES card(id),
+    number_of_cards_owned INT NOT NULL,
     UNIQUE(user_id, card_id)
 );
+
+CREATE INDEX IF NOT EXISTS idx_user_id_username ON users(id, username);
+CREATE INDEX IF NOT EXISTS idx_exchange_owner_id_receiver_id ON exchange_request(recipient_id, requester_id);
+CREATE INDEX IF NOT EXISTS idx_exchange_request_status ON exchange_request(request_status);
+CREATE INDEX IF NOT EXISTS idx_ownership_user_id_card_id ON ownership(user_id, card_id);
+CREATE INDEX IF NOT EXISTS idx_purchase_user_id_credit_card_id ON purchase(user_id,credit_card_id);
+CREATE INDEX IF NOT EXISTS idx_payment_information_user_id ON credit_card(user_id);
+CREATE INDEX IF NOT EXISTS idx_card_id_country ON card(id,country);

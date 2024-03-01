@@ -1,4 +1,4 @@
-import NavbarInApp from "../components/NavbarInApp";
+
 import { getJwtToken } from "../helpers/getJwtToken";
 
 export default async  function Dashboard() {
@@ -8,7 +8,6 @@ export default async  function Dashboard() {
 
   return (
     <>
-      <NavbarInApp />
       <div className="py-16 px-8">
         Probando el sistema de routing nuevo de nextjs. Esto es el dashboard (?)
         {token && <p>{token}</p>}
