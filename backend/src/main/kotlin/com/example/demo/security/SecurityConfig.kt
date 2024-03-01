@@ -1,67 +1,40 @@
 package com.example.demo.security
 
-import com.example.demo.service.TokenService
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
-import org.springframework.context.annotation.Configuration
-import org.springframework.http.HttpMethod
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
-import org.springframework.security.config.http.SessionCreationPolicy
-import org.springframework.security.core.authority.SimpleGrantedAuthority
-import org.springframework.security.oauth2.server.resource.InvalidBearerTokenException
-import org.springframework.security.oauth2.server.resource.authentication.BearerTokenAuthenticationToken
-import org.springframework.security.web.SecurityFilterChain
-import org.springframework.web.cors.CorsConfiguration
-import org.springframework.web.cors.CorsConfigurationSource
-import org.springframework.web.cors.UrlBasedCorsConfigurationSource
+import org.springframework.security.config.annotation.web.configuration.WebSecurityConfiguration
+import org.springframework.security.oauth2.core.DelegatingOAuth2TokenValidator
+import org.springframework.security.oauth2.core.OAuth2TokenValidator
+import org.springframework.security.oauth2.jwt.*
 
-/**
- * This class sets all security related configuration.
- */
-@Configuration
 @EnableWebSecurity
-open class SecurityConfig (
-    private val tokenService: TokenService,
-) {
-    @Bean
-    open fun filterChain(http: HttpSecurity): SecurityFilterChain {
-        // Define public and private routes
-        http.authorizeHttpRequests()
-            .requestMatchers(HttpMethod.POST, "/api/login").permitAll()
-            .requestMatchers(HttpMethod.POST, "v1/user/leaders").permitAll()
-            .requestMatchers(HttpMethod.GET, "v1/user/hello-oauth").authenticated()
-            .requestMatchers("/api/**").authenticated()
-            .anyRequest().permitAll()
+class SecurityConfig : WebSecurityConfiguration() {
 
-        // Configure JWT
-        http.oauth2ResourceServer().jwt()
-        http.authenticationManager { auth ->
-            val jwt = auth as BearerTokenAuthenticationToken
-            println(jwt)
-            val user = tokenService.parseToken(jwt.token) ?: throw InvalidBearerTokenException("Invalid token")
-            UsernamePasswordAuthenticationToken(user, "", listOf(SimpleGrantedAuthority("USER")))
-        }
+    @Value("\${auth0.audience}")
+    private val audience: String = String()
 
-        // Other configuration
-        http.cors()
-        http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-        http.csrf().disable()
-        http.headers().frameOptions().disable()
-        http.headers().xssProtection().disable()
-
-        return http.build()
-    }
+    @Value("\${spring.security.oauth2.resourceserver.jwt.issuer-uri}")
+    private val issuer: String = String()
 
     @Bean
-    open fun corsConfigurationSource(): CorsConfigurationSource {
-        // allow localhost for dev purposes
-        val configuration = CorsConfiguration()
-        configuration.allowedOrigins = listOf("http://localhost:3000", "http://localhost:8080")
-        configuration.allowedMethods = listOf("GET", "POST", "PUT", "DELETE")
-        configuration.allowedHeaders = listOf("authorization", "content-type")
-        val source = UrlBasedCorsConfigurationSource()
-        source.registerCorsConfiguration("/**", configuration)
-        return source
+    fun jwtDecoder(): JwtDecoder {
+        val jwtDecoder = JwtDecoders.fromOidcIssuerLocation(issuer) as NimbusJwtDecoder
+        val audienceValidator: OAuth2TokenValidator<Jwt> = AudienceValidator(audience)
+        val withIssuer: OAuth2TokenValidator<Jwt> = JwtValidators.createDefaultWithIssuer(issuer)
+        val withAudience: OAuth2TokenValidator<Jwt> = DelegatingOAuth2TokenValidator(withIssuer, audienceValidator)
+        jwtDecoder.setJwtValidator(withAudience)
+        return jwtDecoder
     }
+
+    @Throws(Exception::class)
+    fun configure(http: HttpSecurity) {
+        http.authorizeRequests()
+            .requestMatchers("v1/user/leaders/").permitAll()
+            .requestMatchers("v1/user/hello-oauth").authenticated()
+            .and()
+            .oauth2ResourceServer().jwt()
+    }
+
 }

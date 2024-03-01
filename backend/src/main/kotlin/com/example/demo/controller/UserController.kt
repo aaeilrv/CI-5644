@@ -91,10 +91,8 @@ class UserController {
     }
 
     @GetMapping("/hello-oauth")
-    fun hello(authentication: Authentication): String {
+    fun hello(@RequestHeader("Authorization") token:  String): String {
         println("Llega al controlador")
-        println(authentication)
-        val tokenDecoded = authentication.principal
-        return "Hello, $tokenDecoded"
+        return "Hello, $token"
     }
 }
