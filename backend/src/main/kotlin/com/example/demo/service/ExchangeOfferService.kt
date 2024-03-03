@@ -24,4 +24,8 @@ class ExchangeOfferService(@Autowired private val exchangeOfferRepository: Excha
         val exchangeOffer = exchangeOfferEntities.map { it }
         return exchangeOffer.content
     }
+
+    public fun getByStatus(status: ExchangeOfferStatus): Optional<ExchangeOffer> {
+        return exchangeOfferRepository.findByStatus(status)
+    }
 }

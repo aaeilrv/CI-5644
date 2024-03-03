@@ -1,5 +1,7 @@
 package com.example.demo.model
 
+import com.example.demo.controller.dto.CreateExchangeCounterofferRequest
+import com.example.demo.controller.dto.CreateExchangeOfferRequest
 import com.example.demo.controller.dto.CreateExchangeRequestRequest
 import jakarta.persistence.*
 import java.awt.print.Pageable
@@ -78,6 +80,8 @@ class ExchangeOffer(
         ) {
     constructor() : this(-1, User(), ExchangeRequest(), Card(), ExchangeOfferStatus.PENDING, java.sql.Timestamp(0))
 
+    constructor(request: CreateExchangeOfferRequest) : this()
+
     fun getId(): Long = this.id!!
     fun getUser(): User = this.requester
     fun getExchangeRequest(): ExchangeRequest = this.exchangeRequest
@@ -115,6 +119,8 @@ class ExchangeCounteroffer(
 
         ) {
     constructor() : this(-1, Card(), ExchangeRequestStatus.PENDING, ExchangeRequest(), ExchangeOffer(), java.sql.Timestamp(0))
+
+    constructor(request: CreateExchangeCounterofferRequest) : this()
     fun getId(): Long = this.id!!
     fun getOfferedCard(): Card = this.card
     fun getStatus(): ExchangeRequestStatus = this.status

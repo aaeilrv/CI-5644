@@ -24,4 +24,8 @@ class ExchangeCounterofferService(@Autowired private val exchangeCounterofferRep
         val exchangeCounteroffer = exchangeCounterofferEntities.map { it }
         return exchangeCounteroffer.content
     }
+
+    public fun getByStatus(status: ExchangeRequestStatus): Optional<ExchangeCounteroffer> {
+        return exchangeCounterofferRepository.findByStatus(status)
+    }
 }

@@ -9,25 +9,27 @@ import java.util.*
 
 @Service
 class ExchangeRequestService(@Autowired private val exchangeRequestRepository: ExchangeRequestRepository,
-                      @Autowired private val exchangeCounterofferRepository: ExchangeCounterofferRepository,
                       @Autowired private val ownershipRepository: OwnershipRepository) {
 
-    // Create
+
     public fun create(exchangeRequest: ExchangeRequest): ExchangeRequest {
         return exchangeRequestRepository.save(exchangeRequest)
-    }
-
-
-    public fun create(exchangeCounterOffer: ExchangeCounteroffer): ExchangeCounteroffer {
-        return exchangeCounterofferRepository.save(exchangeCounterOffer)
     }
 
     public fun getById(id: Long): Optional<ExchangeRequest> {
         return exchangeRequestRepository.findById(id)
     }
 
-    public fun getByStatus(status: ExchangeOfferStatus): Optional<ExchangeRequest> {
+    public fun getByStatus(status: ExchangeRequestStatus): Optional<ExchangeRequest> {
         return exchangeRequestRepository.findByStatus(status)
+    }
+
+    public fun getByUserid(userId: Long): Optional<ExchangeRequest> {
+        return exchangeRequestRepository.findByUserId(userId)
+    }
+
+    public fun getByUseridByStatus(userId: Long, status: ExchangeRequestStatus): Optional<ExchangeRequest> {
+        return exchangeRequestRepository.findByUserIdAndStatus(userId, status)
     }
 
     public fun getAll(pageable: Pageable): List<ExchangeRequest> {
