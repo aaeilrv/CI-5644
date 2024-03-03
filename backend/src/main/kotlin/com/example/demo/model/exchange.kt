@@ -1,6 +1,8 @@
 package com.example.demo.model
 
+import com.example.demo.controller.dto.CreateExchangeRequestRequest
 import jakarta.persistence.*
+import java.awt.print.Pageable
 import java.sql.Time
 import java.sql.Timestamp
 
@@ -37,6 +39,8 @@ class ExchangeRequest(
 
     ) {
     constructor() : this(-1, User(), Card(), ExchangeRequestStatus.PENDING, java.sql.Timestamp(0))
+    constructor(request: CreateExchangeRequestRequest) : this()
+
     fun getId(): Long = this.id!!
     fun getUser(): User = this.requester
     fun getRequestedCard(): Card = this.requestedCard
@@ -111,7 +115,6 @@ class ExchangeCounteroffer(
 
         ) {
     constructor() : this(-1, Card(), ExchangeRequestStatus.PENDING, ExchangeRequest(), ExchangeOffer(), java.sql.Timestamp(0))
-
     fun getId(): Long = this.id!!
     fun getOfferedCard(): Card = this.card
     fun getStatus(): ExchangeRequestStatus = this.status

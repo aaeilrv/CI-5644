@@ -1,8 +1,8 @@
 package com.example.demo.controller.dto
 
 import com.example.demo.model.Card
-import java.io.Serializable
 import com.example.demo.model.ExchangeRequest
+import java.io.Serializable
 import com.example.demo.model.ExchangeRequestStatus
 import com.example.demo.model.User
 import java.sql.Timestamp
