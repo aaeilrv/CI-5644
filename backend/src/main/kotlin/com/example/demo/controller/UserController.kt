@@ -32,11 +32,11 @@ class UserController {
     @PostMapping
     fun createUser(@RequestBody request: CreateUserRequest,
                    principal: JwtAuthenticationToken): ResponseEntity<UserDTO> {
-
         val sub = principal.tokenAttributes["sub"]?.toString() ?: return ResponseEntity.internalServerError().build()
         println("sub is $sub")
         return ResponseEntity.ok(UserDTO(userService.create(User(request, sub))))
     }
+
     @PostMapping("/createMultipleUsers")
     fun createUsers(@RequestBody request: List<CreateUserRequest>): String {
         for(r: CreateUserRequest in request) {
@@ -44,6 +44,7 @@ class UserController {
         }
         return "done " + request.size
     }
+
     @GetMapping()
     fun getUserById(@RequestHeader("Authorization") token: String,
                     principal: JwtAuthenticationToken): ResponseEntity<UserDTO> {
@@ -67,18 +68,24 @@ class UserController {
         return userService.getAll(pageable).map {user -> UserDTO(user)}
     }
 
-
     @GetMapping("/cardsOwned")
     fun getCardsOwned(principal: JwtAuthenticationToken,
-                      pageable: Pageable): Page<CardOwnedByUserDTO>?{
+                      pageable: Pageable): Page<CardOwnedByUserDTO?>?{
         val sub = principal.tokenAttributes["sub"].toString()
-        return userService.getCardsOwnedBySub(sub, pageable)?.map {ownership -> CardOwnedByUserDTO(ownership)}
+        return userService.getCardsOwnedBySub(sub, pageable)?.map {ownership ->
+            if (ownership == null) {
+                null
+            } else {
+                CardOwnedByUserDTO(ownership)
+            }
+        }
     }
 
     @GetMapping("/progress/{sub}")
     fun progress(@PathVariable sub: String): String{
         return userService.getProgress(sub)
     }
+
     @GetMapping("progress")
     fun getProgressForAll(pageable: Pageable): List<String>{
         val listProgress:MutableList<String> = mutableListOf()

@@ -6,6 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from 'next/navigation';
 import axios from "axios";
 
+const API_REGISTER_URL = process.env.NEXT_PUBLIC_USER_API_URL;
 
 type RegisterValues = {
   username: string;
@@ -86,7 +87,7 @@ export const Register = () => {
     const response = await axios.get('/api/auth/token/');
     const { token } = response.data;
     const signupRes = await axios.post(
-      `${process.env.NEXT_PUBLIC_USER_API_URL}`,
+      `${API_REGISTER_URL}`,
       loginBody,
       {
         headers: {
