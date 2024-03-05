@@ -48,6 +48,7 @@ export default function Barajitas() {
   let [pageContents, setPageContents] = useState<Barajita[]>([]);
   const API_ALBUM_DATA_URL = process.env.NEXT_PUBLIC_USER_API_URL + `/cardsOwned?page=${pageNumber}&size=10`;
   const EMPTY_CARD_IMG_LOC = '/static/images/emptycard.png'
+  const CARD_PICTURE_LOC = 'static/images/cards/'
   const country_name = "Argentina";
 
   useEffect(() => {
@@ -89,7 +90,7 @@ export default function Barajitas() {
           <div className="grid grid-cols-5 gap-10">
             {pageContents.map((barajita, index) => ( barajita ?
               <div className="rounded-lg bg-white p-2 drop-shadow-md hover:bg-slate-300" key={index}>
-                <Image src={barajita.photoURL} alt={barajita.playerName} className="w-full" width={1080} height={1080} />
+                <Image src={CARD_PICTURE_LOC + barajita.playerName + '.jpeg'} alt={barajita.playerName} className="w-full" width={1080} height={1080} />
               </div> : 
               <div className="rounded-lg bg-white p-2 drop-shadow-md hover:bg-slate-300" key={index}>
                 <Image src={EMPTY_CARD_IMG_LOC} alt={'empty card'} className="w-full" width={1080} height={1080} />
