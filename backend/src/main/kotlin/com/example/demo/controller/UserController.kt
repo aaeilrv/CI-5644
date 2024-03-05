@@ -34,7 +34,6 @@ class UserController {
                    principal: JwtAuthenticationToken): ResponseEntity<UserDTO> {
 
         val sub = principal.tokenAttributes["sub"]?.toString() ?: return ResponseEntity.internalServerError().build()
-        println("sub is $sub")
         return ResponseEntity.ok(UserDTO(userService.create(User(request, sub))))
     }
     @PostMapping("/createMultipleUsers")
@@ -97,6 +96,21 @@ class UserController {
             return ResponseEntity.ok(if (userWithNewCard == null) null else UserDTO(userWithNewCard))
         } else {
             throw ResponseStatusException(HttpStatus.NOT_FOUND, "Card with ${request.cardId} not found")
+        }
+    }
+
+    @PutMapping("/edit")
+    fun profileEdit (@RequestHeader("Authorization") token: String,
+                     principal: JwtAuthenticationToken,
+                     @RequestBody Map<String, String> request): ResponseEntity<UserDTO>{
+
+        val sub: String = principal.tokenAttributes["sub"].toString()
+        val current: User = userService.getBySub(sub)
+
+        if (current.isPresent) {            
+            return ResponseEntity.ok(UserDTO(userService.editUserData(current, request)))
+        } else {
+            throw ResponseStatusException(HttpStatus.NOT_FOUND, "User with $sub not found")  
         }
     }
 
