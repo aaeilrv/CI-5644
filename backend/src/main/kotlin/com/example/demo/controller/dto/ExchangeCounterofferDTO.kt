@@ -6,19 +6,19 @@ import java.sql.Timestamp
 
 data class ExchangeCounterofferDTO(
         private val id: Long,
-        private val offeredCard: Card,
+        private val offeredCardId: Long,
         private val status: ExchangeRequestStatus,
-        private val exchangeRequest: ExchangeRequest,
-        private val exchangeOffer: ExchangeOffer,
+        private val exchangeRequestId: Long,
+        private val exchangeOfferId: Long,
         private val createdAt: Timestamp
 ): Serializable {
 
     constructor(exchangeCounterOffer: ExchangeCounteroffer): this(
             exchangeCounterOffer.getId(),
-            exchangeCounterOffer.getOfferedCard(),
+            exchangeCounterOffer.getOfferedCard().getId(),
             exchangeCounterOffer.getStatus(),
-            exchangeCounterOffer.getExchangeRequest(),
-            exchangeCounterOffer.getExchangeOffer(),
+            exchangeCounterOffer.getExchangeRequest().getId(),
+            exchangeCounterOffer.getExchangeOffer().getId(),
             exchangeCounterOffer.getCreatedAt()
     )
 }

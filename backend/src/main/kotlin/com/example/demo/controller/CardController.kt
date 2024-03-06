@@ -6,6 +6,7 @@ import com.example.demo.controller.dto.UserDTO
 import com.example.demo.controller.dto.UserWhoOwnsCardDTO
 import com.example.demo.model.Card
 import com.example.demo.model.User
+import com.example.demo.repo.UserRepository
 import com.example.demo.service.CardService
 import jakarta.persistence.Entity
 import org.springframework.beans.factory.annotation.Autowired

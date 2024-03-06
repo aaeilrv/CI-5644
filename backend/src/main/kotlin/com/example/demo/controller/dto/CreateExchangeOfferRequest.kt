@@ -5,7 +5,7 @@ import java.sql.Timestamp
 
 data class CreateExchangeOfferRequest (
         val id: Long,
-        val user: User,
+        val bidder: User,
         val exchangeRequest: ExchangeRequest,
         val offeredCard: Card,
         val status: ExchangeOfferStatus,

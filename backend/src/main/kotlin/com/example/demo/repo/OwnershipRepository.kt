@@ -18,4 +18,6 @@ interface OwnershipRepository: JpaRepository<Ownership, Long> {
 @Repository
 interface OwnershipRepository: JpaRepository<Ownership, Long> {
     fun findByUserOrderByCardCountry(user: User, pageable: Pageable): Page<Ownership>
+
+
 }
