@@ -13,7 +13,7 @@ data class ExchangeRequestDTO (
         private val id: Long,
         private val userId: Long,
         private val requestedCardId: Long,
-        private val status: ExchangeRequestStatus,
+        var status: ExchangeRequestStatus,
         private val createdAt: Timestamp
 ): Serializable {
 
@@ -29,9 +29,9 @@ data class ExchangeRequestDTO (
         return this.requestedCardId
     }
 
-    fun getStatus(): ExchangeRequestStatus {
-        return this.status
-    }
+    /// fun getStatus(): ExchangeRequestStatus {
+    //    return this.status
+    //}
 
     fun getCreatedAt(): Timestamp {
         return this.createdAt

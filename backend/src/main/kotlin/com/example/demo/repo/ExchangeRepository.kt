@@ -3,6 +3,7 @@ package com.example.demo.repo
 import com.example.demo.controller.dto.ExchangeRequestDTO
 import com.example.demo.model.*
 import org.springframework.data.jpa.repository.JpaRepository
+import org.springframework.data.jpa.repository.Modifying
 import org.springframework.data.jpa.repository.Query
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Repository
@@ -22,7 +23,7 @@ interface ExchangeRequestRepository: JpaRepository<ExchangeRequest, Long> {
 
     // Todos los ER de una barajita en particular de un usuario (debería existir sólo uno)
     @Query("SELECT er FROM ExchangeRequest er WHERE er.requestedCard.id = :cardId AND er.requester.id = :userId")
-    fun findByCardidAndUserId(cardId: Long, userId: Long): List<ExchangeRequest>
+    fun findByUserIdAndCardId(userId: Long, cardId: Long): List<ExchangeRequest>
 
     // Todos los ER creados en cierto rango de tiempo
     @Query("SELECT er FROM ExchangeRequest er WHERE er.createdAt BETWEEN :startDate AND :endDate")
@@ -49,7 +50,7 @@ interface ExchangeRequestRepository: JpaRepository<ExchangeRequest, Long> {
         WHERE o.user.id = :ownerId
         AND er.requester.id = :requesterId
     """)
-    fun findAllPossibleERbyRequesterAndOwner(ownerId: Long, requesterId: Long): List<ExchangeRequest>
+    fun findAllPossibleERbyCardsOwnerAndRequester(ownerId: Long, requesterId: Long): List<ExchangeRequest>
 
     // Todos los ER de cierto estatus
     @Query("SELECT er FROM ExchangeRequest er WHERE er.status = :status")

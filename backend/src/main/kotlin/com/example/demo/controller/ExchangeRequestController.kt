@@ -27,6 +27,13 @@ class ExchangeRequestController {
         return ResponseEntity.ok(ExchangeRequestDTO(exchangeRequestService.create(ExchangeRequest(request))))
     }
 
+    @PatchMapping("/{id}")
+    fun updateExchangeRequest(@PathVariable id: Long,
+                              @RequestBody request: UpdateExchangeRequestRequest):
+            ExchangeRequest {
+        return exchangeRequestService.update(request, id)
+    }
+
     @GetMapping
     fun getAllExchangeRequests(pageable: Pageable): List<ExchangeRequestDTO> {
         return exchangeRequestService.getAll(pageable).map {exchangeRequest -> ExchangeRequestDTO(exchangeRequest)}
@@ -56,8 +63,8 @@ class ExchangeRequestController {
 
     // Todos los ER de un usuario y de una barajita de ese usuario
     @GetMapping("/user/{userId}/card/{cardId}")
-    fun getExchangeRequestByCardIdAndUserId(@PathVariable userId: Long, @PathVariable cardId: Long): List<ExchangeRequestDTO> {
-        return exchangeRequestService.getByCardIdAndUserId(cardId, userId)
+    fun getExchangeRequestByUserIdAndCardId(@PathVariable userId: Long, @PathVariable cardId: Long): List<ExchangeRequestDTO> {
+        return exchangeRequestService.getByUserIdAndCardId(cardId, userId)
     }
 
     // Todos los ER por rango de fechas
@@ -87,7 +94,7 @@ class ExchangeRequestController {
     // Todos los ER creados por user que piden barajitas que owner tiene
     @GetMapping("hasCards/{ownerId}/user/{creatorId}")
     fun getExchangeRequestByOwnerAndUser(@PathVariable ownerId: Long, @PathVariable creatorId: Long): List<ExchangeRequestDTO> {
-        return exchangeRequestService.getAllPossibleERbyRequesterAndOwner(ownerId, creatorId)
+        return exchangeRequestService.getAllPossibleERbyCardsOwnerAndRequester(ownerId, creatorId)
     }
 
     // *- los que no funcionan -* //

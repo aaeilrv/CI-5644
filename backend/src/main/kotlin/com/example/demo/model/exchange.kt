@@ -20,27 +20,27 @@ enum class ExchangeOfferStatus(val value: String) {
 @Entity
 @Table(name = "exchange_request")
 class ExchangeRequest(
-    @Id
+        @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private val id: Long?,
 
-    @ManyToOne
+        @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     private var requester: User,
 
-    @ManyToOne
+        @ManyToOne
     @JoinColumn(name = "requested_card_id", nullable = false)
     private var requestedCard: Card,
 
-    @Column(name = "status", nullable = false)
+        @Column(name = "status", nullable = false)
     @Enumerated(EnumType.STRING)
-    private var status: ExchangeRequestStatus,
+         var status: ExchangeRequestStatus,
 
-    @Column(name = "created_at", nullable = false)
+        @Column(name = "created_at", nullable = false)
     private val createdAt: java.sql.Timestamp,
 
-    ) {
+        ) {
     constructor() : this(-1, User(), Card(), ExchangeRequestStatus.PENDING, java.sql.Timestamp(0))
     constructor(request: CreateExchangeRequestRequest) : this(
             null,
@@ -53,7 +53,7 @@ class ExchangeRequest(
     fun getId(): Long = this.id!!
     fun getUser(): User = this.requester
     fun getRequestedCard(): Card = this.requestedCard
-    fun getStatus(): ExchangeRequestStatus = this.status
+    //fun getStatus(): ExchangeRequestStatus = this.status
     fun getCreatedAt(): Timestamp = this.createdAt
 }
 
