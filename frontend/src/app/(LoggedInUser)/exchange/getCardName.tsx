@@ -28,7 +28,6 @@ type exchangeProps = {
     const [cardId, setCardId] = useState({ name: '' });
     const API_CARD_URL = process.env.NEXT_PUBLIC_CARD_API_URL + `/${requiredCard}`;
 
-  useEffect(() => {
     const getCardData = async () => {
       const {token} = await getJwt();
       const response = await fetch(
@@ -46,7 +45,6 @@ type exchangeProps = {
       //console.log(data);
     };
     getCardData();
-  } ,[requiredCard])
     //console.log(cardContent?.name)
     const cardRequested = cardId ? cardId.name : 'Kylian Mbappé';
 
