@@ -116,6 +116,16 @@ class UserService (@Autowired private val userRepository: UserRepository,
         return listLeadersForPrinting
     }
 
+    fun editUserData(user: User, body : Map<String, String>) : User{
+
+        user.setFirstName(body.get("firstName")!!)
+        user.setLastName(body.get("lastName")!!)
+        user.setUsername(body.get("username")!!)
+        user.setEmail(body.get("email")!!)
+
+        return userRepository.save(user)
+    }
+
 
 //    private fun fromEntityToDTO(entity: User): UserDTO {
 //        return UserDTO(
