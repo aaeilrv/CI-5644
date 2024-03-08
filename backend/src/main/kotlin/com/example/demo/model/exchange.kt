@@ -10,11 +10,11 @@ import java.sql.Time
 import java.sql.Timestamp
 
 public enum class ExchangeRequestStatus {
-    PENDING, ACCEPTED, REJECTED, CANCELED
+    PENDING, ACCEPTED, REJECTED, CANCELLED
 }
 
-enum class ExchangeOfferStatus {
-    PENDING, ACCEPTED, REJECTED, CANCELED, COUNTEROFFER
+public enum class ExchangeOfferStatus {
+    PENDING, ACCEPTED, REJECTED, CANCELLED, COUNTEROFFER
 }
 
 @Entity
@@ -79,7 +79,7 @@ class ExchangeOffer(
 
         @Column(name = "status", nullable = false, columnDefinition = "varchar")
         @Enumerated(EnumType.STRING)
-        private val status: ExchangeOfferStatus,
+        var status: ExchangeOfferStatus,
 
         @Column(name = "created_at", nullable = false)
         private val createdAt: java.sql.Timestamp,
@@ -92,7 +92,7 @@ class ExchangeOffer(
             request.bidder,
             request.exchangeRequest,
             request.offeredCard,
-            ExchangeOfferStatus.valueOf(request.status.toString().uppercase()),
+            ExchangeOfferStatus.valueOf(request.status.uppercase()),
             request.createdAt
     )
 
@@ -100,7 +100,7 @@ class ExchangeOffer(
     fun getBidder(): User = this.bidder
     fun getExchangeRequest(): ExchangeRequest = this.exchangeRequest
     fun getOfferedCard(): Card = this.offeredCard
-    fun getStatus(): ExchangeOfferStatus = this.status
+    fun getRequestStatus(): ExchangeOfferStatus = this.status
     fun getCreatedAt(): Timestamp = this.createdAt
 }
 
@@ -118,7 +118,7 @@ class ExchangeCounteroffer(
 
         @Column(name = "status", nullable = false, columnDefinition = "varchar")
         @Enumerated(EnumType.STRING)
-        private val status: ExchangeRequestStatus,
+        var status: ExchangeRequestStatus,
 
         @ManyToOne
         @JoinColumn(name = "exchange_request_id", nullable = false)
@@ -137,7 +137,7 @@ class ExchangeCounteroffer(
     constructor(request: CreateExchangeCounterofferRequest) : this(
             null,
             request.offeredCard,
-            request.status,
+            ExchangeRequestStatus.valueOf(request.status.uppercase()),
             request.exchangeRequest,
             request.exchangeOffer,
             request.createdAt
@@ -145,7 +145,7 @@ class ExchangeCounteroffer(
 
     fun getId(): Long = this.id!!
     fun getOfferedCard(): Card = this.card
-    fun getStatus(): ExchangeRequestStatus = this.status
+    fun getRequestStatus(): ExchangeRequestStatus = this.status
     fun getExchangeRequest(): ExchangeRequest = this.exchangeRequest
     fun getExchangeOffer(): ExchangeOffer = this.exchangeOffer
     fun getCreatedAt(): Timestamp = this.createdAt

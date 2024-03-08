@@ -4,10 +4,11 @@ import com.example.demo.model.*
 import java.sql.Timestamp
 import java.util.Date
 
-data class UpdateExchangeRequestRequest (
+data class UpdateExchangeCounterofferRequest(
         val id: Long,
-        val userId: Long?,
-        val requestedCardId: Long?,
+        val offeredCardId: Long?,
         val status: ExchangeRequestStatus,
+        val exchangeRequestId: Long?,
+        val exchangeOfferId: Long?,
         val createdAt: Timestamp?
 )

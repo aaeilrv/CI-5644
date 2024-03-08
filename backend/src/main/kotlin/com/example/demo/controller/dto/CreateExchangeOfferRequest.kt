@@ -8,6 +8,6 @@ data class CreateExchangeOfferRequest (
         val bidder: User,
         val exchangeRequest: ExchangeRequest,
         val offeredCard: Card,
-        val status: ExchangeOfferStatus,
+        val status: String,
         val createdAt: Timestamp
 )

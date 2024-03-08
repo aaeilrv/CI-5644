@@ -27,6 +27,11 @@ class ExchangeCounterofferController {
         return ResponseEntity.ok(ExchangeCounterofferDTO(exchangeCounterofferService.create(ExchangeCounteroffer(request))))
     }
 
+    @PatchMapping
+    fun updateExchangeCounteroffer(@RequestBody request: UpdateExchangeCounterofferRequest) : ResponseEntity<ExchangeCounterofferDTO> {
+        return ResponseEntity.ok(ExchangeCounterofferDTO(exchangeCounterofferService.updateExchangeCounteroffer(request)))
+    }
+
     @GetMapping
     fun getAllExchangeCounteroffers(pageable: Pageable): List<ExchangeCounterofferDTO> {
         return exchangeCounterofferService.getAll(pageable).map {ExchangeCounterofferDTO(it)}
