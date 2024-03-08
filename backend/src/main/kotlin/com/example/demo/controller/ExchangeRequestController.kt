@@ -23,8 +23,9 @@ class ExchangeRequestController {
     lateinit var exchangeRequestService: ExchangeRequestService
 
     @PostMapping
-    fun createExchangeRequest(@RequestBody request: CreateExchangeRequestRequest): ResponseEntity<ExchangeRequestDTO> {
-        return ResponseEntity.ok(ExchangeRequestDTO(exchangeRequestService.create(ExchangeRequest(request))))
+    fun createExchangeRequest(@RequestBody request: CreateExchangeRequestDTO): ResponseEntity<ExchangeRequestDTO> {
+        return ResponseEntity.ok(ExchangeRequestDTO(exchangeRequestService.create(request)))
+        //return exchangeRequestService.create((request))
     }
 
     @PatchMapping

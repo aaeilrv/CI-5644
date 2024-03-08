@@ -1,5 +1,6 @@
 package com.example.demo.service
 
+import com.example.demo.controller.dto.CreateExchangeRequestDTO
 import com.example.demo.controller.dto.CreateExchangeRequestRequest
 import com.example.demo.controller.dto.ExchangeRequestDTO
 import com.example.demo.controller.dto.UpdateExchangeRequestRequest
@@ -10,17 +11,36 @@ import org.springframework.data.domain.Pageable
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 import org.springframework.web.server.ResponseStatusException
+import java.sql.Timestamp
+import java.time.Instant
+import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.ZoneId
 import java.util.*
-import kotlin.reflect.full.memberProperties
 
 @Service
-class ExchangeRequestService(@Autowired private val exchangeRequestRepository: ExchangeRequestRepository) {
+class ExchangeRequestService(@Autowired private val exchangeRequestRepository: ExchangeRequestRepository, private val userService: UserService, private val cardService: CardService) {
 
-    public fun create(exchangeRequest: ExchangeRequest): ExchangeRequest {
-        return exchangeRequestRepository.save(exchangeRequest)
+    public fun create(exchangeRequest: CreateExchangeRequestDTO): ExchangeRequest {
+        val foundUser = userService.getById(exchangeRequest.userId).orElseThrow()
+        val foundCard = cardService.getById(exchangeRequest.requestedCardId).orElseThrow()
+
+        val newER:CreateExchangeRequestRequest
+        try {
+            newER = CreateExchangeRequestRequest(
+                    user = foundUser,
+                    requestedCard = foundCard,
+                    requestStatus = "PENDING",
+                    createdAt = Timestamp(0)
+            )
+
+        } catch (e: IllegalArgumentException) {
+            throw IllegalArgumentException("Error creating the exchange request")
+        }
+        return exchangeRequestRepository.save(ExchangeRequest(newER))
     }
 
-    fun updateExchangeRequest(request: UpdateExchangeRequestRequest): ExchangeRequest {
+    public fun updateExchangeRequest(request: UpdateExchangeRequestRequest): ExchangeRequest {
         val exchangeRequestToUpdate = exchangeRequestRepository.findById(request.id)
 
         if (exchangeRequestToUpdate.isPresent) {
