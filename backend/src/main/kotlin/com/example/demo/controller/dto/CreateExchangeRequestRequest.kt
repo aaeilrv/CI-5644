@@ -9,6 +9,6 @@ data class CreateExchangeRequestRequest (
         val id: Long,
         val user: User,
         val requestedCard: Card,
-        val requestStatus: ExchangeRequestStatus,
+        val requestStatus: String,
         val createdAt: Timestamp
 )

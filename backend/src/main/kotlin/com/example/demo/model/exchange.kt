@@ -9,8 +9,8 @@ import java.awt.print.Pageable
 import java.sql.Time
 import java.sql.Timestamp
 
-enum class ExchangeRequestStatus(val value: String) {
-    PENDING("PENDING"), ACCEPTED("ACCEPTED"), REJECTED("REJECTED"), CANCELED("CANCELED")
+public enum class ExchangeRequestStatus {
+    PENDING, ACCEPTED, REJECTED, CANCELED
 }
 
 enum class ExchangeOfferStatus(val value: String) {
@@ -33,7 +33,7 @@ class ExchangeRequest(
     @JoinColumn(name = "requested_card_id", nullable = false)
     private var requestedCard: Card,
 
-        @Column(name = "status", nullable = false)
+        @Column(name = "status", nullable = false, columnDefinition = "varchar")
     @Enumerated(EnumType.STRING)
          var status: ExchangeRequestStatus,
 
@@ -46,14 +46,14 @@ class ExchangeRequest(
             null,
             request.user,
             request.requestedCard,
-            request.requestStatus,
+            ExchangeRequestStatus.valueOf(request.requestStatus.uppercase()),
             request.createdAt
     )
 
     fun getId(): Long = this.id!!
     fun getUser(): User = this.requester
     fun getRequestedCard(): Card = this.requestedCard
-    //fun getStatus(): ExchangeRequestStatus = this.status
+    fun getRequestStatus(): ExchangeRequestStatus = this.status
     fun getCreatedAt(): Timestamp = this.createdAt
 }
 

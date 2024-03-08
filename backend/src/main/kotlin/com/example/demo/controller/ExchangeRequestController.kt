@@ -27,11 +27,16 @@ class ExchangeRequestController {
         return ResponseEntity.ok(ExchangeRequestDTO(exchangeRequestService.create(ExchangeRequest(request))))
     }
 
-    @PatchMapping("/{id}")
-    fun updateExchangeRequest(@PathVariable id: Long,
-                              @RequestBody request: UpdateExchangeRequestRequest):
-            ExchangeRequest {
-        return exchangeRequestService.update(request, id)
+//    @PatchMapping("/{id}")
+//    fun updateExchangeRequest(@PathVariable id: Long,
+//                              @RequestBody request: UpdateExchangeRequestRequest):
+//            ResponseEntity<ExchangeRequestDTO> {
+//        return ResponseEntity.ok(exchangeRequestService.update(request, id))
+//    }
+
+    @PatchMapping
+    fun updateExchangeRequest(@RequestBody request: UpdateExchangeRequestRequest) : ResponseEntity<ExchangeRequestDTO> {
+        return ResponseEntity.ok(ExchangeRequestDTO(exchangeRequestService.updateExchangeRequest(request)))
     }
 
     @GetMapping

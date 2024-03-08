@@ -1,5 +1,6 @@
 package com.example.demo.service
 
+import com.example.demo.controller.dto.CreateExchangeRequestRequest
 import com.example.demo.controller.dto.ExchangeRequestDTO
 import com.example.demo.controller.dto.UpdateExchangeRequestRequest
 import com.example.demo.model.*
@@ -10,6 +11,7 @@ import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 import org.springframework.web.server.ResponseStatusException
 import java.util.*
+import kotlin.reflect.full.memberProperties
 
 @Service
 class ExchangeRequestService(@Autowired private val exchangeRequestRepository: ExchangeRequestRepository) {
@@ -18,14 +20,15 @@ class ExchangeRequestService(@Autowired private val exchangeRequestRepository: E
         return exchangeRequestRepository.save(exchangeRequest)
     }
 
-    public fun update(exchangeRequest: UpdateExchangeRequestRequest, id: Long): ExchangeRequest {
-        val exchangeRequestToUpdate = exchangeRequestRepository.findById(id)
+    fun updateExchangeRequest(request: UpdateExchangeRequestRequest): ExchangeRequest {
+        val exchangeRequestToUpdate = exchangeRequestRepository.findById(request.id)
+
         if (exchangeRequestToUpdate.isPresent) {
             val currentER = exchangeRequestToUpdate.get()
-            currentER.status = exchangeRequest.requestStatus
+            currentER.status = request.status
             return exchangeRequestRepository.save(currentER)
         } else {
-            throw ResponseStatusException(HttpStatus.NOT_FOUND, "Exchange request with $id not found.")
+            throw ResponseStatusException(HttpStatus.NOT_FOUND, "Exchange request not found.")
         }
     }
 
