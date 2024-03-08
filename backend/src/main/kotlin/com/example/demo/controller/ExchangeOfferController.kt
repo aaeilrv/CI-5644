@@ -26,6 +26,11 @@ class ExchangeOfferController {
         return ResponseEntity.ok(ExchangeOfferDTO(exchangeOfferService.create(ExchangeOffer(request))))
     }
 
+    @PatchMapping
+    fun updateExchangeOffer(@RequestBody request: UpdateExchangeOfferRequest) : ResponseEntity<ExchangeOfferDTO> {
+        return ResponseEntity.ok(ExchangeOfferDTO(exchangeOfferService.updateExchangeOffer(request)))
+    }
+
     @GetMapping
     fun getAllExchangeOffers(pageable: Pageable): List<ExchangeOfferDTO> {
         return exchangeOfferService.getAll(pageable).map { exchangeOffer -> ExchangeOfferDTO(exchangeOffer) }

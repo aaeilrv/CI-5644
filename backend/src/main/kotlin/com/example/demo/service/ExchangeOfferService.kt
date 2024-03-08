@@ -1,12 +1,14 @@
 package com.example.demo.service
 
 import com.example.demo.controller.dto.ExchangeOfferDTO
-import com.example.demo.controller.dto.ExchangeRequestDTO
+import com.example.demo.controller.dto.UpdateExchangeOfferRequest
 import com.example.demo.model.*
 import com.example.demo.repo.*
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.Pageable
+import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
+import org.springframework.web.server.ResponseStatusException
 import java.util.*
 
 @Service
@@ -14,6 +16,18 @@ class ExchangeOfferService(@Autowired private val exchangeOfferRepository: Excha
 
     public fun create(exchangeOffer: ExchangeOffer): ExchangeOffer {
         return exchangeOfferRepository.save(exchangeOffer)
+    }
+
+    public fun updateExchangeOffer(request: UpdateExchangeOfferRequest): ExchangeOffer {
+        val exchangeOfferToUpdate = exchangeOfferRepository.findById(request.id)
+
+        if (exchangeOfferToUpdate.isPresent) {
+            val currentEO = exchangeOfferToUpdate.get()
+            currentEO.status = request.status
+            return exchangeOfferRepository.save(currentEO)
+        } else {
+            throw ResponseStatusException(HttpStatus.NOT_FOUND, "Exchange request not found.")
+        }
     }
 
     public fun getById(id: Long): Optional<ExchangeOffer> {

@@ -9,5 +9,5 @@ data class UpdateExchangeRequestRequest (
         val userId: Long?,
         val requestedCardId: Long?,
         val status: ExchangeRequestStatus,
-        val createdAt: Date?
+        val createdAt: Timestamp?
 )

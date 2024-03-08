@@ -43,7 +43,7 @@ data class ExchangeOfferDTO (
             exchangeOfferObject.getBidder().getId(),
             exchangeOfferObject.getExchangeRequest().getId(),
             exchangeOfferObject.getOfferedCard().getId(),
-            exchangeOfferObject.getStatus().toString(),
+            exchangeOfferObject.getRequestStatus().toString(),
             exchangeOfferObject.getCreatedAt()
     )
 }
