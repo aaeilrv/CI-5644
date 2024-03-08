@@ -124,12 +124,12 @@ export const Register = () => {
 
         <div className="flex justify-center">
           <form className="flex flex-col w-2/3" onSubmit={onSubmit}>
-            <div className="flex flex-col mt-12">
+            <div id="username-container" className="flex flex-col mt-12">
               <label className="text-white font-semibold text-lg">
                 Nombre de usuario
               </label>
-
               <input
+                id="username-input"
                 type="text"
                 className="bg-transparent border-b-2  outline-none text-white"
                 {...register("username")}
@@ -140,11 +140,12 @@ export const Register = () => {
                 </span>
               )}
             </div>
-            <div className="flex flex-col mt-12">
+            <div id="firstName-container" className="flex flex-col mt-12">
               <label className="text-white font-semibold text-lg">
                 Nombre
               </label>
               <input
+                id="firstName-input"
                 type="text"
                 className="bg-transparent border-b-2  outline-none text-white"
                 {...register("name")}
@@ -155,11 +156,12 @@ export const Register = () => {
                 </span>
               )}
             </div>
-            <div className="flex flex-col mt-12">
+            <div id="lastName-container" className="flex flex-col mt-12">
               <label className="text-white font-semibold text-lg">
                 Apellido
               </label>
               <input
+                id="lastName-input"
                 type="text"
                 className="bg-transparent border-b-2  outline-none text-white"
                 {...register("lastname")}
@@ -170,11 +172,12 @@ export const Register = () => {
                 </span>
               )}
             </div>
-            <div className="flex flex-col mt-12">
+            <div id="email-container" className="flex flex-col mt-12">
               <label className="text-white font-semibold text-lg">
                 Correo
               </label>
               <input
+                id="email-input"
                 type="text"
                 className="bg-transparent border-b-2  outline-none text-white"
                 {...register("email")}
@@ -185,11 +188,12 @@ export const Register = () => {
                 </span>
               )}
             </div>
-            <div className ="flex flex-col mt-12">
+            <div id="birthday-container" className ="flex flex-col mt-12">
               <label className = "text-white font-semibold text-lg">
                 Fecha de Nacimiento
               </label>
               <input
+                id="birthday-input"
                 type="text"
                 placeholder="YYYY-MM-DD"
                 className="bg-transparent border-b-2 outline-none text-white"
@@ -206,7 +210,7 @@ export const Register = () => {
                 className="bg-[#FFE08C] disabled:opacity-50 text-white text-center rounded-lg py-3 md:p-3 w-1/2"
                 disabled={!isDirty || !isValid}
               >
-                Registrate
+                Regístrate
               </button>
             </div>
           </form>
