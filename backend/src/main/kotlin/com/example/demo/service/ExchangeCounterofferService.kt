@@ -2,19 +2,33 @@ package com.example.demo.service
 
 import com.example.demo.controller.dto.ExchangeCounterofferDTO
 import com.example.demo.controller.dto.ExchangeOfferDTO
+import com.example.demo.controller.dto.UpdateExchangeCounterofferRequest
 import com.example.demo.model.*
 import com.example.demo.repo.*
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.Pageable
+import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
+import org.springframework.web.server.ResponseStatusException
 import java.util.*
 
 @Service
-class ExchangeCounterofferService(@Autowired private val exchangeCounterofferRepository: ExchangeCounterofferRepository,
-                             @Autowired private val ownershipRepository: OwnershipRepository) {
+class ExchangeCounterofferService(@Autowired private val exchangeCounterofferRepository: ExchangeCounterofferRepository) {
 
     public fun create(exchangeCounteroffer: ExchangeCounteroffer): ExchangeCounteroffer {
         return exchangeCounterofferRepository.save(exchangeCounteroffer)
+    }
+
+    public fun updateExchangeCounteroffer(request: UpdateExchangeCounterofferRequest): ExchangeCounteroffer {
+        val exchangeCounterofferToUpdate = exchangeCounterofferRepository.findById(request.id)
+
+        if (exchangeCounterofferToUpdate.isPresent) {
+            val currentECO = exchangeCounterofferToUpdate.get()
+            currentECO.status = request.status
+            return exchangeCounterofferRepository.save(currentECO)
+        } else {
+            throw ResponseStatusException(HttpStatus.NOT_FOUND, "Exchange request not found.")
+        }
     }
 
     public fun getAll(pageable: Pageable): List<ExchangeCounteroffer> {

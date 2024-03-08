@@ -118,7 +118,7 @@ class ExchangeCounteroffer(
 
         @Column(name = "status", nullable = false, columnDefinition = "varchar")
         @Enumerated(EnumType.STRING)
-        private val status: ExchangeRequestStatus,
+        var status: ExchangeRequestStatus,
 
         @ManyToOne
         @JoinColumn(name = "exchange_request_id", nullable = false)
@@ -137,7 +137,7 @@ class ExchangeCounteroffer(
     constructor(request: CreateExchangeCounterofferRequest) : this(
             null,
             request.offeredCard,
-            request.status,
+            ExchangeRequestStatus.valueOf(request.status.uppercase()),
             request.exchangeRequest,
             request.exchangeOffer,
             request.createdAt
@@ -145,7 +145,7 @@ class ExchangeCounteroffer(
 
     fun getId(): Long = this.id!!
     fun getOfferedCard(): Card = this.card
-    fun getStatus(): ExchangeRequestStatus = this.status
+    fun getRequestStatus(): ExchangeRequestStatus = this.status
     fun getExchangeRequest(): ExchangeRequest = this.exchangeRequest
     fun getExchangeOffer(): ExchangeOffer = this.exchangeOffer
     fun getCreatedAt(): Timestamp = this.createdAt
