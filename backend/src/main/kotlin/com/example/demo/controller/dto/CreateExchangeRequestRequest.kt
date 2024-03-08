@@ -6,9 +6,8 @@ import com.example.demo.model.User
 import java.sql.Timestamp
 
 data class CreateExchangeRequestRequest (
-        val id: Long,
         val user: User,
         val requestedCard: Card,
-        val requestStatus: ExchangeRequestStatus,
+        val requestStatus: String,
         val createdAt: Timestamp
 )

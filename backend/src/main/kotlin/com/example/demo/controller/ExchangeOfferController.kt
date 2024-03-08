@@ -1,10 +1,8 @@
-import com.example.demo.controller.dto.CreateExchangeOfferRequest
-import com.example.demo.controller.dto.CreateExchangeRequestRequest
-import com.example.demo.controller.dto.ExchangeOfferDTO
-import com.example.demo.controller.dto.ExchangeRequestDTO
+package com.example.demo.controller
+
+import com.example.demo.controller.dto.*
 import com.example.demo.model.ExchangeOffer
 import com.example.demo.model.ExchangeOfferStatus
-import com.example.demo.model.ExchangeRequest
 import com.example.demo.service.ExchangeOfferService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.Pageable
@@ -30,7 +28,7 @@ class ExchangeOfferController {
 
     @GetMapping
     fun getAllExchangeOffers(pageable: Pageable): List<ExchangeOfferDTO> {
-        return exchangeOfferService.getAll(pageable).map { ExchangeOfferDTO(it) }
+        return exchangeOfferService.getAll(pageable).map { exchangeOffer -> ExchangeOfferDTO(exchangeOffer) }
     }
 
     @GetMapping("/{id}")
