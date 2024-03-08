@@ -44,11 +44,11 @@ type Barajita = {
 export default function Barajitas() {
   const { user, isLoading } = useUser();
   let [loadingAlbum, setLoadingAlbum] = useState(true);
-  let [pageNumber, setPageNumber] = useState(0);
+  let [pageNumber, setPageNumber] = useState(-1);
   let [pageContents, setPageContents] = useState<Barajita[]>([]);
   const API_ALBUM_DATA_URL = process.env.NEXT_PUBLIC_USER_API_URL + `/cardsOwned?page=${pageNumber}&size=10`;
   const EMPTY_CARD_IMG_LOC = '/static/images/emptycard.png'
-  const CARD_PICTURE_LOC = 'static/images/cards/'
+  const CARD_PICTURE_LOC = '/static/images/cards/'
   const country_name = "Argentina";
 
   useEffect(() => {
@@ -74,19 +74,18 @@ export default function Barajitas() {
   if (isLoading || loadingAlbum) return <div>Loading...</div>;
 
   return (
-  <>
+    <>
     <div>
       <div className="w-full mx-auto">
         <div className="mb-10 w-full flex justify-between space-x-4 items-center">
           <h1 className={`text-5xl text-white ${ProtestRiot.className}`}>{country_name}</h1>
-          {/*Boton peligroso da error
-          <Button link="/buy" text="¡Compra barajitas!" />*/}
+         {/* <Button link="/buy" text="¡Compra barajitas!" />*/}
         </div>
         <div className="flex justify-between items-center space-x-4">
           <button>
             <ChevronLeftIcon
               className="h-6 w-6 text-white hover:text-gray-200"
-              onClick={() => setPageNumber(pageNumber == 0 ? 0 : pageNumber-1)} />
+              onClick={() => setPageNumber(0)} />
           </button>
           <div className="grid grid-cols-5 gap-10">
             {pageContents.map((barajita, index) => ( barajita ?
@@ -101,7 +100,7 @@ export default function Barajitas() {
           <button>
             <ChevronRightIcon 
               className="h-6 w-6 text-white hover:text-gray-200"
-              onClick = {() => {setPageNumber(pageNumber + 1)}}
+              onClick = {() => {setPageNumber(0)}}
             />
           </button>
         </div>
