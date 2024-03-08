@@ -5,10 +5,11 @@
 import { useUser } from "@auth0/nextjs-auth0/client";
 import Image from "next/image";
 import Button from "@/app/components/Button";
-import { barajitas_temporal } from "@/utils/barajitas_temporal";
 import { Fragment, useState, useEffect } from 'react'
 import OfferRequest from "./offerRequest";
 import getJwt from "../../helpers/getJwtClient";
+import UpdateExchangeOffer from "./updateExchangeOffer";
+import { off } from "process";
 
 
 type exchangeProps = {
@@ -18,14 +19,7 @@ type exchangeProps = {
 
 
 function clickMe() {
-    alert("You clicked me!");
-  }
-
-  function accept() {
-    alert("Intercambio exitoso!");
-  }
-  function reject() {
-    alert("Intercambio rechazado!");
+    alert("Oferta contraofertada!");
   }
 
   type User = {
@@ -50,7 +44,7 @@ function clickMe() {
   type exchangeOffer = {
     id: number,
     bidderId: number,
-    exchangeRequesId: number,
+    exchangerequestId: number,
     offeredCardId: number,
     status: 'PENDING' | 'ACCEPTED' | 'REJECTED',
   }
@@ -73,7 +67,7 @@ function clickMe() {
     const [cardId, setCardId] = useState(true);
     const API_EXCHANGE_REQUEST_OFFER_URL = process.env.NEXT_PUBLIC_EXCHANGE_OFFER_URL + `/receiver/2`;
 
-    /*
+    
     useEffect(() => {
       const getExchangeOfferData = async () => {
         const {token} = await getJwt();
@@ -88,13 +82,12 @@ function clickMe() {
           }
         )
         const data = await response.json();
-        console.log(data);
-        setOfferContent(data.content);
+        //console.log(data);
+        setOfferContent(data);
         setExchangeOffer(false);
       };
       getExchangeOfferData();
     },[])
-*/
 
     const API_CARD_URL = process.env.NEXT_PUBLIC_CARD_API_URL + `/${5}`;
 
@@ -120,7 +113,9 @@ function clickMe() {
   } ,[])
     //console.log(cardContent?.name)
 
-    if(isLoading || exchangeOffer) return <div>Loading...</div>;
+    const cardRequested = cardContent ? cardContent.name : 'Kylian Mbappé';
+
+    //if(isLoading || exchangeOffer) return <div>Loading...</div>;
 
     const [showPopup,setShowPopup] = useState(false)
 
@@ -129,38 +124,31 @@ function clickMe() {
     };
 
     return(
+      <div>
+      {offerContent.length>0 ?
+      offerContent.map((offer, index) => (
         <div className="w-full h-full rounded-lg bg-[#d6dfea] p-2 drop-shadow-md">
          <div className="p-4">
             <div className="flex justify-start items-center">   
             <h1 className="text-1xl font-bold space-y-4"> {`Alguien quiere intercambiar su barajita`} </h1> 
-             {/**Cambiar */}
-              {offerContent.map((offer, index) => (
-                
                 <div key={index}>
+                  <div className="flex items-center">
                 <span>
-                    <Image src={CARD_PICTURE_LOC + offer.offeredCardId + '.jpeg'} alt={offer.offeredCardId} className="w-20 ml-2 mr-2" width={1080} height={1080} />
+                    <Image src={CARD_PICTURE_LOC + cardRequested + '.jpeg'} alt={cardRequested} className="w-20 ml-2 mr-2" width={1080} height={1080} />
                 </span>
                  <h1 className="text-1xl font-bold space-y-4"> {` por tu barajita `} </h1>
                 <span>
-                    <Image src={CARD_PICTURE_LOC + offer.exchangeRequesId + '.jpeg'} alt={offer.exchangeRequesId} className="w-20 ml-2 mr-2" width={1080} height={1080} />
+                    <Image src={CARD_PICTURE_LOC + cardRequested + '.jpeg'} alt={cardRequested} className="w-20 ml-2 mr-2" width={1080} height={1080} />
                 </span>
-                
-            
-             {/**
-            <span>
-                <Image src={barajitas_temporal[requiredCard].photo} alt={barajitas_temporal[requiredCard].name} className="w-20 ml-2 mr-2" width={1080} height={1080} />
-            </span>
-            <h1 className="text-1xl font-bold space-y-4"> {` por tu barajita `} </h1>
-            <span>
-                <Image src={barajitas_temporal[solicitedCard].photo} alt={barajitas_temporal[solicitedCard].name} className="w-20 ml-2 mr-2" width={1080} height={1080} />
-            </span>
-             **/}
+                </div>
             </div>  
-            ))}   
         </div>
         <div className="flex justify-center space-x-4">
-          <Button onClick={accept} text = "Aceptar" color = "green"/> 
-          <Button onClick={reject}  text = "Rechazar" color = "red"/>
+              <h1 className="text-1xl font-bold space-y-4"> {`Estatus de la oferta: ${offer.status}`} </h1> 
+              </div>
+        <div className="flex justify-center space-x-4 mt-4">
+          <Button onClick={() => UpdateExchangeOffer(offer.id,offer.bidderId,offer.exchangerequestId,offer.offeredCardId,"ACCEPTED")} text = "Aceptar" color = "green"/> 
+          <Button onClick={() => UpdateExchangeOffer(offer.id,offer.bidderId,offer.exchangerequestId,offer.offeredCardId,"REJECTED")}  text = "Rechazar" color = "red"/>
           <Button onClick={handleAccept} text = "Contraoferta"/>
           <Button onClick={clickMe} text = {`Ver album del solicitante`}/>
         </div>
@@ -183,9 +171,19 @@ function clickMe() {
       )}
         </div>
         </div>
-    )
+    )):
+    <div>
+            <div className="w-full h-full rounded-lg bg-[#d6dfea] p-2 drop-shadow-md">
+                <div className="p-4">
+                <div className="flex justify-start items-center">   
+                <h1 className="text-1xl font-bold space-y-4"> {`No ha realizado ninguna contraoferta`} </h1> 
+                </div>     
+                </div>
+            </div>
+            </div>
   }
-
-function setShowPopup(arg0: boolean) {
-  throw new Error("Function not implemented.");
+  </div>
+  )
+  
 }
+

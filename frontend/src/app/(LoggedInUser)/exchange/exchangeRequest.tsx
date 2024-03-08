@@ -12,6 +12,7 @@ import { useForm } from "react-hook-form";
 import { Fragment, useState } from 'react'
 import { Listbox, Transition } from '@headlessui/react'
 import { CheckIcon, ChevronUpDownIcon } from '@heroicons/react/20/solid'
+import CreateExchangeRequest from "./createExchangeRequest";
 
 function clickMe() {
   alert("Peticion de intercambio exitosa!");
@@ -98,7 +99,7 @@ export default function ExchangePetition() {
                 </Listbox> 
             </div>
             <div style={{ display: "flex" }}>           
-             <Button onClick={clickMe} style = {{ margin: 'auto', display: 'block', marginTop: '20px'}} text="Solicitar intercambio" />
+             <Button onClick={()=>CreateExchangeRequest(1,1)} style = {{ margin: 'auto', display: 'block', marginTop: '20px'}} text="Solicitar intercambio" />
           </div>
         </div>    
     </div>

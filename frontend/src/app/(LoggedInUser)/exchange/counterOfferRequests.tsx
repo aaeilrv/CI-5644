@@ -8,6 +8,7 @@ import Button from "@/app/components/Button";
 import { Fragment, useState , useEffect} from 'react'
 import { barajitas_temporal } from "@/utils/barajitas_temporal";
 import getJwt from "../../helpers/getJwtClient";
+import UpdateCounterOffer from "./updateCounterOffer";
 
 type exchangeProps = {
     requiredCard: number;
@@ -36,9 +37,10 @@ type exchangeProps = {
 
   type exchangeRequestD = {
     id: number,
-    userId: number,
-    requestedCardId: number,
-    requestStatus: 'PENDING' | 'ACCEPTED' | 'REJECTED',
+    offered_card_id: number,
+    exchange_request_id: number,
+    status: string,
+    exchange_offer_id:number,
   }
 
 
@@ -113,9 +115,12 @@ type exchangeProps = {
                     </span>
                     </div>     
                   </div>
+                  <div className="flex justify-center space-x-4">
+              <h1 className="text-1xl font-bold space-y-4"> {`Estatus de la contraoferta: ${exchange.status}`} </h1> 
+              </div>
               <div className="flex justify-center space-x-4">
-              <Button onClick={accept} text = "Aceptar" color = "green"/> 
-            <Button onClick={reject}  text = "Rechazar" color = "red"/>
+              <Button onClick={() => UpdateCounterOffer(exchange.id,exchange.exchange_offer_id,exchange.exchange_request_id,exchange.offered_card_id,"ACCEPTED")} text = "Aceptar" color = "green"/> 
+            <Button onClick={() => UpdateCounterOffer(exchange.id,exchange.exchange_offer_id,exchange.exchange_request_id,exchange.offered_card_id,"REJECTED")}  text = "Rechazar" color = "red"/>
             <Button onClick={clickMe} text = {`Ver album del solicitante`}/>
               </div>
               </div>

@@ -38,7 +38,7 @@ type exchangeProps = {
     id: number,
     userId: number,
     requestedCardId: number,
-    requestStatus: 'PENDING' | 'ACCEPTED' | 'REJECTED',
+    status: string,
   }
 
 
@@ -113,9 +113,8 @@ type exchangeProps = {
                     </span>
                     </div>     
                   </div>
-                  {/**ESTATUS*/}
               <div className="flex justify-center space-x-4">
-                Estatus de la contraoferta ${exchange.requestStatus}
+              <h1 className="text-1xl font-bold space-y-4"> {`Estatus de la contraoferta: ${exchange.status}`} </h1> 
               </div>
               </div>
               </div>

@@ -53,13 +53,10 @@ export default function Exchange() {
       <div className="p-4">
         <ExchangeNotifications requiredCard ={0}  solicitedCard = {1} />
       </div>
-      <div className="p-4">
-        <ExchangeNotifications requiredCard ={2}  solicitedCard = {3} />
         {/** CONTRAOFERTAS QUE NOSOTROS HICIMOS???? 
          *   CONTRAOFERTAS QUE OTROS NOS HICIERON????
          *  OFERTAS QUE NOSOTROS HICIMOS???
         */}
-      </div>
     </div>
     <div>
     <div className="p-4">

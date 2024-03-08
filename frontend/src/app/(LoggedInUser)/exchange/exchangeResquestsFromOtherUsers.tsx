@@ -29,7 +29,7 @@ type exchangeProps = {
     id: number,
     userId: number,
     requestedCardId: number,
-    requestStatus: 'PENDING' | 'ACCEPTED' | 'REJECTED',
+    status: string,
   }
 
 function clickMe() {
@@ -51,7 +51,7 @@ function clickMe() {
     const [exchangedContent, setExchangedContent] = useState<exchangeRequestD[]>([]);
     const [cardContent, setCardContent] = useState<barajita>();
     const [cardId, setCardId] = useState(true);
-    const API_EXCHANGE_REQUEST_URL = process.env.NEXT_PUBLIC_EXCHANGE_REQUEST_URL + `/hasCards/4`;
+    const API_EXCHANGE_REQUEST_URL = process.env.NEXT_PUBLIC_EXCHANGE_REQUEST_URL + `/hasCards/2`;
 
     useEffect(() => {
       const getExchangeRequestData = async () => {
@@ -117,9 +117,12 @@ function clickMe() {
             <span>
             <Image src={CARD_PICTURE_LOC + cardRequested + ".jpeg" } alt={cardRequested} className="w-20 ml-2 mr-2" width={1080} height={1080} />
             </span>
-            </div>     
+            </div>
+            <div className="flex justify-center space-x-4">
+              <h1 className="text-1xl font-bold space-y-4"> {`Estatus de la solicitud: ${exchange.status}`} </h1> 
+              </div>     
           </div>
-          {/** SI NO TIENE REQUEST PONER IFFFFFFF */}
+          
         <div className="flex justify-center space-x-4">
           <Button onClick={handleAccept} text = "Ofertar"/>
           <Button onClick={clickMe} text = {`Ver album del solicitante`}/>

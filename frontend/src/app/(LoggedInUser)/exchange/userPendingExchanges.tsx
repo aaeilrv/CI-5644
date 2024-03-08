@@ -9,6 +9,7 @@ import { Fragment, useState , useEffect} from 'react'
 import { barajitas_temporal } from "@/utils/barajitas_temporal";
 import getJwt from "../../helpers/getJwtClient";
 import getCardName from "./getCardName";
+import UpdateExchangeRequest from "./updateExchangeRequest";
 
 type exchangeProps = {
     requiredCard: number;
@@ -33,12 +34,11 @@ function deleteRequest() {
     id: number,
     userId: number,
     requestedCardId: number,
-    requestStatus: 'PENDING' | 'ACCEPTED' | 'REJECTED',
+    status:string,
   }
 
 
   export default function UserPendingExchanges({requiredCard}: exchangeProps) {
-    const EMPTY_CARD_IMG_LOC = '/static/images/emptycard.png'
     const CARD_PICTURE_LOC = '/static/images/cards/'
     const { user, isLoading } = useUser();
     const [exchangeRequest, setExchangeRequest] = useState(true);
@@ -46,6 +46,7 @@ function deleteRequest() {
     const [cardContent, setCardContent] = useState<barajita>();
     const [cardId, setCardId] = useState(true);
     const API_EXCHANGE_REQUEST_URL = process.env.NEXT_PUBLIC_EXCHANGE_REQUEST_URL + `/user/3`;
+    const API_EXCHANGE_REQUEST_PATCH_URL = process.env.NEXT_PUBLIC_EXCHANGE_REQUEST_URL + ``;
 
     useEffect(() => {
       const getExchangeRequestData = async () => {
@@ -90,10 +91,8 @@ function deleteRequest() {
     };
     getCardData();
   } ,[])
-    //console.log(cardContent?.name)
-    const cardRequested = cardContent ? cardContent.name : 'Kylian Mbappé';
-    
-    /**
+    const cardRequested = cardContent ? cardContent.name : 'Kylian Mbappé'; 
+    /** 
     useEffect(() => {
       const fetchCardNames = async () => {
         const names = await Promise.all(exchangedContent.map(exchange => getCardName(exchange.requestedCardId)));
@@ -104,6 +103,7 @@ function deleteRequest() {
     }, [exchangedContent]);
     console.log(cardContent);
     */
+   
     if(isLoading || exchangeRequest) return <div>Loading...</div>;
     return(
           <div>
@@ -117,10 +117,13 @@ function deleteRequest() {
                     <span>
                     <Image src={CARD_PICTURE_LOC + cardRequested + ".jpeg" } alt={cardRequested} className="w-20 ml-2 mr-2" width={1080} height={1080} />
                     </span>
-                    </div>     
+                    </div>
+                    <div className="flex justify-center space-x-4">
+              <h1 className="text-1xl font-bold space-y-4"> {`Estatus de la solicitud: ${exchange.status}`} </h1> 
+              </div>       
                   </div>
               <div className="flex justify-center space-x-4">
-                <Button onClick={deleteRequest} text = {"Borrar solicitud de intercambio"}/>
+                <Button onClick={()=>UpdateExchangeRequest(exchange.id,exchange.userId,exchange.requestedCardId,"CANCELLED")} text = {"Borrar solicitud de intercambio"}/>
               </div>
               </div>
               </div>
