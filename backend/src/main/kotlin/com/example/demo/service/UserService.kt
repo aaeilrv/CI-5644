@@ -24,7 +24,6 @@ import java.math.BigDecimal
 import java.math.RoundingMode
 import java.util.stream.Collectors
 
-
 @Service
 class UserService (@Autowired private val userRepository: UserRepository,
                    @Autowired private val ownershipRepository: OwnershipRepository) {

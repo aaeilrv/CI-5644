@@ -12,14 +12,7 @@ import org.springframework.data.repository.query.Param
 
 @Repository
 interface OwnershipRepository: JpaRepository<Ownership, Long> {
-    @Query(nativeQuery = true,
-        value = """
-            SELECT o.*
-            FROM card c LEFT JOIN (
-            SELECT *
-            FROM ownership
-            WHERE ownership.user_id = :#{#user_object.getId()}
-            ) o ON c.id = o.card_id;
-        """)
-    fun findByUserOrderByCardCountry(@Param("user_object") user: User, pageable: Pageable): Page<Ownership>
+    fun findByUserOrderByCardCountry(user: User, pageable: Pageable): Page<Ownership>
+
+
 }
