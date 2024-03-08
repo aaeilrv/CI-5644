@@ -8,7 +8,9 @@ import { useForm } from "react-hook-form";
 import { barajitas_temporal } from "@/utils/barajitas_temporal";
 import { Fragment, useEffect, useState } from 'react'
 import UserPendingExchanges from "./userPendingExchanges";
+import UserCounteroffers from "./counterOfferRequests";
 import getJwt from "../../helpers/getJwtClient";
+import UserCounteroffersMade from "./counterOfferSended";
 function clickMe() {
   alert("You clicked me!");
 }
@@ -65,6 +67,22 @@ export default function Exchange() {
     </div>
       <div className="p-4">
         <ExchangeResquestFromOtherUsers requiredCard={1}/>
+      </div>
+    </div>
+    <div>
+    <div className="p-4">
+            <h1 className="text-2xl font-bold space-y-4"> Contraofertas recibidas </h1>
+    </div>
+      <div className="p-4">
+        <UserCounteroffers requiredCard={1}/>
+      </div>
+    </div>
+    <div>
+    <div className="p-4">
+            <h1 className="text-2xl font-bold space-y-4"> Contraofertas enviadas </h1>
+    </div>
+      <div className="p-4">
+        <UserCounteroffersMade requiredCard={1}/>
       </div>
     </div>
     </div>

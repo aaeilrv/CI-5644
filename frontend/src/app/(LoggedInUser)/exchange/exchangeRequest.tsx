@@ -1,14 +1,14 @@
+//Exchange request form for the user to select the card they want to receive from other user
+//The one that will be sended to the owners of said card
+
+
 "use client";
 import { useUser } from "@auth0/nextjs-auth0/client";
 import Image from "next/image";
-import Pagination from "@/app/components/pagination";
-import Link from "next/link";
 import localfont from '@next/font/local';
 import Button from "@/app/components/Button";
-import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/outline";
 import { barajitas_temporal } from "@/utils/barajitas_temporal";
 import { useForm } from "react-hook-form";
-
 import { Fragment, useState } from 'react'
 import { Listbox, Transition } from '@headlessui/react'
 import { CheckIcon, ChevronUpDownIcon } from '@heroicons/react/20/solid'
@@ -26,11 +26,12 @@ function classNames(...classes: string[]) {
 
 export default function ExchangePetition() {
     const { user, isLoading } = useUser();
-    if (isLoading) return <div>Loading...</div>;
     const { register, handleSubmit } = useForm();
     const [data, setData] = useState("");
     const [selected, setSelected] = useState(barajitas_temporal[0])
     const [exchanged, setExchanged] = useState(barajitas_temporal[0])
+    const CARD_PICTURE_LOC = 'static/images/cards/'
+    const API_EXCHANGE_URL = process.env.NEXT_PUBLIC_USER_API_URL + `/exchange`;
   
     return (
     <div className="w-full h-full rounded-lg bg-[#d6dfea] p-2 drop-shadow-md">
