@@ -10,8 +10,7 @@ import org.springframework.stereotype.Service
 import java.util.*
 
 @Service
-class ExchangeOfferService(@Autowired private val exchangeOfferRepository: ExchangeOfferRepository,
-                      @Autowired private val ownershipRepository: OwnershipRepository) {
+class ExchangeOfferService(@Autowired private val exchangeOfferRepository: ExchangeOfferRepository) {
 
     public fun create(exchangeOffer: ExchangeOffer): ExchangeOffer {
         return exchangeOfferRepository.save(exchangeOffer)

@@ -13,6 +13,10 @@ data class ExchangeCounterofferDTO(
         private val createdAt: Timestamp
 ): Serializable {
 
+    fun getId(): Long {
+        return this.id
+    }
+
     constructor(exchangeCounterOffer: ExchangeCounteroffer): this(
             exchangeCounterOffer.getId(),
             exchangeCounterOffer.getOfferedCard().getId(),

@@ -13,32 +13,32 @@ public enum class ExchangeRequestStatus {
     PENDING, ACCEPTED, REJECTED, CANCELED
 }
 
-enum class ExchangeOfferStatus(val value: String) {
-    PENDING("PENDING"), ACCEPTED("ACCEPTED"), REJECTED("REJECTED"), CANCELED("CANCELED"), COUNTEROFFER("COUNTEROFFER")
+enum class ExchangeOfferStatus {
+    PENDING, ACCEPTED, REJECTED, CANCELED, COUNTEROFFER
 }
 
 @Entity
 @Table(name = "exchange_request")
 class ExchangeRequest(
         @Id
-    @Column(name = "id")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private val id: Long?,
+        @Column(name = "id")
+        @GeneratedValue(strategy = GenerationType.IDENTITY)
+        private val id: Long?,
 
         @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
-    private var requester: User,
+        @JoinColumn(name = "user_id", nullable = false)
+        private var requester: User,
 
         @ManyToOne
-    @JoinColumn(name = "requested_card_id", nullable = false)
-    private var requestedCard: Card,
+        @JoinColumn(name = "requested_card_id", nullable = false)
+        private var requestedCard: Card,
 
         @Column(name = "status", nullable = false, columnDefinition = "varchar")
-    @Enumerated(EnumType.STRING)
-         var status: ExchangeRequestStatus,
+        @Enumerated(EnumType.STRING)
+        var status: ExchangeRequestStatus,
 
         @Column(name = "created_at", nullable = false)
-    private val createdAt: java.sql.Timestamp,
+        private val createdAt: java.sql.Timestamp,
 
         ) {
     constructor() : this(-1, User(), Card(), ExchangeRequestStatus.PENDING, java.sql.Timestamp(0))
@@ -77,7 +77,7 @@ class ExchangeOffer(
         @JoinColumn(name = "offered_card_id", nullable = false)
         private val offeredCard: Card,
 
-        @Column(name = "status", nullable = false, columnDefinition = "exchange_offer_status")
+        @Column(name = "status", nullable = false, columnDefinition = "varchar")
         @Enumerated(EnumType.STRING)
         private val status: ExchangeOfferStatus,
 
@@ -92,7 +92,7 @@ class ExchangeOffer(
             request.bidder,
             request.exchangeRequest,
             request.offeredCard,
-            request.status,
+            ExchangeOfferStatus.valueOf(request.status.toString().uppercase()),
             request.createdAt
     )
 
@@ -116,9 +116,9 @@ class ExchangeCounteroffer(
         @JoinColumn(name = "offered_card_id", nullable = false)
         private val card: Card,
 
-        @Column(name = "status", nullable = false, columnDefinition = "exchange_request_status")
+        @Column(name = "status", nullable = false, columnDefinition = "varchar")
         @Enumerated(EnumType.STRING)
-        private val status: ExchangeRequestStatus, // 0: pending, 1: accepted, 2: rejected, 3: canceled, 4: completed
+        private val status: ExchangeRequestStatus,
 
         @ManyToOne
         @JoinColumn(name = "exchange_request_id", nullable = false)
