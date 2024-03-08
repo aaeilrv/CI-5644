@@ -39,7 +39,6 @@ class ExchangeRequest(
 
         @Column(name = "created_at", nullable = false)
         private val createdAt: java.sql.Timestamp,
-
         ) {
     constructor() : this(-1, User(), Card(), ExchangeRequestStatus.PENDING, java.sql.Timestamp(0))
     constructor(request: CreateExchangeRequestRequest) : this(
