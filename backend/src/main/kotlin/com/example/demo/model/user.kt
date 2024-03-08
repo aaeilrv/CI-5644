@@ -69,19 +69,19 @@ open class User (
         return this.email
     }
 
-    fun setFirstName(String firstName) {
+    fun setFirstName(firstName : String) {
         this.firstName = firstName
     }
 
-    fun setLastName(String lastName) {
+    fun setLastName(lastName : String) {
         this.lastName = lastName
     }
     
-    fun setUsername(String username) {
+    fun setUsername(username : String) {
         this.username = username
     }
 
-    fun setEmail(String email) {
+    fun setEmail(email : String) {
         this.email = email
     }
 

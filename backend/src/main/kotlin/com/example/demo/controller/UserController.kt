@@ -16,6 +16,7 @@ import org.springframework.web.server.ResponseStatusException
 import java.security.Principal
 import com.example.demo.security.SecurityConfig
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken
+import java.util.*
 
 
 @CrossOrigin(value = ["http://localhost:3000"])
@@ -109,13 +110,13 @@ class UserController {
     @PutMapping("/edit")
     fun profileEdit (@RequestHeader("Authorization") token: String,
                      principal: JwtAuthenticationToken,
-                     @RequestBody Map<String, String> request): ResponseEntity<UserDTO>{
+                     @RequestBody request : Map<String, String>): ResponseEntity<UserDTO>{
 
         val sub: String = principal.tokenAttributes["sub"].toString()
-        val current: User = userService.getBySub(sub)
+        val current: Optional<User> = userService.getBySub(sub)
 
         if (current.isPresent) {            
-            return ResponseEntity.ok(UserDTO(userService.editUserData(current, request)))
+            return ResponseEntity.ok(UserDTO(userService.editUserData(current.get(), request)))
         } else {
             throw ResponseStatusException(HttpStatus.NOT_FOUND, "User with $sub not found")  
         }
