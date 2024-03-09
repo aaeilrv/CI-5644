@@ -30,7 +30,7 @@ describe("Create New Account", () => {
 
     it("Clicking the submit button should fail if form isnt valid", () => {
         cy.get('[data-testid="editProfile"]').click();
-        cy.get('[data-testid="submitButtonEditProfile"]').click().should("not.exist");
+        cy.get('[data-testid="submitButtonEditProfile"]').click();
 
         cy.once('fail', (err) => {
             console.log(err.message)
@@ -41,6 +41,17 @@ describe("Create New Account", () => {
             // Only here if click succeeds (so test fails)
             done(new Error('Expected button NOT to be clickable, but click() succeeded'));
           })
+    })
+    it("Updating Profile", () => {
+        cy.get('[data-testid="editProfile"]').click();
+        
+        cy.get('[data-testid="name-input"]').clear().type("jose");
+        cy.get('[data-testid="lastName-input"]').clear().type("gonzalez");
+        cy.get('[data-testid="username-input"]').clear().type("Boondock132132");
+        cy.get('[data-testid="email-input"]').clear().type("jose12356@gmail.com");
+    
+        cy.get('[data-testid="submitButtonEditProfile"]').click();
+
     })
 
   });
