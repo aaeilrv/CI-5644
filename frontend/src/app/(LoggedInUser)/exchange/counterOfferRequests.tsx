@@ -1,5 +1,5 @@
 //Counteroffer requests pending for response
-//The ones the user received
+//(The ones the user received)
 
 "use client";
 import { useUser } from "@auth0/nextjs-auth0/client";
@@ -10,19 +10,8 @@ import { barajitas_temporal } from "@/utils/barajitas_temporal";
 import getJwt from "../../helpers/getJwtClient";
 import UpdateCounterOffer from "./updateCounterOffer";
 
-type exchangeProps = {
-    requiredCard: number;
-  };
-
   function clickMe() {
     alert("You clicked me!");
-  }
-
-  function accept() {
-    alert("Intercambio exitoso!");
-  }
-  function reject() {
-    alert("Intercambio rechazado!");
   }
 
   type barajita = {
@@ -35,21 +24,20 @@ type exchangeProps = {
     photoURL: string,
   }
 
-  type exchangeRequestD = {
+  type counterOffer = {
     id: number,
-    offered_card_id: number,
-    exchange_request_id: number,
+    offeredCardId: number,
+    exchangeRequestId: number,
+    exchangeOfferId: number,
     status: string,
-    exchange_offer_id:number,
-  }
+};
 
 
-  export default function UserCounteroffers({requiredCard}: exchangeProps) {
-    const EMPTY_CARD_IMG_LOC = '/static/images/emptycard.png'
+  export default function UserCounteroffers() {
     const CARD_PICTURE_LOC = '/static/images/cards/'
     const { user, isLoading } = useUser();
     const [exchangeRequest, setExchangeRequest] = useState(true);
-    const [exchangedContent, setExchangedContent] = useState<exchangeRequestD[]>([]);
+    const [exchangedContent, setExchangedContent] = useState<counterOffer[]>([]);
     const [cardContent, setCardContent] = useState<barajita>();
     const [cardId, setCardId] = useState(true);
     const API_EXCHANGE_REQUEST_URL = process.env.NEXT_PUBLIC_EXCHANGE_COUNTEROFFER_URL + `/receiver/2`;
@@ -68,7 +56,6 @@ type exchangeProps = {
           }
         )
         const data = await response.json();
-        //console.log(data)
         setExchangedContent(data);
         setExchangeRequest(false);
       };
@@ -105,23 +92,26 @@ type exchangeProps = {
           <div>
             {exchangedContent.length>0 ?
             exchangedContent.map((exchange, index) => ( 
+              <div className="p-4">
                 <div key={index}>
                   <div className="w-full h-full rounded-lg bg-[#d6dfea] p-2 drop-shadow-md">
                   <div className="p-4">
                   <div className="flex justify-start items-center">   
-                  <h1 className="text-1xl font-bold space-y-4"> {`Contraoferta de la barajita en la oferta tal `} </h1> 
+                  <h1 className="text-1xl font-bold space-y-4"> {`Contraoferta de la barajita`} </h1> 
                     <span>
                     <Image src={CARD_PICTURE_LOC + cardRequested + ".jpeg" } alt={cardRequested} className="w-20 ml-2 mr-2" width={1080} height={1080} />
                     </span>
+                    <h1 className="text-1xl font-bold space-y-4"> {` en la oferta ${exchange.exchangeRequestId} `} </h1>  
                     </div>     
                   </div>
                   <div className="flex justify-center space-x-4">
               <h1 className="text-1xl font-bold space-y-4"> {`Estatus de la contraoferta: ${exchange.status}`} </h1> 
               </div>
               <div className="flex justify-center space-x-4">
-              <Button onClick={() => UpdateCounterOffer(exchange.id,exchange.exchange_offer_id,exchange.exchange_request_id,exchange.offered_card_id,"ACCEPTED")} text = "Aceptar" color = "green"/> 
-            <Button onClick={() => UpdateCounterOffer(exchange.id,exchange.exchange_offer_id,exchange.exchange_request_id,exchange.offered_card_id,"REJECTED")}  text = "Rechazar" color = "red"/>
+              <Button onClick={() => UpdateCounterOffer(exchange.id,exchange.exchangeOfferId,exchange.exchangeRequestId,exchange.offeredCardId,"ACCEPTED")} text = "Aceptar" color = "green"/> 
+            <Button onClick={() => UpdateCounterOffer(exchange.id,exchange.exchangeOfferId,exchange.exchangeRequestId,exchange.offeredCardId,"REJECTED")}  text = "Rechazar" color = "red"/>
             <Button onClick={clickMe} text = {`Ver album del solicitante`}/>
+              </div>
               </div>
               </div>
               </div>

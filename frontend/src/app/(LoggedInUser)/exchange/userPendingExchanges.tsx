@@ -1,5 +1,5 @@
 //Exchange requests pending for response
-//The ones the user made
+//(The ones the user made)
 
 "use client";
 import { useUser } from "@auth0/nextjs-auth0/client";
@@ -10,10 +10,6 @@ import { barajitas_temporal } from "@/utils/barajitas_temporal";
 import getJwt from "../../helpers/getJwtClient";
 import getCardName from "./getCardName";
 import UpdateExchangeRequest from "./updateExchangeRequest";
-
-type exchangeProps = {
-    requiredCard: number;
-  };
 
 
 function deleteRequest() {
@@ -38,7 +34,7 @@ function deleteRequest() {
   }
 
 
-  export default function UserPendingExchanges({requiredCard}: exchangeProps) {
+  export default function UserPendingExchanges() {
     const CARD_PICTURE_LOC = '/static/images/cards/'
     const { user, isLoading } = useUser();
     const [exchangeRequest, setExchangeRequest] = useState(true);
@@ -92,23 +88,13 @@ function deleteRequest() {
     getCardData();
   } ,[])
     const cardRequested = cardContent ? cardContent.name : 'Kylian Mbappé'; 
-    /** 
-    useEffect(() => {
-      const fetchCardNames = async () => {
-        const names = await Promise.all(exchangedContent.map(exchange => getCardName(exchange.requestedCardId)));
-        setCardContent(names);
-      };
-    
-      fetchCardNames();
-    }, [exchangedContent]);
-    console.log(cardContent);
-    */
    
     if(isLoading || exchangeRequest) return <div>Loading...</div>;
     return(
           <div>
             {exchangedContent.length>0 ?
             exchangedContent.map((exchange, index) => ( 
+              <div className="p-4">
                 <div key={index}>
                   <div className="w-full h-full rounded-lg bg-[#d6dfea] p-2 drop-shadow-md">
                   <div className="p-4">
@@ -124,6 +110,7 @@ function deleteRequest() {
                   </div>
               <div className="flex justify-center space-x-4">
                 <Button onClick={()=>UpdateExchangeRequest(exchange.id,exchange.userId,exchange.requestedCardId,"CANCELLED")} text = {"Borrar solicitud de intercambio"}/>
+              </div>
               </div>
               </div>
               </div>
