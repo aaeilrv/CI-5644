@@ -48,7 +48,7 @@ export default function Barajitas() {
   let [pageContents, setPageContents] = useState<Barajita[]>([]);
   const API_ALBUM_DATA_URL = process.env.NEXT_PUBLIC_USER_API_URL + `/cardsOwned?page=${pageNumber}&size=10`;
   const EMPTY_CARD_IMG_LOC = '/static/images/emptycard.png'
-  const CARD_PICTURE_LOC = 'static/images/cards/'
+  const CARD_PICTURE_LOC = '/static/images/cards/'
   const country_name = "Argentina";
 
   useEffect(() => {

@@ -81,12 +81,13 @@ class UserController {
         }
     }
 
-    @GetMapping("/progress/{sub}")
-    fun progress(@PathVariable sub: String): String{
-        return userService.getProgress(sub)
+    @GetMapping("/progress")
+    fun progress(principal: JwtAuthenticationToken): ResponseEntity<String>{
+        val sub = principal.tokenAttributes["sub"] ?: return ResponseEntity.internalServerError().build()
+        return ResponseEntity.ok(userService.getProgress(sub.toString()))
     }
 
-    @GetMapping("progress")
+    @GetMapping("progressAll")
     fun getProgressForAll(pageable: Pageable): List<String>{
         val listProgress:MutableList<String> = mutableListOf()
         val allUser = userService.getAll(pageable)
