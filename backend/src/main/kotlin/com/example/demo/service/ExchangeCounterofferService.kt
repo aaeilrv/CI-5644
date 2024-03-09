@@ -1,8 +1,6 @@
 package com.example.demo.service
 
-import com.example.demo.controller.dto.ExchangeCounterofferDTO
-import com.example.demo.controller.dto.ExchangeOfferDTO
-import com.example.demo.controller.dto.UpdateExchangeCounterofferRequest
+import com.example.demo.controller.dto.*
 import com.example.demo.model.*
 import com.example.demo.repo.*
 import org.springframework.beans.factory.annotation.Autowired
@@ -10,13 +8,57 @@ import org.springframework.data.domain.Pageable
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 import org.springframework.web.server.ResponseStatusException
+import java.sql.Timestamp
+import java.time.Instant
 import java.util.*
+import kotlin.NoSuchElementException
 
 @Service
-class ExchangeCounterofferService(@Autowired private val exchangeCounterofferRepository: ExchangeCounterofferRepository) {
+class ExchangeCounterofferService(@Autowired private val exchangeCounterofferRepository: ExchangeCounterofferRepository,
+                                  private val exchangeOfferService: ExchangeOfferService,
+                                  private val exchangeRequestService: ExchangeRequestService,
+                                  private val cardService: CardService) {
 
-    public fun create(exchangeCounteroffer: ExchangeCounteroffer): ExchangeCounteroffer {
-        return exchangeCounterofferRepository.save(exchangeCounteroffer)
+    public fun create(exchangeCounteroffer: CreateExchangeCounterofferDTO): ExchangeCounteroffer {
+        val foundCard = cardService.getById(exchangeCounteroffer.offeredCardId).orElseThrow {
+            NoSuchElementException("Card not found.")
+        }
+
+        val foundExchangeOffer = exchangeOfferService.getById(exchangeCounteroffer.exchangeOfferId).orElseThrow{
+            NoSuchElementException("Exchange offer not found.")
+        }
+
+        val foundExchangeRequest = exchangeRequestService.getById(foundExchangeOffer.getExchangeRequest().getId()).orElseThrow {
+            NoSuchElementException("Exchange request not found.")
+        }
+
+        if (exchangeCounteroffer.exchangeRequestId != null &&
+                foundExchangeRequest.getId() != exchangeCounteroffer.exchangeRequestId) {
+            throw IllegalArgumentException("Wrong exchange request ID. Either use the right one or don't add it.")
+        }
+
+        if (exchangeCounteroffer.offeredCardId == foundExchangeOffer.getOfferedCard().getId()) {
+            throw IllegalArgumentException("Can't counteroffer the same card you're receiving.")
+        }
+
+        if (exchangeCounteroffer.offeredCardId == foundExchangeOffer.getExchangeRequest().getRequestedCard().getId()) {
+            throw IllegalArgumentException("Can't counteroffer the same card initially requested.")
+        }
+
+        val newECO: CreateExchangeCounterofferRequest
+        try {
+            newECO = CreateExchangeCounterofferRequest(
+                    offeredCard = foundCard,
+                    exchangeRequest = foundExchangeOffer.getExchangeRequest(),
+                    exchangeOffer = foundExchangeOffer,
+                    status = "PENDING",
+                    createdAt = Timestamp.from(Instant.now())
+            )
+
+        } catch (e: IllegalArgumentException) {
+            throw IllegalArgumentException("Error creating the exchange offer")
+        }
+        return exchangeCounterofferRepository.save(ExchangeCounteroffer(newECO))
     }
 
     public fun updateExchangeCounteroffer(request: UpdateExchangeCounterofferRequest): ExchangeCounteroffer {
