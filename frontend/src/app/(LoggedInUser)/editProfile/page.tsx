@@ -1,6 +1,7 @@
 'use client';
 import React, { useState } from 'react';
 import { useUser } from "@auth0/nextjs-auth0/client";
+import { useRouter } from 'next/navigation';
 import axios from 'axios';
 import getJwt from "@/app/helpers/getJwtClient";
 
@@ -8,12 +9,13 @@ interface EditUser {
     firstName: string;
     lastName: string;
     username: string;
-    emailAddress: string;
+    email: string;
 }
 
 export default function Profile() {
     const { user, isLoading } = useUser();
-    const [editUser, setEditUser] = useState<EditUser>({ firstName: '', lastName: '', username: '', emailAddress: '' });
+    const [editUser, setEditUser] = useState<EditUser>({ firstName: '', lastName: '', username: '', email: '' });
+    const router = useRouter();
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setEditUser({ ...editUser, [e.target.name]: e.target.value });
@@ -36,8 +38,11 @@ export default function Profile() {
         if (response.ok) {
             const data = await response.json();
             console.log('User updated successfully:', data);
+            router.push('/profile');
+
         } else {
             console.error('Error updating user:', response.status);
+            alert("Ocurrió un error en la actualización de sus datos. Por favor intente de nuevo");
         }
 
         // Reset form or update UI as needed
@@ -66,7 +71,7 @@ export default function Profile() {
                         </label>
                         <label className="flex flex-col mb-4 w-full">
                             <span className="mb-2">Correo electrónico:</span>
-                            <input type="email" name="email" value={editUser.emailAddress} onChange={handleChange} className="p-2 border rounded-md" />
+                            <input type="email" name="email" value={editUser.email} onChange={handleChange} className="p-2 border rounded-md" />
                         </label>
                         <button type="submit" className="p-2 bg-blue-500 text-white rounded-md">Guardar cambios</button>
                     </form>

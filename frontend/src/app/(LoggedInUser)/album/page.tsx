@@ -85,7 +85,7 @@ export default function Barajitas() {
           <button>
             <ChevronLeftIcon
               className="h-6 w-6 text-white hover:text-gray-200"
-              onClick={() => setPageNumber(0)} />
+              onClick={() => setPageNumber(pageNumber == 0 ? pageNumber : pageNumber - 1)} />
           </button>
           <div className="grid grid-cols-5 gap-10">
             {pageContents.map((barajita, index) => ( barajita ?
@@ -100,7 +100,7 @@ export default function Barajitas() {
           <button>
             <ChevronRightIcon 
               className="h-6 w-6 text-white hover:text-gray-200"
-              onClick = {() => {setPageNumber(0)}}
+              onClick = {() => {setPageNumber(pageNumber + 1)}}
             />
           </button>
         </div>

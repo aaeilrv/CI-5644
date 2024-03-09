@@ -76,8 +76,8 @@ export default function UserCounteroffersMade() {
     <div>
       {exchangedContent.length > 0 ? (
         exchangedContent.map((exchange, index) => (
-          <div className="p-4">
-            <div key={index}>
+          <div key={index} className="p-4">
+            <div>
               <div className="w-full h-full rounded-lg bg-[#d6dfea] p-2 drop-shadow-md">
                 <div className="p-4">
                   <div className="flex justify-start items-center">

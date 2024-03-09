@@ -78,8 +78,8 @@ export default function ExchangeNotifications() {
     <div>
       {offerContent.length > 0 ? (
         offerContent.map((offer, index) => (
-          <div className="p-4">
-            <div key={index}>
+          <div key={index} className="p-4">
+            <div>
               <div className="w-full h-full rounded-lg bg-[#d6dfea] p-2 drop-shadow-md">
                 <div className="p-4">
                   <div className="flex justify-start items-center">
