@@ -22,8 +22,8 @@ class ExchangeOfferController {
     lateinit var exchangeOfferService: ExchangeOfferService
 
     @PostMapping
-    fun createExchangeOffer(@RequestBody request: CreateExchangeOfferRequest): ResponseEntity<ExchangeOfferDTO> {
-        return ResponseEntity.ok(ExchangeOfferDTO(exchangeOfferService.create(ExchangeOffer(request))))
+    fun createExchangeOffer(@RequestBody request: CreateExchangeOfferDTO): ResponseEntity<ExchangeOfferDTO> {
+        return ResponseEntity.ok(ExchangeOfferDTO(exchangeOfferService.create(request)))
     }
 
     @PatchMapping

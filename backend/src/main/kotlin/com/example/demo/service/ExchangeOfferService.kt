@@ -1,7 +1,6 @@
 package com.example.demo.service
 
-import com.example.demo.controller.dto.ExchangeOfferDTO
-import com.example.demo.controller.dto.UpdateExchangeOfferRequest
+import com.example.demo.controller.dto.*
 import com.example.demo.model.*
 import com.example.demo.repo.*
 import org.springframework.beans.factory.annotation.Autowired
@@ -9,13 +8,45 @@ import org.springframework.data.domain.Pageable
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 import org.springframework.web.server.ResponseStatusException
+import java.sql.Timestamp
+import java.time.Instant
 import java.util.*
 
 @Service
-class ExchangeOfferService(@Autowired private val exchangeOfferRepository: ExchangeOfferRepository) {
+class ExchangeOfferService(@Autowired private val exchangeOfferRepository: ExchangeOfferRepository,
+                           private val userService: UserService,
+                           private val cardService: CardService,
+                           private val exchangeRequestService: ExchangeRequestService) {
 
-    public fun create(exchangeOffer: ExchangeOffer): ExchangeOffer {
-        return exchangeOfferRepository.save(exchangeOffer)
+    public fun create(exchangeOffer: CreateExchangeOfferDTO): ExchangeOffer {
+        val foundBidder = userService.getById(exchangeOffer.bidderId).orElseThrow{
+            NoSuchElementException("User not found.")
+        }
+        val foundCard = cardService.getById(exchangeOffer.offeredCardId).orElseThrow{
+            NoSuchElementException("Card not found.")
+        }
+        val foundExchangeRequest = exchangeRequestService.getById(exchangeOffer.exchangeRequestId).orElseThrow{
+            NoSuchElementException("Exchange request not found.")
+        }
+
+        if (exchangeOffer.offeredCardId == foundExchangeRequest.getRequestedCard().getId()) {
+            throw IllegalArgumentException("Can't bid the same card of the request.")
+        }
+
+        val newEO: CreateExchangeOfferRequest
+        try {
+            newEO = CreateExchangeOfferRequest(
+                    bidder = foundBidder,
+                    offeredCard = foundCard,
+                    exchangeRequest = foundExchangeRequest,
+                    status = "PENDING",
+                    createdAt = Timestamp.from(Instant.now())
+            )
+
+        } catch (e: IllegalArgumentException) {
+            throw IllegalArgumentException("Error creating the exchange offer")
+        }
+        return exchangeOfferRepository.save(ExchangeOffer(newEO))
     }
 
     public fun updateExchangeOffer(request: UpdateExchangeOfferRequest): ExchangeOffer {

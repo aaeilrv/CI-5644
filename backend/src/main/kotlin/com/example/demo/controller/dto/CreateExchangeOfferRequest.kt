@@ -4,7 +4,6 @@ import com.example.demo.model.*
 import java.sql.Timestamp
 
 data class CreateExchangeOfferRequest (
-        val id: Long,
         val bidder: User,
         val exchangeRequest: ExchangeRequest,
         val offeredCard: Card,

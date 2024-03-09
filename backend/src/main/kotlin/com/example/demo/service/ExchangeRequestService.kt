@@ -17,13 +17,20 @@ import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.ZoneId
 import java.util.*
+import kotlin.NoSuchElementException
 
 @Service
-class ExchangeRequestService(@Autowired private val exchangeRequestRepository: ExchangeRequestRepository, private val userService: UserService, private val cardService: CardService) {
+class ExchangeRequestService(@Autowired private val exchangeRequestRepository: ExchangeRequestRepository,
+                             private val userService: UserService,
+                             private val cardService: CardService) {
 
     public fun create(exchangeRequest: CreateExchangeRequestDTO): ExchangeRequest {
-        val foundUser = userService.getById(exchangeRequest.userId).orElseThrow()
-        val foundCard = cardService.getById(exchangeRequest.requestedCardId).orElseThrow()
+        val foundUser = userService.getById(exchangeRequest.userId).orElseThrow{
+            NoSuchElementException("User not found.")
+        }
+        val foundCard = cardService.getById(exchangeRequest.requestedCardId).orElseThrow{
+            NoSuchElementException("Card not found.")
+        }
 
         val newER:CreateExchangeRequestRequest
         try {
@@ -31,7 +38,7 @@ class ExchangeRequestService(@Autowired private val exchangeRequestRepository: E
                     user = foundUser,
                     requestedCard = foundCard,
                     requestStatus = "PENDING",
-                    createdAt = Timestamp(0)
+                    createdAt = Timestamp.from(Instant.now())
             )
 
         } catch (e: IllegalArgumentException) {
