@@ -9,3 +9,6 @@ INSERT INTO exchange_request (user_id, requested_card_id, status) VALUES
 
 INSERT INTO exchange_offer (bidder_id, exchange_request_id, offered_card_id, status) VALUES
 (1, 2, 2, 'PENDING');
+
+INSERT INTO exchange_counteroffer(offered_card_id, status, exchange_request_id, exchange_offer_id) VALUES
+(3,'PENDING',2,1)
