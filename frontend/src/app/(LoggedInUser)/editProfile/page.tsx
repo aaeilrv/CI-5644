@@ -8,12 +8,12 @@ interface EditUser {
     firstName: string;
     lastName: string;
     username: string;
-    email: string;
+    emailAddress: string;
 }
 
 export default function Profile() {
     const { user, isLoading } = useUser();
-    const [editUser, setEditUser] = useState<EditUser>({ firstName: '', lastName: '', username: '', email: '' });
+    const [editUser, setEditUser] = useState<EditUser>({ firstName: '', lastName: '', username: '', emailAddress: '' });
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setEditUser({ ...editUser, [e.target.name]: e.target.value });
@@ -24,7 +24,7 @@ export default function Profile() {
 
         const { token } = await getJwt();
 
-        const response = await fetch('http://localhost:8070/v1/user/edit', {
+        const response = await fetch('http://localhost:8080/v1/user/edit', {
             method: 'PUT',
             headers: {
                 "Content-Type": "application/json",
@@ -66,7 +66,7 @@ export default function Profile() {
                         </label>
                         <label className="flex flex-col mb-4 w-full">
                             <span className="mb-2">Correo electrónico:</span>
-                            <input type="email" name="email" value={editUser.email} onChange={handleChange} className="p-2 border rounded-md" />
+                            <input type="email" name="email" value={editUser.emailAddress} onChange={handleChange} className="p-2 border rounded-md" />
                         </label>
                         <button type="submit" className="p-2 bg-blue-500 text-white rounded-md">Guardar cambios</button>
                     </form>
