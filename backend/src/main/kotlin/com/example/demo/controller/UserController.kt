@@ -16,6 +16,7 @@ import org.springframework.web.server.ResponseStatusException
 import java.security.Principal
 import com.example.demo.security.SecurityConfig
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken
+import java.util.*
 
 
 @CrossOrigin(value = ["http://localhost:3000"])
@@ -33,7 +34,6 @@ class UserController {
     fun createUser(@RequestBody request: CreateUserRequest,
                    principal: JwtAuthenticationToken): ResponseEntity<UserDTO> {
         val sub = principal.tokenAttributes["sub"]?.toString() ?: return ResponseEntity.internalServerError().build()
-        println("sub is $sub")
         return ResponseEntity.ok(UserDTO(userService.create(User(request, sub))))
     }
 
@@ -104,6 +104,21 @@ class UserController {
             return ResponseEntity.ok(if (userWithNewCard == null) null else UserDTO(userWithNewCard))
         } else {
             throw ResponseStatusException(HttpStatus.NOT_FOUND, "Card with ${request.cardId} not found")
+        }
+    }
+
+    @PutMapping("/edit")
+    fun profileEdit (@RequestHeader("Authorization") token: String,
+                     principal: JwtAuthenticationToken,
+                     @RequestBody request : Map<String, String>): ResponseEntity<UserDTO>{
+
+        val sub: String = principal.tokenAttributes["sub"].toString()
+        val current: Optional<User> = userService.getBySub(sub)
+
+        if (current.isPresent) {            
+            return ResponseEntity.ok(UserDTO(userService.editUserData(current.get(), request)))
+        } else {
+            throw ResponseStatusException(HttpStatus.NOT_FOUND, "User with $sub not found")  
         }
     }
 

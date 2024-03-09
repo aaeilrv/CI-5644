@@ -69,6 +69,22 @@ open class User (
         return this.email
     }
 
+    open fun setFirstName(firstName : String) {
+        this.firstName = firstName
+    }
+
+    open fun setLastName(lastName : String) {
+        this.lastName = lastName
+    }
+    
+    open fun setUsername(username : String) {
+        this.username = username
+    }
+
+    open fun setEmail(email : String) {
+        this.email = email
+    }
+
     open fun getAuth0Sub(): String = this.auth0Sub
 
 
