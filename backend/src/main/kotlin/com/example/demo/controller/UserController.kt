@@ -33,6 +33,7 @@ class UserController {
     fun createUser(@RequestBody request: CreateUserRequest): ResponseEntity<UserDTO> {
         return ResponseEntity.ok(UserDTO(userService.create(User(request))))
     }
+
     @PostMapping("/createMultipleUsers")
     fun createUsers(@RequestBody request: List<CreateUserRequest>): String {
         for(r: CreateUserRequest in request) {
