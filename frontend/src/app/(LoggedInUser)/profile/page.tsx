@@ -86,7 +86,7 @@ export default function Profile() {
           </div>
 
           <div className="flex ">
-            <Link className="ml-2 py-2 px-4 bg-gray-900/80 rounded-lg text-white hover:bg-black" href={"/editProfile"}>Editar Perfil</Link>
+            <Link data-testid="editProfile" className="ml-2 py-2 px-4 bg-gray-900/80 rounded-lg text-white hover:bg-black" href={"/editProfile"}>Editar Perfil</Link>
           </div>
         </div>
       </div>

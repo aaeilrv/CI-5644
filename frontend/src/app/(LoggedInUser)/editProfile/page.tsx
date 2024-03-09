@@ -114,13 +114,14 @@ export default function Profile() {
   return (
     <div className="flex w-full h-full rounded-lg bg-[#d6dfea] p-4 drop-shadow-md">
       <div className="p-4">
-        <h1 className="text-2xl font-bold mb-4">Editar Perfil</h1>
+        <h1 data-testid="headerEditProfile" className="text-2xl font-bold mb-4">Editar Perfil</h1>
         {/* Aquí iría el contenido de tu perfil */}
         <div style={{ display: "flex", justifyContent: "center" }}>
           <form onSubmit={onSubmit} className="flex flex-col max-w-md">
             <label className="flex flex-col mb-4 w-full">
               <span className="mb-2">Nombre:</span>
               <input
+                data-testid="name-input"
                 id="name-input"
                 type="text"
                 className="bg-transparent border-b-2  outline-none text-white"
@@ -135,6 +136,7 @@ export default function Profile() {
             <label className="flex flex-col mb-4 w-full">
               <span className="mb-2">Apellido:</span>
               <input
+                data-testid="lastName-input"
                 id="lastName-input"
                 type="text"
                 className="bg-transparent border-b-2  outline-none text-white"
@@ -149,6 +151,7 @@ export default function Profile() {
             <label className="flex flex-col mb-4 w-full">
               <span className="mb-2">Nombre de usuario:</span>
               <input
+              data-testid="username-input"
                 id="username-input"
                 type="text"
                 className="bg-transparent border-b-2  outline-none text-white"
@@ -163,7 +166,8 @@ export default function Profile() {
             <label className="flex flex-col mb-4 w-full">
               <span className="mb-2">Correo electrónico:</span>
               <input
-                id="username-input"
+              data-testid="email-input"
+                id="email-input"
                 type="text"
                 className="bg-transparent border-b-2  outline-none text-white"
                 {...register("email")}
@@ -175,12 +179,18 @@ export default function Profile() {
               )}
             </label>
             <button
+            data-testid="submitButtonEditProfile"
               type="submit"
               className="p-2 bg-blue-500 text-white rounded-md"
               disabled={!isDirty || !isValid}
             >
               Guardar cambios
             </button>
+            {(isDirty && !isValid) && (
+                <span className="text-red-500 text-sm mt-2">
+                    Por favor, complete el formulario
+                </span>
+            )}
           </form>
         </div>
       </div>
