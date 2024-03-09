@@ -1,82 +1,189 @@
-'use client';
-import React, { useState } from 'react';
+"use client";
+import React, { useState } from "react";
 import { useUser } from "@auth0/nextjs-auth0/client";
-import { useRouter } from 'next/navigation';
-import axios from 'axios';
+import { useRouter } from "next/navigation";
+import axios from "axios";
 import getJwt from "@/app/helpers/getJwtClient";
+import { z } from "zod";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 interface EditUser {
-    firstName: string;
-    lastName: string;
-    username: string;
-    email: string;
+  firstName: string;
+  lastName: string;
+  username: string;
+  email: string;
 }
 
+// Prondodo react-hook-form con zod
+const editProfileSchema = z.object({
+  firstName: z
+    .string()
+    .min(4, {
+      message: "El nombre de usuario debe tener al menos 4 caracteres",
+    })
+    .max(30, {
+      message: "El nombre de usuario debe tener menos de 30 caracteres",
+    }),
+  userName: z
+    .string()
+    .min(4, {
+      message: "El nombre de usuario debe tener al menos 4 caracteres",
+    })
+    .max(30, {
+      message: "El nombre de usuario debe tener menos de 30 caracteres",
+    }),
+  lastName: z
+    .string()
+    .min(3, {
+      message: "El campo no puede ser vacío",
+    })
+    .max(30, {
+      message: "Longitud máxima de 30 caracteres.",
+    }),
+  email: z
+    .string()
+    .email({ message: "El correo electrónico no es valido" })
+    .min(4, {
+      message: "El correo electrónico debe tener al menos 4 caracteres",
+    })
+    .max(250, {
+      message: "El correo electronico debe tener menos de 250 caracteres",
+    }),
+});
+
+type editProfileSchemaType = z.infer<typeof editProfileSchema>;
+
 export default function Profile() {
-    const { user, isLoading } = useUser();
-    const [editUser, setEditUser] = useState<EditUser>({ firstName: '', lastName: '', username: '', email: '' });
-    const router = useRouter();
+  const { user, isLoading } = useUser();
+  const {
+    register,
+    handleSubmit,
+    watch,
+    formState: { errors, isValid, isDirty },
+  } = useForm<editProfileSchemaType>({
+    resolver: zodResolver(editProfileSchema),
+    mode: "onChange",
+  });
+  const [editUser, setEditUser] = useState<EditUser>({
+    firstName: "",
+    lastName: "",
+    username: "",
+    email: "",
+  });
+  const router = useRouter();
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setEditUser({ ...editUser, [e.target.name]: e.target.value });
-    };
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setEditUser({ ...editUser, [e.target.name]: e.target.value });
+  };
 
-    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
+  const onSubmit = handleSubmit(async (data) => {
+    const { token } = await getJwt();
 
-        const { token } = await getJwt();
+    const editProfileBody = {
+        firstName: data.firstName,
+        lastName: data.lastName,
+        username: data.userName,
+        email: data.email,
+    }
+    const response = await fetch("http://localhost:8080/v1/user/edit", {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(editProfileBody),
+    });
 
-        const response = await fetch('http://localhost:8080/v1/user/edit', {
-            method: 'PUT',
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": `Bearer ${token}`
-            },
-            body: JSON.stringify(editUser)
-        });
+    if (response.ok) {
+      const data = await response.json();
+      console.log("User updated successfully:", data);
+      router.push("/profile");
+    } else {
+      console.error("Error updating user:", response.status);
+      alert(
+        "Ocurrió un error en la actualización de sus datos. Por favor intente de nuevo"
+      );
+    }
 
-        if (response.ok) {
-            const data = await response.json();
-            console.log('User updated successfully:', data);
-            router.push('/profile');
+    // Reset form or update UI as needed
+  });
 
-        } else {
-            console.error('Error updating user:', response.status);
-            alert("Ocurrió un error en la actualización de sus datos. Por favor intente de nuevo");
-        }
+  if (isLoading) return <div>Loading...</div>;
 
-        // Reset form or update UI as needed
-    };
-
-    if (isLoading) return <div>Loading...</div>;
-
-    return (
-        <div className="flex w-full h-full rounded-lg bg-[#d6dfea] p-4 drop-shadow-md">
-            <div className="p-4">
-                <h1 className="text-2xl font-bold mb-4">Editar Perfil</h1>
-                {/* Aquí iría el contenido de tu perfil */}
-                <div style={{ display: 'flex', justifyContent: 'center' }}>
-                    <form onSubmit={handleSubmit} className="flex flex-col max-w-md">
-                        <label className="flex flex-col mb-4 w-full">
-                            <span className="mb-2">Nombre:</span>
-                            <input type="text" name="firstName" value={editUser.firstName} onChange={handleChange} className="p-2 border rounded-md" />
-                        </label>
-                        <label className="flex flex-col mb-4 w-full">
-                            <span className="mb-2">Apellido:</span>
-                            <input type="text" name="lastName" value={editUser.lastName} onChange={handleChange} className="p-2 border rounded-md" />
-                        </label>
-                        <label className="flex flex-col mb-4 w-full">
-                            <span className="mb-2">Nombre de usuario:</span>
-                            <input type="text" name="username" value={editUser.username} onChange={handleChange} className="p-2 border rounded-md" />
-                        </label>
-                        <label className="flex flex-col mb-4 w-full">
-                            <span className="mb-2">Correo electrónico:</span>
-                            <input type="email" name="email" value={editUser.email} onChange={handleChange} className="p-2 border rounded-md" />
-                        </label>
-                        <button type="submit" className="p-2 bg-blue-500 text-white rounded-md">Guardar cambios</button>
-                    </form>
-                </div>
-            </div>
+  return (
+    <div className="flex w-full h-full rounded-lg bg-[#d6dfea] p-4 drop-shadow-md">
+      <div className="p-4">
+        <h1 className="text-2xl font-bold mb-4">Editar Perfil</h1>
+        {/* Aquí iría el contenido de tu perfil */}
+        <div style={{ display: "flex", justifyContent: "center" }}>
+          <form onSubmit={onSubmit} className="flex flex-col max-w-md">
+            <label className="flex flex-col mb-4 w-full">
+              <span className="mb-2">Nombre:</span>
+              <input
+                id="name-input"
+                type="text"
+                className="bg-transparent border-b-2  outline-none text-white"
+                {...register("firstName")}
+              ></input>
+              {errors.firstName && (
+                <span className="text-red-500 text-sm">
+                  {errors.firstName.message}
+                </span>
+              )}
+            </label>
+            <label className="flex flex-col mb-4 w-full">
+              <span className="mb-2">Apellido:</span>
+              <input
+                id="lastName-input"
+                type="text"
+                className="bg-transparent border-b-2  outline-none text-white"
+                {...register("lastName")}
+              ></input>
+              {errors.lastName && (
+                <span className="text-red-500 text-sm">
+                  {errors.lastName.message}
+                </span>
+              )}
+            </label>
+            <label className="flex flex-col mb-4 w-full">
+              <span className="mb-2">Nombre de usuario:</span>
+              <input
+                id="username-input"
+                type="text"
+                className="bg-transparent border-b-2  outline-none text-white"
+                {...register("userName")}
+              ></input>
+              {errors.userName && (
+                <span className="text-red-500 text-sm">
+                  {errors.userName.message}
+                </span>
+              )}
+            </label>
+            <label className="flex flex-col mb-4 w-full">
+              <span className="mb-2">Correo electrónico:</span>
+              <input
+                id="username-input"
+                type="text"
+                className="bg-transparent border-b-2  outline-none text-white"
+                {...register("email")}
+              ></input>
+              {errors.email && (
+                <span className="text-red-500 text-sm">
+                  {errors.email.message}
+                </span>
+              )}
+            </label>
+            <button
+              type="submit"
+              className="p-2 bg-blue-500 text-white rounded-md"
+              disabled={!isDirty || !isValid}
+            >
+              Guardar cambios
+            </button>
+          </form>
         </div>
-    );
+      </div>
+    </div>
+  );
 }
