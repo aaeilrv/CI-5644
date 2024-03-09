@@ -42,6 +42,11 @@ class UserService (@Autowired private val userRepository: UserRepository,
         return userRepository.findByAuth0Sub(sub)
     }
 
+        public fun getById(id: Long): Optional<User> {
+        return userRepository.findById(id)
+    }
+
+
     public fun getCardsOwnedBySub(sub: String, pageable: Pageable): Page<Ownership>?{
         val exists: Optional<User> = getBySub(sub)
         if(exists.isPresent) {
