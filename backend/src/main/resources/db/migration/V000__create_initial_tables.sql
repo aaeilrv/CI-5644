@@ -15,9 +15,9 @@ CREATE TABLE IF NOT EXISTS users (
     first_name VARCHAR(100) NOT NULL,
     last_name VARCHAR(100) NOT NULL,
     email VARCHAR(100) NOT NULL,
-    password VARCHAR(100),
     birthday DATE NOT NULL,
-    username VARCHAR(20) NOT NULL UNIQUE
+    username VARCHAR(20) NOT NULL UNIQUE,
+    auth0_sub VARCHAR(100) UNIQUE --Identificador de usuario de Auth0
 );
 
 CREATE TABLE IF NOT EXISTS card(

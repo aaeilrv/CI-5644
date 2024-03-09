@@ -2,6 +2,7 @@
 import Badge from "@/app/components/Badge";
 import { useUser } from "@auth0/nextjs-auth0/client";
 import { useState, useEffect } from "react";
+import axios from 'axios';
 
 const total_cards = 100;
 
@@ -13,11 +14,14 @@ export default function Leaderboard() {
   useEffect(() => {
     const fetchLeaders = async () => {
       setLoading(true)
+      const tokenResponse = await axios.get('/api/auth/token/');
+      const { token } = tokenResponse.data;
       try {
         const response = await fetch(USER_API_URL, {
           method: 'GET',
           headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${ token }`
           }
         });
         const leaders = await response.json();
