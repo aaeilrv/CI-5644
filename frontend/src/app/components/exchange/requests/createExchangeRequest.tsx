@@ -1,22 +1,17 @@
 "use client";
-import { useUser } from "@auth0/nextjs-auth0/client";
-import Image from "next/image";
-import Button from "@/app/components/Button";
-import { Fragment, useState, useEffect } from "react";
-import { barajitas_temporal } from "@/utils/barajitas_temporal";
-import getJwt from "../../helpers/getJwtClient";
-import getCardName from "./getCardName";
 
-export default function CreateExchangeOffer(
+import getJwt from "../../../helpers/getJwtClient";
+
+export default function CreateExchangeRequest(
   user: number,
   requestedCard: number
 ) {
-  const API_EXCHANGE_OFFER_POST_URL =
-    process.env.NEXT_PUBLIC_EXCHANGE_OFFER_URL + ``;
+  const API_EXCHANGE_REQUEST_POST_URL =
+    process.env.NEXT_PUBLIC_EXCHANGE_REQUEST_URL + ``;
 
   const postRequest = async () => {
     const { token } = await getJwt();
-    const response = await fetch(API_EXCHANGE_OFFER_POST_URL, {
+    const response = await fetch(API_EXCHANGE_REQUEST_POST_URL, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -36,5 +31,5 @@ export default function CreateExchangeOffer(
       });
   };
   postRequest();
-  alert("Oferta solicitado!");
+  alert("Intercambio solicitado!");
 }

@@ -3,24 +3,20 @@
 "use client";
 import { useUser } from "@auth0/nextjs-auth0/client";
 import localfont from "@next/font/local";
-import ExchangeNotifications from "./exchangeOffersRecibidas";
-import ExchangeNotificationsMade from "./exchangeOffersHechas";
-import ExchangeRequest from "./exchangeRequest";
-import ExchangeResquestFromOtherUsers from "./exchangeResquestsFromOtherUsers";
+import ExchangeNotifications from "../../components/exchange/offers/exchangeOffersReceived";
+import ExchangeNotificationsMade from "../../components/exchange/offers/exchangeOffersMade";
+import ExchangeRequest from "../../components/exchange/requests/exchangeRequest";
+import ExchangeResquestFromOtherUsers from "../../components/exchange/requests/exchangeResquestsFromOtherUsers";
 import { useForm } from "react-hook-form";
 import { barajitas_temporal } from "@/utils/barajitas_temporal";
 import { Fragment, useEffect, useState } from "react";
-import UserPendingExchanges from "./userPendingExchanges";
-import UserCounteroffers from "./counterOfferRequests";
+import UserPendingExchanges from "../../components/exchange/requests/userPendingExchanges";
+import UserCounteroffers from "../../components/exchange/counterOffers/counterOfferReceived";
 import getJwt from "../../helpers/getJwtClient";
-import UserCounteroffersMade from "./counterOfferSended";
+import UserCounteroffersMade from "../../components/exchange/counterOffers/counterOfferSended";
 function clickMe() {
   alert("You clicked me!");
 }
-
-const ProtestRiot = localfont({
-  src: "../../../assets/fonts/ProtestRiot-Regular.ttf",
-});
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(" ");
@@ -43,7 +39,7 @@ export default function Exchange() {
           </h1>
         </div>
         <div className="p-4">
-          <UserPendingExchanges/>
+          <UserPendingExchanges />
         </div>
       </div>
       <div>
@@ -65,7 +61,7 @@ export default function Exchange() {
           </h1>
         </div>
         <div className="p-4">
-          <ExchangeNotificationsMade/>
+          <ExchangeNotificationsMade />
         </div>
       </div>
       <div>

@@ -2,14 +2,11 @@
 //(Responses to another user exchange requests)
 
 "use client";
-import { useUser } from "@auth0/nextjs-auth0/client";
 import Image from "next/image";
 import Button from "@/app/components/Button";
 import { Fragment, useState, useEffect } from "react";
-import OfferRequest from "./offerRequest";
-import getJwt from "../../helpers/getJwtClient";
+import getJwt from "../../../helpers/getJwtClient";
 import UpdateExchangeOffer from "./updateExchangeOffer";
-import { off } from "process";
 
 function clickMe() {
   alert("Oferta contraofertada!");
@@ -40,7 +37,7 @@ export default function ExchangeNotificationsMade() {
   const [cardContent, setCardContent] = useState<barajita>();
   const [cardId, setCardId] = useState(true);
   const API_EXCHANGE_REQUEST_OFFER_URL =
-    process.env.NEXT_PUBLIC_EXCHANGE_OFFER_URL + `/bidder/2`;
+    process.env.NEXT_PUBLIC_EXCHANGE_OFFER_URL + `/bidder/1`;
 
   useEffect(() => {
     const getExchangeOfferData = async () => {
@@ -53,7 +50,6 @@ export default function ExchangeNotificationsMade() {
         },
       });
       const data = await response.json();
-      //console.log(data);
       setOfferContent(data);
       setExchangeOffer(false);
     };
@@ -73,23 +69,13 @@ export default function ExchangeNotificationsMade() {
         },
       });
       const data = await response.json();
-      //console.log(data);
       setCardContent(data);
       setCardId(false);
     };
     getCardData();
   }, []);
-  //console.log(cardContent?.name)
 
   const cardRequested = cardContent ? cardContent.name : "Kylian Mbappé";
-
-  //if(isLoading || exchangeOffer) return <div>Loading...</div>;
-
-  const [showPopup, setShowPopup] = useState(false);
-
-  const handleAccept = () => {
-    setShowPopup(true);
-  };
 
   return (
     <div>
@@ -147,7 +133,7 @@ export default function ExchangeNotificationsMade() {
                       "CANCELLED"
                     )
                   }
-                  text="Cancelar"
+                  text="Cancelar oferta"
                   color="red"
                 />
               </div>

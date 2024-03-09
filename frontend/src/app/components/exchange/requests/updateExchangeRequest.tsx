@@ -1,16 +1,14 @@
 "use client";
-import getJwt from "../../helpers/getJwtClient";
+import getJwt from "../../../helpers/getJwtClient";
 
-
-export default function UpdateExchangeOffer(
-  offer: number,
-  user: number,
+export default function UpdateExchangeRequest(
   request: number,
-  offeredCard: number,
+  user: number,
+  requestedCard: number,
   statustoUpdate: string
 ) {
   const API_EXCHANGE_REQUEST_PATCH_URL =
-    process.env.NEXT_PUBLIC_EXCHANGE_OFFER_URL + ``;
+    process.env.NEXT_PUBLIC_EXCHANGE_REQUEST_URL + ``;
 
   const patchRequest = async () => {
     const { token } = await getJwt();
@@ -21,10 +19,9 @@ export default function UpdateExchangeOffer(
         Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify({
-        id: offer,
-        bidder: user,
-        exchangeRequest: request,
-        offeredCard: offeredCard,
+        id: request,
+        userId: user,
+        requestedCardId: requestedCard,
         status: statustoUpdate,
         createdAt: new Date().toISOString(),
       }),
@@ -36,9 +33,5 @@ export default function UpdateExchangeOffer(
       });
   };
   patchRequest();
-  if (statustoUpdate == "ACCEPTED") {
-    alert("Oferta aceptada!");
-  } else {
-    alert("Oferta rechazada!");
-  }
+  alert("Request deleted!");
 }

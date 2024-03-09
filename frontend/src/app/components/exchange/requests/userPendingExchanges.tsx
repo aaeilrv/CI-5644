@@ -1,22 +1,13 @@
-//Counteroffer requests pending for response
+//Exchange requests pending for response
 //(The ones the user made)
 
 "use client";
 import { useUser } from "@auth0/nextjs-auth0/client";
 import Image from "next/image";
+import Button from "@/app/components/Button";
 import { Fragment, useState, useEffect } from "react";
-import getJwt from "../../helpers/getJwtClient";
-
-function clickMe() {
-  alert("You clicked me!");
-}
-
-function accept() {
-  alert("Intercambio exitoso!");
-}
-function reject() {
-  alert("Intercambio rechazado!");
-}
+import getJwt from "../../../helpers/getJwtClient";
+import UpdateExchangeRequest from "./updateExchangeRequest";
 
 type barajita = {
   id: number;
@@ -28,25 +19,24 @@ type barajita = {
   photoURL: string;
 };
 
-type counterOffer = {
-    id: number,
-    offeredCardId: number,
-    exchangeRequestId: number,
-    exchangeOfferId: number,
-    status: string,
+type exchangeRequestD = {
+  id: number;
+  userId: number;
+  requestedCardId: number;
+  status: string;
 };
 
-export default function UserCounteroffersMade() {
+export default function UserPendingExchanges() {
   const CARD_PICTURE_LOC = "/static/images/cards/";
   const { user, isLoading } = useUser();
   const [exchangeRequest, setExchangeRequest] = useState(true);
-  const [exchangedContent, setExchangedContent] = useState<counterOffer[]>(
+  const [exchangedContent, setExchangedContent] = useState<exchangeRequestD[]>(
     []
   );
   const [cardContent, setCardContent] = useState<barajita>();
   const [cardId, setCardId] = useState(true);
   const API_EXCHANGE_REQUEST_URL =
-    process.env.NEXT_PUBLIC_EXCHANGE_COUNTEROFFER_URL + `/creator/2`;
+    process.env.NEXT_PUBLIC_EXCHANGE_REQUEST_URL + `/user/3`;
 
   useEffect(() => {
     const getExchangeRequestData = async () => {
@@ -59,7 +49,6 @@ export default function UserCounteroffersMade() {
         },
       });
       const data = await response.json();
-      console.log(data)
       setExchangedContent(data);
       setExchangeRequest(false);
     };
@@ -79,48 +68,59 @@ export default function UserCounteroffersMade() {
         },
       });
       const data = await response.json();
-      //console.log(data);
       setCardContent(data);
       setCardId(false);
     };
     getCardData();
   }, []);
-  //console.log(cardContent?.name)
   const cardRequested = cardContent ? cardContent.name : "Kylian Mbappé";
+
   if (isLoading || exchangeRequest) return <div>Loading...</div>;
   return (
     <div>
       {exchangedContent.length > 0 ? (
         exchangedContent.map((exchange, index) => (
-            <div className="p-4">
-          <div key={index}>
-            <div className="w-full h-full rounded-lg bg-[#d6dfea] p-2 drop-shadow-md">
-              <div className="p-4">
-                <div className="flex justify-start items-center">
-                  <h1 className="text-1xl font-bold space-y-4">
-                    {" "}
-                    {`Contraoferta de la barajita `}{" "}
-                  </h1>
-                  <span>
-                    <Image
-                      src={CARD_PICTURE_LOC + cardRequested + ".jpeg"}
-                      alt={cardRequested}
-                      className="w-20 ml-2 mr-2"
-                      width={1080}
-                      height={1080}
-                    />
-                  </span>
-                  <h1 className="text-1xl font-bold space-y-4"> {` en la solicitud ${exchange.exchangeRequestId} `} </h1> 
+          <div className="p-4">
+            <div key={index}>
+              <div className="w-full h-full rounded-lg bg-[#d6dfea] p-2 drop-shadow-md">
+                <div className="p-4">
+                  <div className="flex justify-start items-center">
+                    <h1 className="text-1xl font-bold space-y-4">
+                      {" "}
+                      {`Solicitas intercambiar tu barajita`}{" "}
+                    </h1>
+                    <span>
+                      <Image
+                        src={CARD_PICTURE_LOC + cardRequested + ".jpeg"}
+                        alt={cardRequested}
+                        className="w-20 ml-2 mr-2"
+                        width={1080}
+                        height={1080}
+                      />
+                    </span>
+                  </div>
+                  <div className="flex justify-center space-x-4">
+                    <h1 className="text-1xl font-bold space-y-4">
+                      {" "}
+                      {`Estatus de la solicitud: ${exchange.status}`}{" "}
+                    </h1>
+                  </div>
+                </div>
+                <div className="flex justify-center space-x-4">
+                  <Button
+                    onClick={() =>
+                      UpdateExchangeRequest(
+                        exchange.id,
+                        exchange.userId,
+                        exchange.requestedCardId,
+                        "CANCELLED"
+                      )
+                    }
+                    text={"Borrar solicitud de intercambio"}
+                  />
                 </div>
               </div>
-              <div className="flex justify-center space-x-4">
-                <h1 className="text-1xl font-bold space-y-4">
-                  {" "}
-                  {`Estatus de la contraoferta: ${exchange.status}`}{" "}
-                </h1>
-              </div>
-            </div>  
-          </div>
+            </div>
           </div>
         ))
       ) : (
@@ -130,7 +130,7 @@ export default function UserCounteroffersMade() {
               <div className="flex justify-start items-center">
                 <h1 className="text-1xl font-bold space-y-4">
                   {" "}
-                  {`No ha realizado ninguna contraoferta`}{" "}
+                  {`No has solicitado ningun intercambio`}{" "}
                 </h1>
               </div>
             </div>

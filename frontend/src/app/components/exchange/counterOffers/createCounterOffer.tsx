@@ -1,18 +1,13 @@
 "use client";
-import { useUser } from "@auth0/nextjs-auth0/client";
-import Image from "next/image";
-import Button from "@/app/components/Button";
-import { Fragment, useState, useEffect } from "react";
-import { barajitas_temporal } from "@/utils/barajitas_temporal";
-import getJwt from "../../helpers/getJwtClient";
-import getCardName from "./getCardName";
+import getJwt from "../../../helpers/getJwtClient";
 
 export default function CreateCounterOffer(
-  user: number,
-  requestedCard: number
+  request: number,
+  requestedCard: number,
+  offer: number
 ) {
   const API_EXCHANGE_COUNTEROFFER_POST_URL =
-    process.env.NEXT_PUBLIC_COUNTEROFFER_REQUEST_URL + ``;
+    process.env.NEXT_PUBLIC_EXCHANGE_COUNTEROFFER_URL + ``;
 
   const postRequest = async () => {
     const { token } = await getJwt();
@@ -23,9 +18,9 @@ export default function CreateCounterOffer(
         Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify({
-        userId: user,
-        requestedCardId: requestedCard,
-        requeststatus: "PENDING",
+        offeredCardId: requestedCard,
+        exchangeOfferId: offer,
+        status: "PENDING",
         createdAt: new Date().toISOString(),
       }),
     })

@@ -12,14 +12,6 @@ import { CheckIcon, ChevronUpDownIcon } from "@heroicons/react/20/solid";
 import CreateExchangeRequest from "./createExchangeRequest";
 import React from "react";
 
-function clickMe() {
-  alert("Peticion de intercambio exitosa!");
-}
-
-const ProtestRiot = localfont({
-  src: "../../../assets/fonts/ProtestRiot-Regular.ttf",
-});
-
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(" ");
 }

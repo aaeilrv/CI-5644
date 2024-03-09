@@ -1,4 +1,5 @@
 //Get the name of a card by id
+//(does not work)
 "use client";
 import { useUser } from "@auth0/nextjs-auth0/client";
 import Image from "next/image";
@@ -36,10 +37,8 @@ export default async function getCardName(requiredCard: number) {
     });
     const data = await response.json();
     return data;
-    //console.log(data);
   };
   getCardData();
-  //console.log(cardContent?.name)
   const cardRequested = await getCardData();
 
   return cardRequested;
