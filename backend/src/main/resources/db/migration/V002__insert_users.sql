@@ -1,6 +1,6 @@
 INSERT INTO users (first_name, last_name, birthday, username, email, auth0_sub) VALUES
 ('Juan', 'Pérez', '1990-01-01', 'juanperez', 'juan.perez@example.com', 'auth0|65e3c4ca4e77a98cce0a2531'),
-('María', 'López', '1985-02-15', 'marialopez', 'maria.lopez@example.com', null),
+('María', 'López', '1985-02-15', 'marialopez', '18-10826@usb.ve', 'auth0|65e934a4056987bc69ac3b79'),
 ('Carlos', 'González', '1992-03-22', 'carlosgonzalez', 'carlos.gonzalez@example.com', null),
 ('Ana', 'Martínez', '1988-04-30', 'anamartinez', 'ana.martinez@example.com', null),
 ('Luis', 'Rodríguez', '1993-05-05', 'luisrodriguez', 'luis.rodriguez@example.com', null),
