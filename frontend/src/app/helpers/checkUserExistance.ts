@@ -2,7 +2,7 @@ import { getJwtToken } from "./getJwtToken";
 
 export async function checkUserExistance() {
     const token = await getJwtToken();
-    const API_USER_DATA_URL = process.env.NEXT_PUBLIC_USER_API_URL + '/user/edit';
+    const API_USER_DATA_URL = `${process.env.NEXT_PUBLIC_USER_API_URL}`;
     
     if (token === undefined) {
         return false;
