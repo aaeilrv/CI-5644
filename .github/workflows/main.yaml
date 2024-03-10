@@ -15,4 +15,4 @@ jobs:
     - name: Copy secrets
       run: echo "${{ secrets.ENV }}" > .env.production
     - name: Build the Docker image
-      run: docker compose up --force-recreate -d
+      run: docker compose up --force-recreate --build -d
