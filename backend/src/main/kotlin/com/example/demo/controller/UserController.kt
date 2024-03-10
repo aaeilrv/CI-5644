@@ -19,7 +19,7 @@ import org.springframework.security.oauth2.server.resource.authentication.JwtAut
 import java.util.*
 
 
-@CrossOrigin(value = ["http://localhost:3000"])
+@CrossOrigin(value = ["http://localhost:3000", "http://207.246.119.200:3000"])
 @RestController
 @RequestMapping("v1/user")
 class UserController {

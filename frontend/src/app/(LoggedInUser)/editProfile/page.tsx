@@ -16,6 +16,7 @@ export default function Profile() {
     const { user, isLoading } = useUser();
     const [editUser, setEditUser] = useState<EditUser>({ firstName: '', lastName: '', username: '', email: '' });
     const router = useRouter();
+    const API_USER_DATA_URL = process.env.NEXT_PUBLIC_USER_API_URL + '/edit';
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setEditUser({ ...editUser, [e.target.name]: e.target.value });
@@ -26,7 +27,7 @@ export default function Profile() {
 
         const { token } = await getJwt();
 
-        const response = await fetch('http://localhost:8080/v1/user/edit', {
+        const response = await fetch(API_USER_DATA_URL, {
             method: 'PUT',
             headers: {
                 "Content-Type": "application/json",

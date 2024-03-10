@@ -2,13 +2,14 @@ import { getJwtToken } from "./getJwtToken";
 
 export async function checkUserExistance() {
     const token = await getJwtToken();
+    const API_USER_DATA_URL = process.env.NEXT_PUBLIC_USER_API_URL + '/user/edit';
     
     if (token === undefined) {
         return false;
     }
 
     let userRes = await fetch(
-        'http://localhost:8080/v1/user',
+        API_USER_DATA_URL,
         {
             method: 'GET',
             headers: {
