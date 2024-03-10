@@ -27,7 +27,7 @@ export default function ExchangePetition() {
           ¡Intercambia tus Barajitas!{" "}
         </h1>
         <div>
-          <Listbox value={selected} onChange={setSelected}>
+          <Listbox  value={selected} onChange={setSelected}>
             {({ open }) => (
               <>
                 <Listbox.Label className="block text-sm font-medium leading-6 text-gray-900">
@@ -35,7 +35,7 @@ export default function ExchangePetition() {
                   Estoy buscando a{" "}
                 </Listbox.Label>
                 <div className="relative mt-2">
-                  <Listbox.Button className="w-full cursor-default rounded-md bg-white py-1.5 pl-3 pr-10 text-left text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                  <Listbox.Button  data-testid="cardListSelect" className="w-full cursor-default rounded-md bg-white py-1.5 pl-3 pr-10 text-left text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-600 sm:text-sm sm:leading-6">
                     <span className="block truncate">{selected.name}</span>
                     <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
                       <ChevronUpDownIcon
@@ -69,6 +69,7 @@ export default function ExchangePetition() {
                           {({ selected, active }) => (
                             <>
                               <span
+                              data-testid={`${person.name}-option`}
                                 className={classNames(
                                   selected ? "font-semibold" : "font-normal",
                                   "block truncate"
@@ -110,6 +111,7 @@ export default function ExchangePetition() {
         </div>
         <div style={{ display: "flex" }}>
           <Button
+            testId="exchangePetitionButton"
             onClick={() => CreateExchangeRequest(1, selected.id)}
             style={{ margin: "auto", display: "block", marginTop: "20px" }}
             text="Solicitar intercambio"

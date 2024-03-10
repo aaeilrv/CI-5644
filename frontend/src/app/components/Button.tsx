@@ -4,9 +4,10 @@ type ButtonProps = {
   style?: React.CSSProperties;
   onClick?: () => void;
   color?: 'red' | 'green' | 'blue' | 'indigo'; // specify the colors you support
+  testId?: string;
 };
 
-export default function Button({ link, text, style, onClick, color = 'indigo' }: ButtonProps) {
+export default function Button({ link, text, style, onClick, color = 'indigo' ,testId}: ButtonProps) {
   const colorClasses = {
     red: 'bg-red-500 hover:bg-red-400 focus-visible:outline-red-500',
     green: 'bg-green-500 hover:bg-green-400 focus-visible:outline-green-500',
@@ -18,6 +19,7 @@ export default function Button({ link, text, style, onClick, color = 'indigo' }:
 
   return (
     <button 
+      data-testid={testId}
       style={style}
       onClick={onClick}
       className={`rounded px-2 py-2 text-sm font-semibold text-white shadow-sm ${colorClass}`}
