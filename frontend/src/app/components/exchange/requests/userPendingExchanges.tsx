@@ -116,6 +116,7 @@ export default function UserPendingExchanges() {
                         "CANCELLED"
                       )
                     }
+                    testId={`deleteExchangeRequestButton-${index}`}
                     text={"Borrar solicitud de intercambio"}
                   />
                 </div>
