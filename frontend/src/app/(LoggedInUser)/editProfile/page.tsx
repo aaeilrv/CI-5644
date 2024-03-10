@@ -77,6 +77,8 @@ export default function Profile() {
     setEditUser({ ...editUser, [e.target.name]: e.target.value });
   };
 
+  const API_EDIT_USER_URL = process.env.NEXT_PUBLIC_USER_API_URL + '/edit'
+
   const onSubmit = handleSubmit(async (data) => {
     const { token } = await getJwt();
 
@@ -86,7 +88,7 @@ export default function Profile() {
         username: data.userName,
         email: data.email,
     }
-    const response = await fetch("http://localhost:8080/v1/user/edit", {
+    const response = await fetch(API_EDIT_USER_URL, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",

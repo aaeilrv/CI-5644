@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*
 import org.springframework.web.server.ResponseStatusException
 import java.util.*
 
-@CrossOrigin(value = ["http://localhost:3000"])
+@CrossOrigin(value = ["http://localhost:3000", "http://207.246.119.200:3000"])
 @RestController
 @RequestMapping("v1/exchangeOffer")
 class ExchangeOfferController {
