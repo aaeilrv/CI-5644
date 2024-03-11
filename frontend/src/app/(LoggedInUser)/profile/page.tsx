@@ -1,6 +1,7 @@
 'use client';
 import { useUser } from "@auth0/nextjs-auth0/client";
 import Image from "next/image";
+import Link from "next/link";
 
 export default function Profile() {
   const { user, isLoading } = useUser();
@@ -25,12 +26,18 @@ export default function Profile() {
             </div>
           </div>
 
-          <div className="flex space-x-4 mb-5 text-sm font-medium">
+          <div className="flex space-x-4 mb-10 text-sm font-medium">
             <div className="flex-auto flex space-x-4">
             <p className="text-lg font-semibold">Correo electrónico: </p>
             <p className="text-lg">{user?.email}</p>
             </div>
           </div>
+          {/* Agrega el botón que redirige a /editProfile */}
+          <Link href="/editProfile">
+            <button className="bg-violet-400 text-white px-2 py-1 rounded-md hover:bg-violet-500 mt-2">
+              Editar Perfil
+            </button>
+          </Link>
         </div>
       </div>
     
