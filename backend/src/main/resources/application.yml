@@ -1,0 +1,27 @@
+auth0:
+  audience: { panik.us.auth0.com }
+spring:
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: https://{http://example.demo}/
+  datasource:
+    url: jdbc:postgresql://localhost:5432/TestHerrWeb
+    username: ci5644user
+    password: ci5644redteam
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    generate-ddl: true
+  flyway:
+    enabled: true
+    baseline-version: 000
+    locations: classpath:db/migration
+    default-schema: public
+    create-schemas: true
+logging:
+  level:
+    org:
+      hibernate:
+        SQL: DEBUG

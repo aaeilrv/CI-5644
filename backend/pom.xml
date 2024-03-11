@@ -40,6 +40,15 @@
 			<groupId>org.jetbrains.kotlin</groupId>
 			<artifactId>kotlin-stdlib</artifactId>
 		</dependency>
+<!--		<dependency>-->
+<!--			<groupId>org.flywaydb</groupId>-->
+<!--			<artifactId>flyway-database-postgresql</artifactId>-->
+<!--			<version>10.8.1</version>-->
+<!--		</dependency>-->
+		<dependency>
+			<groupId>org.flywaydb</groupId>
+			<artifactId>flyway-core</artifactId>
+		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
@@ -67,16 +76,36 @@
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
 			<plugin>
+				<groupId>org.flywaydb</groupId>
+				<artifactId>flyway-maven-plugin</artifactId>
+				<configuration>
+					<url>jdbc:postgresql://localhost:5432/TestHerrWeb</url>
+					<user>ci5644user</user>
+					<password>ci5644redteam</password>
+					<baselineVersion>000</baselineVersion>
+					<createSchemas>true</createSchemas>
+					<defaultSchema>public</defaultSchema>
+				</configuration>
+			</plugin>
+			<plugin>
 				<groupId>org.jetbrains.kotlin</groupId>
 				<artifactId>kotlin-maven-plugin</artifactId>
+				<version>${kotlin.version}</version>
 				<configuration>
 					<args>
 						<arg>-Xjsr305=strict</arg>
 					</args>
 					<compilerPlugins>
-						<plugin>spring</plugin>
+						<!-- Or "spring" for the Spring support -->
+						<plugin>all-open</plugin>
 					</compilerPlugins>
+					<pluginOptions>
+						<!-- Each annotation is placed on its own line -->
+						<option>all-open:annotation=com.my.Annotation</option>
+						<option>all-open:annotation=com.their.AnotherAnnotation</option>
+					</pluginOptions>
 				</configuration>
+
 				<dependencies>
 					<dependency>
 						<groupId>org.jetbrains.kotlin</groupId>
