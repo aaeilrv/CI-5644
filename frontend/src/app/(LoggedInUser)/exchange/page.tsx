@@ -33,7 +33,7 @@ export default function Exchange() {
       </div>
       <div>
         <div className="p-4">
-          <h1 className="text-2xl font-bold space-y-4">
+          <h1 className="text-2xl font-bold space-y-4 mt-4">
             {" "}
             Mis solicitudes de intercambio{" "}
           </h1>
