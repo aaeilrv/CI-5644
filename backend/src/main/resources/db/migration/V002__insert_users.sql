@@ -10,3 +10,9 @@ INSERT INTO users (first_name, last_name, birthday, username, email, auth0_sub) 
 ('Sergio', 'Ramírez', '2005-09-15', 'sergioramirez', 'sergio.ramirez@example.com', null),
 ('Santoigo', 'fififufi', '2000-05-16', 'santoigo', 'finamore03@protonmail.com', null),
 ('Andrea', 'Torres', '1994-10-21', 'andreatorres', 'andrea.torres@example.com', null);
+
+INSERT INTO credit_card(user_id,expiration_date,card_number,cardholder_name,bank,card_type) VALUES
+ (2,'1990-01-01',123456789,'Maria Lopez','Banco','VISA');
+
+INSERT INTO purchase(user_id,packets_purchased,base_amount,credit_card_id) VALUES
+ (2,2,10,1);

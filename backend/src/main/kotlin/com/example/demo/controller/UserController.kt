@@ -46,7 +46,7 @@ class UserController {
     }
 
     @GetMapping()
-    fun getUserById(@RequestHeader("Authorization") token: String,
+    fun getUserBySub(@RequestHeader("Authorization") token: String,
                     principal: JwtAuthenticationToken): ResponseEntity<UserDTO> {
         val sub: String = principal.tokenAttributes["sub"].toString()
         val userOpt = userService.getBySub(sub)

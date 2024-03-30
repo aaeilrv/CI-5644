@@ -11,5 +11,6 @@ import java.util.*
 
 @Repository
 interface PurchaseRepository: JpaRepository<Purchase, Long> {
-
+    @Query("SELECT purchase FROM Purchase purchase WHERE purchase.purchasingUser.auth0Sub = :sub")
+    fun findByUserSub(sub:String):List<Purchase>
 }
