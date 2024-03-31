@@ -12,8 +12,8 @@ INSERT INTO users (first_name, last_name, birthday, username, email, auth0_sub) 
 ('Andrea', 'Torres', '1994-10-21', 'andreatorres', 'ejemplo11@usb.ve', 'auth0|660979b7027024e8fdf530e3'),
 ('Jonathan', 'Melian', '1991-03-26', 'jmelian', 'jonathanmelian@gmail.com', 'google-oauth2|110893135691706290122');
 
-INSERT INTO credit_card(user_id,expiration_date,card_number,cardholder_name,bank,card_type) VALUES
+INSERT INTO credit_card(user_id, expiration_date, card_number, cardholder_name, bank, card_type) VALUES
     (2,'1990-01-01',123456789,'Maria Lopez','Banco','VISA');
 
-INSERT INTO purchase(user_id,packets_purchased,base_amount,credit_card_id) VALUES
+INSERT INTO purchase(user_id, packets_purchased, base_amount, credit_card_id) VALUES
     (2,2,10,1);
