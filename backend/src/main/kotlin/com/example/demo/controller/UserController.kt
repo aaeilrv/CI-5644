@@ -101,7 +101,7 @@ class UserController {
     fun addCard(@RequestBody request: AddCardToOwnerRequest):ResponseEntity<UserDTO>{
         val cardOpt = cardService.getById(request.cardId)
         if (cardOpt.isPresent) {
-            val userWithNewCard: User? = userService.updateCardsOwnedList(request.ownerSub, cardOpt.get())
+            val userWithNewCard: User? = userService.addSingleCard(request.ownerSub, cardOpt.get())
             return ResponseEntity.ok(if (userWithNewCard == null) null else UserDTO(userWithNewCard))
         } else {
             throw ResponseStatusException(HttpStatus.NOT_FOUND, "Card with ${request.cardId} not found")

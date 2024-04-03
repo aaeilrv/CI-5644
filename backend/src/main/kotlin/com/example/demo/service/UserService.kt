@@ -42,7 +42,7 @@ class UserService (@Autowired private val userRepository: UserRepository,
         return userRepository.findByAuth0Sub(sub)
     }
 
-        public fun getById(id: Long): Optional<User> {
+    public fun getById(id: Long): Optional<User> {
         return userRepository.findById(id)
     }
 
@@ -58,7 +58,7 @@ class UserService (@Autowired private val userRepository: UserRepository,
         }
     }
 
-    public fun updateCardsOwnedList(sub: String, card : Card): User?{
+    public fun addSingleCard(sub: String, card : Card): User?{
         val exists: Optional<User> = getBySub(sub)
         if(exists.isPresent){
             val user: User = exists.get()
@@ -82,13 +82,34 @@ class UserService (@Autowired private val userRepository: UserRepository,
         return null
     }
 
+    fun addMultipleCards(sub: String, cards: List<Card>): User {
+        val user = getBySub(sub).orElseThrow { NoSuchElementException("User not found.") }
+        val ownershipValues = user.getCardsOwned()
+        cards.forEach { card ->
+           val ownershipValue: Ownership? = ownershipValues.firstOrNull { it.getCard().getId() == card.getId() }
+            if (ownershipValue == null) {
+                val newOwnership = Ownership(
+                    null,
+                    user,
+                    card,
+                    1
+                )
+                ownershipValues.add(newOwnership)
+            } else {
+                ownershipValue.setNumberOwned(ownershipValue.getNumberOwned() + 1)
+            }
+        }
+        ownershipRepository.saveAll(ownershipValues)
+        return userRepository.save(user)
+    }
+
     public fun getAll(pageable: Pageable): List<User> {
         val userEntities = userRepository.findAll(pageable)
         val users = userEntities.map { it }
         return users.content
     }
 
-    fun getProgress(sub: String):String{
+    fun getProgress(sub: String): String{
         val userOpt = getBySub(sub)
         if (userOpt.isPresent) {
             val cnt = userOpt.get().getCardsOwned().size

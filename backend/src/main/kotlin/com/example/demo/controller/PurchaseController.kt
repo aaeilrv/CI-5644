@@ -16,8 +16,10 @@ class PurchaseController {
     lateinit var purchaseService: PurchaseService
 
     @PostMapping
-    fun createPurchase(@RequestBody request: CreatePurchaseDTO): ResponseEntity<PurchaseDTO>{
-        return ResponseEntity.ok(PurchaseDTO(purchaseService.create(request)))
+    fun createPurchase(principal: JwtAuthenticationToken,
+        @RequestBody request: CreatePurchaseDTO): ResponseEntity<PurchaseDTO>{
+        val sub = principal.tokenAttributes["sub"]?.toString() ?: return ResponseEntity.internalServerError().build()
+        return ResponseEntity.ok(PurchaseDTO(purchaseService.create(request, sub)))
     }
 
     @GetMapping("/all")
@@ -26,7 +28,7 @@ class PurchaseController {
     }
 
     @GetMapping
-    fun getPurchaseBySub(principal:JwtAuthenticationToken):List<PurchaseDTO>{
+    fun getPurchaseBySub(principal:JwtAuthenticationToken): List<PurchaseDTO>{
         val sub = principal.tokenAttributes["sub"].toString()
         return purchaseService.getBySub(sub)
     }

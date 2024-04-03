@@ -23,8 +23,8 @@ class PurchaseService(@Autowired private val purchaseRepository: PurchaseReposit
                       private val cardService: CardService,
                       private val creditCardService: CreditCardService) {
 
-    public fun create(purchase: CreatePurchaseDTO): Purchase{
-        val foundUser = userService.getById(purchase.userId).orElseThrow{
+    public fun create(purchase: CreatePurchaseDTO, sub: String): Purchase {
+        val foundUser = userService.getBySub(sub).orElseThrow{
             NoSuchElementException("User not found.")
         }
         val foundCreditCard = creditCardService.getById(1).orElseThrow{
@@ -42,38 +42,44 @@ class PurchaseService(@Autowired private val purchaseRepository: PurchaseReposit
         }catch (e:IllegalArgumentException){
             throw IllegalArgumentException("Error creating the purchase")
         }
-        addRandomCards(purchase.amount,foundUser.getAuth0Sub())
+        addRandomCards(purchase.amount, sub)
         return purchaseRepository.save(Purchase(newPurchase))
     }
 
-     public fun addRandomCards(numberOfPackets:Int,sub:String){
-        val cardsId: MutableList<Long> = mutableListOf()
-        for (i in 1..numberOfPackets){
-            val random = SecureRandom();
-            cardsId.add(random.nextLong(1,36))
-            cardsId.add(random.nextLong(1,36))
-            cardsId.add(random.nextLong(1,36))
-            cardsId.add(random.nextLong(1,36))
-            cardsId.add(random.nextLong(1,36))
-        }
-        for(cardId: Long in cardsId){
-            val cardOpt = cardService.getById(cardId)
-            if(cardOpt.isPresent) {
-                userService.updateCardsOwnedList(sub, cardOpt.get())
+     private fun addRandomCards(numberOfPackets: Int, sub: String): List<Card>? {
+         val cardsId: MutableList<Long> = mutableListOf()
+         val randomGen = SecureRandom()
+         for (i in 1..numberOfPackets){
+             val nextPacket = generatePacket(randomGen)
+             cardsId.addAll(nextPacket)
+         }
+         val cards = cardService.getMultipleById(cardsId)
+         try {
+             userService.addMultipleCards(sub, cards)
+         } catch (e: NoSuchElementException) {
+             return null
+         }
+         return cards
+     }
 
-            }else{
-                throw ResponseStatusException(HttpStatus.NOT_FOUND)
+    private fun generatePacket(randomGen: SecureRandom): MutableList<Long> {
+        val idList: MutableList<Long> = mutableListOf()
+        while (idList.size < 5) {
+            val newId = randomGen.nextLong(1, 36)
+            if (!idList.contains(newId)) {
+                idList.add(newId)
             }
         }
+        return idList
     }
 
-    public fun getAll(pageable: Pageable):List<Purchase> {
+    public fun getAll(pageable: Pageable): List<Purchase> {
         val purchaseEntities = purchaseRepository.findAll(pageable)
         val purchases = purchaseEntities.map { it }
         return purchases.content
     }
 
-    public fun getBySub(sub:String):List<PurchaseDTO>{
+    public fun getBySub(sub:String): List<PurchaseDTO>{
         val purchasesMadeByUser =  purchaseRepository.findByUserSub(sub)
         return purchasesMadeByUser.map { purchases -> PurchaseDTO(purchases) }
     }
