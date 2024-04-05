@@ -12,6 +12,7 @@ import java.sql.Timestamp
 data class ExchangeRequestDTO (
         private val id: Long,
         private val userId: Long,
+        private val requestedCardName: String,
         private val requestedCardId: Long,
         private val status: String,
         private val createdAt: Timestamp
@@ -23,6 +24,10 @@ data class ExchangeRequestDTO (
 
     fun getUserId(): Long {
         return this.userId
+    }
+
+    fun getRequestedCardName(): String {
+        return this.requestedCardName
     }
 
     fun getRequestedCardId(): Long {
@@ -39,6 +44,7 @@ data class ExchangeRequestDTO (
     constructor(exchangeRequestObject: ExchangeRequest): this(
             exchangeRequestObject.getId(),
             exchangeRequestObject.getUser().getId(),
+            exchangeRequestObject.getRequestedCard().getName(),
             exchangeRequestObject.getRequestedCard().getId(),
             exchangeRequestObject.getRequestStatus().toString(),
             exchangeRequestObject.getCreatedAt()

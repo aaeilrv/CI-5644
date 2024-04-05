@@ -10,6 +10,8 @@ data class ExchangeOfferDTO (
         private val bidderId: Long,
         private val exchangeRequestId: Long,
         private val offeredCardId: Long,
+        private val requestedCardName: String,
+        private val offeredCardName: String,
         private val status: String,
         private val createdAt: Timestamp
 ): Serializable {
@@ -26,8 +28,16 @@ data class ExchangeOfferDTO (
         return this.exchangeRequestId
     }
 
+    fun getOfferedCardName(): String {
+        return this.offeredCardName
+    }
+
     fun getOfferedCardId(): Long {
         return this.offeredCardId
+    }
+
+    fun getRequestedCardName(): String {
+        return this.requestedCardName
     }
 
     fun getStatus(): String {
@@ -43,6 +53,8 @@ data class ExchangeOfferDTO (
             exchangeOfferObject.getBidder().getId(),
             exchangeOfferObject.getExchangeRequest().getId(),
             exchangeOfferObject.getOfferedCard().getId(),
+            exchangeOfferObject.getExchangeRequest().getRequestedCard().getName(),
+            exchangeOfferObject.getOfferedCard().getName(),
             exchangeOfferObject.getRequestStatus().toString(),
             exchangeOfferObject.getCreatedAt()
     )

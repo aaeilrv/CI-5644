@@ -7,18 +7,33 @@ import java.util.Date
 
 data class ExchangeCounterofferDTO(
         private val id: Long,
-        private val offeredCardId: Long,
+        private val counterOfferedCardName: String,
         private val status: ExchangeRequestStatus,
         private val exchangeRequestId: Long,
+        private val requestCardName: String,
         private val exchangeOfferId: Long,
+        private val offeredCardName: String,
+        private val counterOfferedCardId: Long,
         private val createdAt: Timestamp
 ): Serializable {
     fun getId(): Long {
         return this.id
     }
 
-    fun getOfferedCardId(): Long {
-        return this.offeredCardId
+    fun getCounterOfferedCardName(): String {
+        return this.counterOfferedCardName
+    }
+
+    fun getCounterOfferedCardId(): Long {
+        return this.counterOfferedCardId
+    }
+
+    fun getOfferedCardName(): String {
+        return this.offeredCardName
+    }
+
+    fun getRequestCardName(): String {
+        return this.requestCardName
     }
 
     fun getStatus(): ExchangeRequestStatus {
@@ -39,10 +54,13 @@ data class ExchangeCounterofferDTO(
 
     constructor(exchangeCounterOffer: ExchangeCounteroffer): this(
             exchangeCounterOffer.getId(),
-            exchangeCounterOffer.getOfferedCard().getId(),
+            exchangeCounterOffer.getOfferedCard().getName(),
             exchangeCounterOffer.getRequestStatus(),
             exchangeCounterOffer.getExchangeRequest().getId(),
+            exchangeCounterOffer.getExchangeRequest().getRequestedCard().getName(),
             exchangeCounterOffer.getExchangeOffer().getId(),
+            exchangeCounterOffer.getExchangeOffer().getOfferedCard().getName(),
+            exchangeCounterOffer.getOfferedCard().getId(),
             exchangeCounterOffer.getCreatedAt()
     )
 }
