@@ -9,21 +9,13 @@ import CounterOfferRequest from "../counterOffers/counterOfferRequest";
 import getJwt from "../../../helpers/getJwtClient";
 import UpdateExchangeOffer from "./updateExchangeOffer";
 
-type barajita = {
-  id: number;
-  name: string;
-  playerPosition: string;
-  playerNumber: number;
-  numberOwned: number;
-  country: string;
-  photoURL: string;
-};
-
 type exchangeOffer = {
   id: number;
   bidderId: number;
   exchangerequestId: number;
   offeredCardId: number;
+  requestedCardName: string;
+  offeredCardName: string;
   status: "PENDING" | "ACCEPTED" | "REJECTED";
 };
 
@@ -31,8 +23,6 @@ export default function ExchangeNotifications() {
   const CARD_PICTURE_LOC = "/static/images/cards/";
   const [exchangeOffer, setExchangeOffer] = useState(true);
   const [offerContent, setOfferContent] = useState<exchangeOffer[]>([]);
-  const [cardContent, setCardContent] = useState<barajita>();
-  const [cardId, setCardId] = useState(true);
   const API_EXCHANGE_REQUEST_OFFER_URL =
     process.env.NEXT_PUBLIC_EXCHANGE_OFFER_URL + `/receiver/2`;
 
@@ -53,27 +43,6 @@ export default function ExchangeNotifications() {
     getExchangeOfferData();
   }, []);
 
-  const API_CARD_URL = process.env.NEXT_PUBLIC_CARD_API_URL + `/${5}`;
-
-  useEffect(() => {
-    const getCardData = async () => {
-      const { token } = await getJwt();
-      const response = await fetch(API_CARD_URL, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      const data = await response.json();
-      setCardContent(data);
-      setCardId(false);
-    };
-    getCardData();
-  }, []);
-
-  const cardRequested = cardContent ? cardContent.name : "Kylian Mbappé";
-
   return (
     <div>
       {offerContent.length > 0 ? (
@@ -90,8 +59,10 @@ export default function ExchangeNotifications() {
                     <div className="flex items-center">
                       <span>
                         <Image
-                          src={CARD_PICTURE_LOC + cardRequested + ".jpeg"}
-                          alt={cardRequested}
+                          src={
+                            CARD_PICTURE_LOC + offer.offeredCardName + ".jpeg"
+                          }
+                          alt={offer.offeredCardName}
                           className="w-20 ml-2 mr-2"
                           width={1080}
                           height={1080}
@@ -103,8 +74,10 @@ export default function ExchangeNotifications() {
                       </h1>
                       <span>
                         <Image
-                          src={CARD_PICTURE_LOC + cardRequested + ".jpeg"}
-                          alt={cardRequested}
+                          src={
+                            CARD_PICTURE_LOC + offer.requestedCardName + ".jpeg"
+                          }
+                          alt={offer.requestedCardName}
                           className="w-20 ml-2 mr-2"
                           width={1080}
                           height={1080}
