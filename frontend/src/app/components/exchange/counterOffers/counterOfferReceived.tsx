@@ -13,22 +13,15 @@ function clickMe() {
   alert("You clicked me!");
 }
 
-type barajita = {
-  id: number;
-  name: string;
-  playerPosition: string;
-  playerNumber: number;
-  numberOwned: number;
-  country: string;
-  photoURL: string;
-};
-
 type counterOffer = {
   id: number;
   offeredCardId: number;
   exchangeRequestId: number;
   exchangeOfferId: number;
   status: string;
+  requestCardName: string;
+  offeredCardName: string;
+  counterOfferedCardName: string;
 };
 
 export default function UserCounteroffers() {
@@ -36,10 +29,8 @@ export default function UserCounteroffers() {
   const { user, isLoading } = useUser();
   const [exchangeRequest, setExchangeRequest] = useState(true);
   const [exchangedContent, setExchangedContent] = useState<counterOffer[]>([]);
-  const [cardContent, setCardContent] = useState<barajita>();
-  const [cardId, setCardId] = useState(true);
   const API_EXCHANGE_REQUEST_URL =
-    process.env.NEXT_PUBLIC_EXCHANGE_COUNTEROFFER_URL + `/receiver/2`;
+    process.env.NEXT_PUBLIC_EXCHANGE_COUNTEROFFER_URL + `/receiver/1`;
 
   useEffect(() => {
     const getExchangeRequestData = async () => {
@@ -58,25 +49,6 @@ export default function UserCounteroffers() {
     getExchangeRequestData();
   }, []);
 
-  const API_CARD_URL = process.env.NEXT_PUBLIC_CARD_API_URL + `/${5}`;
-
-  useEffect(() => {
-    const getCardData = async () => {
-      const { token } = await getJwt();
-      const response = await fetch(API_CARD_URL, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      const data = await response.json();
-      setCardContent(data);
-      setCardId(false);
-    };
-    getCardData();
-  }, []);
-  const cardRequested = cardContent ? cardContent.name : "Kylian Mbappé";
   if (isLoading || exchangeRequest) return <div>Loading...</div>;
   return (
     <div>
@@ -93,8 +65,12 @@ export default function UserCounteroffers() {
                     </h1>
                     <span>
                       <Image
-                        src={CARD_PICTURE_LOC + cardRequested + ".jpeg"}
-                        alt={cardRequested}
+                        src={
+                          CARD_PICTURE_LOC +
+                          exchange.counterOfferedCardName +
+                          ".jpeg"
+                        }
+                        alt={exchange.counterOfferedCardName}
                         className="w-20 ml-2 mr-2"
                         width={1080}
                         height={1080}
@@ -102,8 +78,34 @@ export default function UserCounteroffers() {
                     </span>
                     <h1 className="text-1xl font-bold space-y-4">
                       {" "}
-                      {` en la oferta ${exchange.exchangeRequestId} `}{" "}
+                      {` a cambio de tu barajita  `}{" "}
                     </h1>
+                    <span>
+                      <Image
+                        src={
+                          CARD_PICTURE_LOC + exchange.offeredCardName + ".jpeg"
+                        }
+                        alt={exchange.offeredCardName}
+                        className="w-20 ml-2 mr-2"
+                        width={1080}
+                        height={1080}
+                      />
+                    </span>
+                    <h1 className="text-1xl font-bold space-y-4">
+                      {" "}
+                      {` en lugar de  `}{" "}
+                    </h1>
+                    <span>
+                      <Image
+                        src={
+                          CARD_PICTURE_LOC + exchange.requestCardName + ".jpeg"
+                        }
+                        alt={exchange.requestCardName}
+                        className="w-20 ml-2 mr-2"
+                        width={1080}
+                        height={1080}
+                      />
+                    </span>
                   </div>
                 </div>
                 <div className="flex justify-center space-x-4">

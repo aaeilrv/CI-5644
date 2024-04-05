@@ -35,6 +35,9 @@ export default function UpdateExchangeOffer(
       });
   };
   patchRequest();
-    alert("Oferta cancelada!");
-  
+  if (statustoUpdate == "ACCEPTED") {
+    alert("Oferta aceptada!");
+  } else {
+    alert("Oferta rechazada!");
+  }
 }
