@@ -37,8 +37,8 @@ class CreditCardService(@Autowired private val creditCardRepository: CreditCardR
         return creditCardByUser.map { cards -> CreditCardDTO(cards) }
     }
 
-    public fun create(creditCard:CreateCreditCardDTO):CreditCard{
-        val foundUser = userService.getById(creditCard.userId).orElseThrow{
+    public fun create(creditCard:CreateCreditCardDTO, sub:String):CreditCard{
+        val foundUser = userService.getBySub(sub).orElseThrow{
             NoSuchElementException("User not found.")
         }
         val newCreditCard:CreateCreditCardRequest

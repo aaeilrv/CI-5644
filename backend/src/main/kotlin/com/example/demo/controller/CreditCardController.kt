@@ -16,9 +16,10 @@ class CreditCardController {
     @Autowired
     lateinit var creditCardService: CreditCardService
 
-    @PatchMapping
-    fun addCreditCard(@RequestBody request: CreateCreditCardDTO): ResponseEntity<CreditCardDTO>{
-        return ResponseEntity.ok(CreditCardDTO(creditCardService.create(request)))
+    @PostMapping
+    fun addCreditCard(principal: JwtAuthenticationToken, @RequestBody request: CreateCreditCardDTO): ResponseEntity<CreditCardDTO>{
+        val sub = principal.tokenAttributes["sub"]?.toString() ?: return ResponseEntity.internalServerError().build()
+        return ResponseEntity.ok(CreditCardDTO(creditCardService.create(request,sub)))
     }
 
     @GetMapping("/user/{id}")
