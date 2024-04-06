@@ -27,12 +27,6 @@ import java.util.stream.Collectors
 @Service
 class UserService (@Autowired private val userRepository: UserRepository,
                    @Autowired private val ownershipRepository: OwnershipRepository) {
-//    public fun findAll(): List<UserDTO> {
-//        return userRepository.findAll()
-//            .stream()
-//            .map(this::fromEntityToDTO)
-//            .collect(Collectors.toList())
-//    }
 
     public fun create(user: User): User {
         return userRepository.save(user)
@@ -109,27 +103,28 @@ class UserService (@Autowired private val userRepository: UserRepository,
         return users.content
     }
 
-    fun getProgress(sub: String): String{
-        val userOpt = getBySub(sub)
-        if (userOpt.isPresent) {
-            val cnt = userOpt.get().getCardsOwned().size
-            val percent = cnt*100.00/670
-            val decimal = BigDecimal(percent).setScale(2, RoundingMode.HALF_EVEN)
-            return "$decimal%"
-        } else {
-            throw ResponseStatusException(HttpStatus.NOT_FOUND, "User with $sub not found")
+    private fun calculateProgress(user: User): BigDecimal {
+        val numberOwned = user.getCardsOwned().size
+        val percentage = BigDecimal(numberOwned*100.00/670).setScale(2, RoundingMode.HALF_EVEN)
+        return percentage
+    }
+
+    fun getProgress(sub: String): String {
+        val user = getBySub(sub).orElseThrow {
+            throw ResponseStatusException(HttpStatus.NOT_FOUND,
+            "user with $sub not found.")
         }
+        return calculateProgress(user).toString()
     }
     fun getLeaders(allUser: List<User>): List<LeaderboardResponse> {
-        val listLeaders: MutableList<Pair<User, String>> = mutableListOf()
+        val listLeaders: MutableList<Pair<User, BigDecimal>> = mutableListOf()
         var counter = 1
         for (user: User in allUser) {
-            listLeaders.add(user to getProgress(user.getAuth0Sub()))
+            listLeaders.add(user to calculateProgress(user))
         }
-        listLeaders.sortBy { it.second }
-        listLeaders.reverse()
+        listLeaders.sortByDescending { it.second }
         val listLeadersForPrinting: MutableList<LeaderboardResponse> = mutableListOf()
-        for (leaders: Pair<User, String> in listLeaders) {
+        for (leaders: Pair<User, BigDecimal> in listLeaders) {
             listLeadersForPrinting.add(
                     LeaderboardResponse(
                             counter,
@@ -151,16 +146,4 @@ class UserService (@Autowired private val userRepository: UserRepository,
 
         return userRepository.save(user)
     }
-
-
-//    private fun fromEntityToDTO(entity: User): UserDTO {
-//        return UserDTO(
-//            entity.getId(),
-//            entity.getFirstName(),
-//            entity.getLastName(),
-//            entity.getBirthDay(),
-//            entity.getUsername(),
-//            entity.getEmailAddress()
-//        )
-//    }
 }
