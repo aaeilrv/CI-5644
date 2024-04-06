@@ -39,7 +39,7 @@ class CardService(@Autowired private val cardRepository: CardRepository,
         val exists: Optional<Card> = getById(id)
         if(exists.isPresent){
             val oldCard:Card = exists.get()
-            oldCard.setName(name)
+            oldCard.name = name
             val newCard:Card = cardRepository.save(oldCard)
             return create(newCard)
         }
@@ -50,7 +50,7 @@ class CardService(@Autowired private val cardRepository: CardRepository,
         val cardOpt = getById(cardId)
         if (cardOpt.isPresent) {
             val cardObj = cardOpt.get()
-            return cardObj.getUsers()
+            return cardObj.users
         }
         return null
     }

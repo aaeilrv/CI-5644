@@ -57,7 +57,7 @@ class UserService (@Autowired private val userRepository: UserRepository,
         if(exists.isPresent){
             val user: User = exists.get()
             //See if user already owns card
-            val ownershipValue: Ownership? = user.getCardsOwned().firstOrNull {it.getCard().getId() == card.getId()}
+            val ownershipValue: Ownership? = user.cards.firstOrNull {it.card.id == card.id}
             if (ownershipValue == null) {
                 val newOwnershipValue = Ownership(
                     null,
@@ -65,10 +65,10 @@ class UserService (@Autowired private val userRepository: UserRepository,
                     card,
                     1
                 )
-                user.getCardsOwned().add(newOwnershipValue)
+                user.cards.add(newOwnershipValue)
                 ownershipRepository.save(newOwnershipValue)
             } else {
-                ownershipValue.setNumberOwned(ownershipValue.getNumberOwned() + 1)
+                ownershipValue.numberOwned += 1
                 ownershipRepository.save(ownershipValue)
             }
             return userRepository.save(user)
@@ -78,9 +78,9 @@ class UserService (@Autowired private val userRepository: UserRepository,
 
     fun addMultipleCards(sub: String, cards: List<Card>): User {
         val user = getBySub(sub).orElseThrow { NoSuchElementException("User not found.") }
-        val ownershipValues = user.getCardsOwned()
+        val ownershipValues = user.cards
         cards.forEach { card ->
-           val ownershipValue: Ownership? = ownershipValues.firstOrNull { it.getCard().getId() == card.getId() }
+           val ownershipValue: Ownership? = ownershipValues.firstOrNull { it.card.id == card.id }
             if (ownershipValue == null) {
                 val newOwnership = Ownership(
                     null,
@@ -90,7 +90,7 @@ class UserService (@Autowired private val userRepository: UserRepository,
                 )
                 ownershipValues.add(newOwnership)
             } else {
-                ownershipValue.setNumberOwned(ownershipValue.getNumberOwned() + 1)
+                ownershipValue.numberOwned += 1
             }
         }
         ownershipRepository.saveAll(ownershipValues)
@@ -104,7 +104,7 @@ class UserService (@Autowired private val userRepository: UserRepository,
     }
 
     private fun calculateProgress(user: User): BigDecimal {
-        val numberOwned = user.getCardsOwned().size
+        val numberOwned = user.cards.size
         val percentage = BigDecimal(numberOwned*100.00/670).setScale(2, RoundingMode.HALF_EVEN)
         return percentage
     }
@@ -128,8 +128,8 @@ class UserService (@Autowired private val userRepository: UserRepository,
             listLeadersForPrinting.add(
                     LeaderboardResponse(
                             counter,
-                            leaders.first.getUsername(),
-                            leaders.first.getCardsOwned().size
+                            leaders.first.username,
+                            leaders.first.cards.size
                     )
             )
             counter += 1
@@ -139,10 +139,10 @@ class UserService (@Autowired private val userRepository: UserRepository,
 
     fun editUserData(user: User, body : Map<String, String>) : User{
 
-        user.setFirstName(body.get("firstName")!!)
-        user.setLastName(body.get("lastName")!!)
-        user.setUsername(body.get("username")!!)
-        user.setEmail(body.get("email")!!)
+        user.firstName = body["firstName"]!!
+        user.lastName = body["lastName"]!!
+        user.username = body["username"]!!
+        user.email = body["email"]!!
 
         return userRepository.save(user)
     }

@@ -29,7 +29,7 @@ class ExchangeOfferService(@Autowired private val exchangeOfferRepository: Excha
             NoSuchElementException("Exchange request not found.")
         }
 
-        if (exchangeOffer.offeredCardId == foundExchangeRequest.getRequestedCard().getId()) {
+        if (exchangeOffer.offeredCardId == foundExchangeRequest.requestedCard.id) {
             throw IllegalArgumentException("Can't bid the same card of the request.")
         }
 

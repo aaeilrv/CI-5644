@@ -4,44 +4,20 @@ import java.io.Serializable
 import com.example.demo.model.Card
 
 data class CardDTO (
-    private val id: Long,
-    private val name: String,
-    private val playerNumber: Short,
-    private val photoURL: String?,
-    private val playerPosition: String,
-    private val country: String
+    val id: Long,
+    val name: String,
+    val playerNumber: Short,
+    val photoURL: String?,
+    val playerPosition: String,
+    val country: String
 ):Serializable {
-    fun getId(): Long {
-        return this.id
-    }
-
-    fun getName(): String {
-        return this.name
-    }
-
-    fun getPlayerPosition(): String {
-        return this.playerPosition
-    }
-
-    fun getPlayerNumber(): Short {
-        return this.playerNumber
-    }
-
-    fun getPhotoURL(): String? {
-        return this.photoURL
-    }
-
-    fun getCountry(): String {
-        return this.country
-    }
-
     constructor(card: Card): this(
-        card.getId(),
-        card.getName(),
-        card.getPlayerNumber(),
-        card.getPhotoURL(),
-        card.getPlayerPosition().toString(),
-        card.getCountry()
+        card.id!!,
+        card.name,
+        card.playerNumber,
+        card.photoURL,
+        card.playerPosition.toString(),
+        card.country
     )
 
 }

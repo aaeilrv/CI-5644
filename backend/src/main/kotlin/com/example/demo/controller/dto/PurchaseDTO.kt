@@ -15,11 +15,11 @@ data class PurchaseDTO (
     val creditCardId: Long
 ):Serializable{
     constructor(purchaseObject: Purchase): this(
-        purchaseObject.getId(),
-        purchaseObject.getCreatedAt(),
-        purchaseObject.getUser().getId(),
-        purchaseObject.getPacketsPurchased(),
-        purchaseObject.getBaseAmount(),
-        purchaseObject.getCreditCard().getId()
+        purchaseObject.id!!,
+        purchaseObject.timestamp,
+        purchaseObject.purchasingUser.id!!,
+        purchaseObject.packetsPurchased,
+        purchaseObject.baseAmount,
+        purchaseObject.creditCard.id!!
     )
 }

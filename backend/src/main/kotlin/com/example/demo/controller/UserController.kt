@@ -92,7 +92,7 @@ class UserController {
         val listProgress:MutableList<String> = mutableListOf()
         val allUser = userService.getAll(pageable)
         for(user:User in allUser){
-            listProgress.add("${user.getUsername()}: " + userService.getProgress(user.getAuth0Sub()))
+            listProgress.add("${user.username}: " + userService.getProgress(user.auth0Sub))
         }
         return listProgress
     }

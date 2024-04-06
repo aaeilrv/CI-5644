@@ -33,13 +33,13 @@ data class CreditCardDTO(
     }
 
     constructor(creditCardObject:CreditCard): this(
-        creditCardObject.getId(),
-        creditCardObject.getUser().getId(),
-        creditCardObject.getExpirationDate(),
-        creditCardObject.getNumber(),
-        creditCardObject.getCardName(),
-        creditCardObject.getBank(),
-        creditCardObject.getCardType().toString()
+        creditCardObject.id!!,
+        creditCardObject.cardHolder.id!!,
+        creditCardObject.expirationDate,
+        creditCardObject.cardNumber,
+        creditCardObject.cardholderName,
+        creditCardObject.bank,
+        creditCardObject.card_type.toString()
     )
 
 }
