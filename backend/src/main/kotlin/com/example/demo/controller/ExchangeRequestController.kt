@@ -25,7 +25,6 @@ class ExchangeRequestController {
     @PostMapping
     fun createExchangeRequest(@RequestBody request: CreateExchangeRequestDTO): ResponseEntity<ExchangeRequestDTO> {
         return ResponseEntity.ok(ExchangeRequestDTO(exchangeRequestService.create(request)))
-        //return exchangeRequestService.create((request))
     }
 
     @PatchMapping
@@ -40,12 +39,10 @@ class ExchangeRequestController {
 
     @GetMapping("/{id}")
     fun getExchangeRequestById(@PathVariable id: Long): ResponseEntity<ExchangeRequestDTO> {
-        val exchangeRequestOpt = exchangeRequestService.getById(id)
-        if (exchangeRequestOpt.isPresent) {
-            return ResponseEntity.ok(ExchangeRequestDTO(exchangeRequestOpt.get()))
-        } else {
+        val exchangeRequest = exchangeRequestService.getById(id).orElseThrow {
             throw ResponseStatusException(HttpStatus.NOT_FOUND, "Exchange request with $id not found.")
         }
+        return ResponseEntity.ok(ExchangeRequestDTO(exchangeRequest))
     }
 
     // Todos los Exchange Requests creados por un usuario

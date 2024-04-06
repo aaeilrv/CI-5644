@@ -49,12 +49,11 @@ class UserController {
     fun getUserBySub(@RequestHeader("Authorization") token: String,
                     principal: JwtAuthenticationToken): ResponseEntity<UserDTO> {
         val sub: String = principal.tokenAttributes["sub"].toString()
-        val userOpt = userService.getBySub(sub)
-        if (userOpt.isPresent) {
-            return ResponseEntity.ok(UserDTO(userOpt.get()))
-        } else {
+        val user = userService.getBySub(sub).orElseThrow {
             throw ResponseStatusException(HttpStatus.NOT_FOUND, "User with $sub not found")
         }
+
+        return ResponseEntity.ok(UserDTO(user))
     }
 
     @GetMapping("/leaders")
@@ -99,28 +98,22 @@ class UserController {
 
     @PatchMapping()
     fun addCard(@RequestBody request: AddCardToOwnerRequest):ResponseEntity<UserDTO>{
-        val cardOpt = cardService.getById(request.cardId)
-        if (cardOpt.isPresent) {
-            val userWithNewCard: User? = userService.addSingleCard(request.ownerSub, cardOpt.get())
-            return ResponseEntity.ok(if (userWithNewCard == null) null else UserDTO(userWithNewCard))
-        } else {
+        val card = cardService.getById(request.cardId).orElseThrow {
             throw ResponseStatusException(HttpStatus.NOT_FOUND, "Card with ${request.cardId} not found")
         }
+        val userWithNewCard: User? = userService.addSingleCard(request.ownerSub, card)
+        return ResponseEntity.ok(if (userWithNewCard == null) null else UserDTO(userWithNewCard))
     }
 
     @PutMapping("/edit")
-    fun profileEdit (@RequestHeader("Authorization") token: String,
-                     principal: JwtAuthenticationToken,
+    fun profileEdit (principal: JwtAuthenticationToken,
                      @RequestBody request : Map<String, String>): ResponseEntity<UserDTO>{
 
         val sub: String = principal.tokenAttributes["sub"].toString()
-        val current: Optional<User> = userService.getBySub(sub)
-
-        if (current.isPresent) {            
-            return ResponseEntity.ok(UserDTO(userService.editUserData(current.get(), request)))
-        } else {
-            throw ResponseStatusException(HttpStatus.NOT_FOUND, "User with $sub not found")  
+        val current = userService.getBySub(sub).orElseThrow {
+            throw ResponseStatusException(HttpStatus.NOT_FOUND, "User with $sub not found")
         }
+        return ResponseEntity.ok(UserDTO(userService.editUserData(current, request)))
     }
 
     @GetMapping("/hello-oauth")

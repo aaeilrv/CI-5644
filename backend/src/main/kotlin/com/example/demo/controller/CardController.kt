@@ -44,12 +44,10 @@ class CardController {
 
     @GetMapping("/{id}")
     fun getUserById(@PathVariable id: Long): ResponseEntity<CardDTO> {
-        val cardOpt = cardService.getById(id)
-        if (cardOpt.isPresent) {
-            return ResponseEntity.ok(CardDTO(cardOpt.get()))
-        } else {
+        val card = cardService.getById(id).orElseThrow {
             throw ResponseStatusException(HttpStatus.NOT_FOUND, "User with $id not found")
         }
+        return ResponseEntity.ok(CardDTO(card))
     }
 
     @GetMapping("ownersOfCard/{cardId}")
