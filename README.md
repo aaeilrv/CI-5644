@@ -21,3 +21,4 @@ Para correr, utilizar IntelliJ IDEA
 Dar `play` dentro del directorio `./backend`
 
 Versión utilizada de JDK: 17
+Versión utilizada de Kotlin: 1.9.21
