@@ -60,7 +60,6 @@ class PurchaseIntegrationTests {
     fun `Test Purchase - User with no cards`() {
 
         val purchaseRequest = CreatePurchaseDTO(
-            1,
             5,
             1,
             Timestamp(0)
@@ -96,7 +95,7 @@ class PurchaseIntegrationTests {
         val userCards = objectMapper.convertValue(jsonContentNode, object : TypeReference<List<CardOwnedByUserDTO?>>() {})
 
         val cardList = userCards.filterNotNull()
-        val cardCount = cardList.fold(0) {acc, elem -> acc + elem.getNumberOwned()}
+        val cardCount = cardList.fold(0) {acc, elem -> acc + elem.numberOwned}
         Assertions.assertEquals(25, cardCount)
 
     }
@@ -106,7 +105,6 @@ class PurchaseIntegrationTests {
     @Sql(AFTER_MIGRATE, executionPhase = ExecutionPhase.AFTER_TEST_METHOD)
     fun `Should fail - Try to buy with non-existent credit card`() {
         val purchaseRequest = CreatePurchaseDTO(
-            1,
             5,
             5,
             Timestamp(0)
@@ -130,7 +128,6 @@ class PurchaseIntegrationTests {
     @Sql(AFTER_MIGRATE, executionPhase = ExecutionPhase.AFTER_TEST_METHOD)
     fun `Test purchase - User with one of each card`() {
         val purchaseRequest = CreatePurchaseDTO(
-            1,
             5,
             1,
             Timestamp(0)
@@ -166,7 +163,7 @@ class PurchaseIntegrationTests {
         val userCards = objectMapper.convertValue(jsonContentNode, object : TypeReference<List<CardOwnedByUserDTO?>>() {})
 
         val cardList = userCards.filterNotNull()
-        val cardCount = cardList.fold(0) {acc, elem -> acc + elem.getNumberOwned()}
+        val cardCount = cardList.fold(0) {acc, elem -> acc + elem.numberOwned}
         //User has one of each card at the beginning, so he should now have 61
         Assertions.assertEquals(61, cardCount)
     }
@@ -177,7 +174,6 @@ class PurchaseIntegrationTests {
     fun `Create many purchases and get all purchases from user`() {
         //Body of the purchase request to be made
         val purchaseRequest = CreatePurchaseDTO(
-            1,
             2,
             1,
             Timestamp(0)
