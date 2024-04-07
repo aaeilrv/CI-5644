@@ -44,7 +44,7 @@ export default function Leaderboard() {
       <div className="flex justify-center">
         <div className="space-y-4 w-1/2">
           {!loading && leaders?.map((user, index) => (
-            <div key={index} className="p-4 rounded-lg bg-white drop-shadow-md flex justify-between px-4">
+            <div key={user.id} className="p-4 rounded-lg bg-white drop-shadow-md flex justify-between px-4">
               <div className="flex space-x-4">
                 <p className="text-lg font-bold">{index + 1}</p>
                 <p className="text-lg">@{user.username}</p>

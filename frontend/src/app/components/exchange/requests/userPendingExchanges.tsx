@@ -46,54 +46,26 @@ export default function UserPendingExchanges() {
 
   if (isLoading || exchangeRequest) return <div>Loading...</div>;
   return (
-    <div>
+    <div className="py-2">
       {exchangedContent.length > 0 ? (
-        exchangedContent.map((exchange, index) => (
-          <div key={index} className="p-4">
-            <div>
-              <div className="w-full h-full rounded-lg bg-[#d6dfea] p-2 drop-shadow-md">
-                <div className="p-4">
-                  <div className="flex justify-start items-center">
-                    <h1 className="text-1xl font-bold space-y-4">
-                      {" "}
-                      {`Solicitas intercambiar tu barajita`}{" "}
-                    </h1>
-                    <span>
-                      <Image
-                        src={
-                          CARD_PICTURE_LOC +
-                          exchange.requestedCardName +
-                          ".jpeg"
-                        }
-                        alt={exchange.requestedCardName}
-                        className="w-20 ml-2 mr-2"
-                        width={1080}
-                        height={1080}
-                      />
-                    </span>
-                  </div>
-                  <div className="flex justify-center space-x-4">
-                    <h1 className="text-1xl font-bold space-y-4">
-                      {" "}
-                      {`Estatus de la solicitud: ${exchange.status}`}{" "}
-                    </h1>
-                  </div>
-                </div>
-                <div className="flex justify-center space-x-4">
-                  <Button
-                    onClick={() =>
-                      UpdateExchangeRequest(
-                        exchange.id,
-                        exchange.userId,
-                        exchange.requestedCardId,
-                        "CANCELLED"
-                      )
-                    }
-                    testId={`deleteExchangeRequestButton-${index}`}
-                    text={"Borrar solicitud de intercambio"}
-                  />
-                </div>
-              </div>
+        exchangedContent.map((it) => (
+          <div key={it.id} className="py-2">
+            <div className="rounded-md bg-[#ab9ee6] px-2 py-2 text-xs font-medium text-white ring-1 ring-inset ring-blue-700/10 flex justify-between align-top">
+              <div className='flex'>Solicitud: {it.requestedCardName}</div>
+              <div className='text-green-700'>{it.status}</div>
+              <Button
+                onClick={() =>
+                  UpdateExchangeRequest(
+                    it.id,
+                    it.userId,
+                    it.requestedCardId,
+                    "CANCELLED"
+                  )
+                }
+                testId={`deleteExchangeRequestButton-${it.id}`}
+                text="Cancelar"
+                color="red"
+              />
             </div>
           </div>
         ))

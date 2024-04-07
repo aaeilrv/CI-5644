@@ -4,23 +4,28 @@ import { SetStateAction, useState } from "react"
 
 const faq_data = [
   {
+    id: 1,
     Q: "¿Qué es Barajitas™?",
     A: "Barajitas™ es una página web dedicada a la gestión de álbumes virtuales y la colección e intercambio de cromos digitales con otros usuarios."
   },
 
   {
+    id: 2,
     Q: "¿Qué álbumes puedo coleccionar en el sitio?",
     A: "Por los momentos sólo está disponible el álbum Barajitas™ Heroes Nacionales, pero próximamente se añadirán nuevos albumes con cientos de cromos por coleccionar de tus personajes y eventos preferidos."
   },
   {
+    id: 3,
     Q: "¿Cómo puedo conseguir nuevos cromos?",
     A: "Podrás comprar en la tienda distintos paquetes que contendrán cromos aleatorios que te ayudaran a llenar las entradas de tu album virtual."
   },
   {
+    id: 4,
     Q: "¿Qué pasa si en los paquetes me salen cromos repetidos?",
     A: "Los cromos que tengas repetidos en tu inventario podrás intercambiarlos con otros usuarios de la plataforma que los necesiten para completar su colección a cambio de nuevos cromos para llenar entradas de tu álbum."
   },
   {
+    id: 5,
     Q: "¿Si cierro el navegador perderé mi progreso en el álbum?",
     A: "No. Al registrarte y crear un usuario en Barajitas™ todo tu progreso se guardará automáticamente y podras acceder a él nuevamente desde cualquier lugar y en cualquier momento iniciando sesión en tu cuenta."
   },
@@ -43,16 +48,16 @@ export default function FAQ() {
         <h1 className="font-bold text-4xl sm:text-5xl uppercase">F.A.Q</h1>
         <div className="space-y-2 text-white md:divide-y divide-white divide-opacity-30">
         {
-          faq_data.map((faq_data, index) => (
-            <div key={index} className="py-4">
+          faq_data.map((it, index) => (
+            <div key={it.id} className="py-4">
               <button className="font-bold flex text-left align-left justify-between w-full" onClick = {() => toggle(index)}>
                 <h5>
-                  {faq_data.Q}
+                  {it.Q}
                 </h5>
                 <h5 className="px-2 md:px-10"><span> { selected == index ? "-" : "+"} </span></h5>
               </button>
               <div className ={selected == index ? "text-wrap heigth: auto max-heigth: 999px transition-all 1.5s cubic-bezier:(1,0,1,0) " : " text-wrap overflow: hidden transition-all 1.5s cubic-bezier:(0,1,0,1)"}>
-                {faq_data.A}
+                {it.A}
               </div>
             </div>
           ))

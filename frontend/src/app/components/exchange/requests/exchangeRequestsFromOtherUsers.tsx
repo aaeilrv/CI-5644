@@ -16,12 +16,14 @@ type exchangeRequestD = {
 };
 
 export default function ExchangeRequestsFromOtherUsers() {
+  
+  const userId = 1;
   const CARD_PICTURE_LOC = "/static/images/cards/";
   const [exchangedContent, setExchangedContent] = useState<exchangeRequestD[]>(
     []
   );
   const API_EXCHANGE_REQUEST_URL =
-    process.env.NEXT_PUBLIC_EXCHANGE_REQUEST_URL + `/hasCards/2`;
+    process.env.NEXT_PUBLIC_EXCHANGE_REQUEST_URL + `/hasCards/${userId}`;
 
   useEffect(() => {
     const getExchangeRequestData = async () => {
@@ -42,12 +44,12 @@ export default function ExchangeRequestsFromOtherUsers() {
   return (
     <div className="py-2">
       {exchangedContent.length > 0 ? (
-        exchangedContent.map((exchange, index) => (
-          <div key={index} className="py-2">
+        exchangedContent.map((it) => (
+          <div key={it.id} className="py-2">
             <div className="rounded-md bg-[#ab9ee6] px-2 py-2 text-xs font-medium text-white ring-1 ring-inset ring-blue-700/10 flex justify-between align-top">
-              <div className='flex'>Solicitud: {exchange.requestedCardName}</div>
-              <div className='text-green-700'>{exchange.status}</div>
-              <div className="flex">Creado por: {exchange.userId}</div>
+              <div className='flex'>Solicitud: {it.requestedCardName}</div>
+              <div className='text-green-700'>{it.status}</div>
+              <div className="flex">Creado por: {it.userId}</div>
               <OfferRequest />
             </div>
           </div>

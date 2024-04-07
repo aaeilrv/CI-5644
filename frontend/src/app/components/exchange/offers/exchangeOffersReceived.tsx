@@ -46,22 +46,22 @@ export default function ExchangeOffersReceived() {
   return (
     <div>
       {offerContent.length > 0 ? (
-        offerContent.map((offer, index) => (
-          <div key={index} className="p-4">
+        offerContent.map((it) => (
+          <div key={it.id} className="p-4">
             <div className="rounded-md bg-[#ab9ee6] px-2 py-2 text-xs font-medium text-white ring-1 ring-inset ring-blue-700/10 flex justify-between align-top">
-              <div className="flex">Solicitud: {offer.requestedCardName}</div>
-              <div className="flex">Oferta: {offer.offeredCardName}</div>
-              <div className="flex">Creado por: {offer.exchangerequestId}</div>
-              <div className="flex">Recibido por: {offer.bidderId}</div>
-              <div className="flex">{offer.status}</div>
+              <div className="flex">Solicitud: {it.requestedCardName}</div>
+              <div className="flex">Oferta: {it.offeredCardName}</div>
+              <div className="flex">Creado por: {it.exchangerequestId}</div>
+              <div className="flex">Recibido por: {it.bidderId}</div>
+              <div className="flex">{it.status}</div>
               <div className="flex space-x-2">
                 <Button
                   onClick={() =>
                     UpdateExchangeOffer(
-                      offer.id,
-                      offer.bidderId,
-                      offer.exchangerequestId,
-                      offer.offeredCardId,
+                      it.id,
+                      it.bidderId,
+                      it.exchangerequestId,
+                      it.offeredCardId,
                       "ACCEPTED"
                     )
                   }
@@ -71,10 +71,10 @@ export default function ExchangeOffersReceived() {
                 <Button
                     onClick={() =>
                       UpdateExchangeOffer(
-                        offer.id,
-                        offer.bidderId,
-                        offer.exchangerequestId,
-                        offer.offeredCardId,
+                        it.id,
+                        it.bidderId,
+                        it.exchangerequestId,
+                        it.offeredCardId,
                         "REJECTED"
                       )
                     }

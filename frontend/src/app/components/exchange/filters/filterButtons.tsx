@@ -4,61 +4,25 @@ const FilterButtons = ({currentFilter, setCurrentFilter}: {currentFilter: number
 
   const [filters, setFilters] = useState([
     {
-      id: 1,
+      id: 0,
       name: "Solicitudes",
       active: true,
       background: "bg-orange-400",
       ring: "ring-orange-500",
-      buttons: [
-        {
-          id: 1,
-          name: "Recibidas",
-          active: true
-        },
-        {
-          id: 2,
-          name: "Creadas por mi",
-          active: false
-        }
-      ]
     },
     {
-      id: 2,
+      id: 1,
       name: "Ofertas",
       active: false,
       background: "bg-lime-400",
       ring: "ring-lime-500",
-      buttons: [
-        {
-          id: 1,
-          name: "Recibidas",
-          active: true,
-        },
-        {
-          id: 2,
-          name: "Creadas por mi",
-          active: false
-        }
-      ]
     },
     {
-      id: 3,
+      id: 2,
       name: "Contraofertas",
       active: false,
       background: "bg-sky-400",
       ring: "ring-sky-500",
-      buttons: [
-        {
-          id: 1,
-          name: "Recibidas",
-          active: true
-        },
-        {
-          id: 2,
-          name: "Creadas por mi",
-          active: false
-        }
-      ]
     }
   ]);
 

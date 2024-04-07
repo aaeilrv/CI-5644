@@ -89,7 +89,7 @@ export default function Barajitas() {
           </button>
           <div className="grid grid-cols-5 gap-10">
             {pageContents.map((barajita, index) => ( barajita ?
-              <div className="rounded-lg bg-white p-2 drop-shadow-md hover:bg-slate-300" key={index}>
+              <div className="rounded-lg bg-white p-2 drop-shadow-md hover:bg-slate-300" key={barajita.id}>
                 <Image src={CARD_PICTURE_LOC + barajita.playerName + '.jpeg'} alt={barajita.playerName} className="w-full" width={1080} height={1080} />
               </div> : 
               <div className="rounded-lg bg-white p-2 drop-shadow-md hover:bg-slate-300" key={index}>
