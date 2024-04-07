@@ -24,37 +24,37 @@ const registerSchema = z
         message: "El nombre de usuario debe tener al menos 4 caracteres",
       })
       .max(30, {
-        message: "El nombre de usuario debe tener menos de 30 caracteres",
+        message: "El nombre de usuario debe tener menos de 30 caracteres.",
       }),
     name: z
       .string()
-      .min(4, {
-        message: "El nombre de usuario debe tener al menos 4 caracteres",
+      .min(1, {
+        message: "El campo no puede ser vacío.",
       })
       .max(30, {
-        message: "El nombre de usuario debe tener menos de 30 caracteres",
+        message: "Longitud máxima de 30 caracteres.",
       }),
     lastname: z
       .string()
       .min(1, {
-        message: "El campo no puede ser vacío"
+        message: "El campo no puede ser vacío."
       })
       .max(30, {
         message: "Longitud máxima de 30 caracteres."
       }),
     email: z
       .string()
-      .email({ message: "El correo electrónico no es valido" })
+      .email({ message: "El correo electrónico no es valido." })
       .min(4, {
-        message: "El correo electrónico debe tener al menos 4 caracteres",
+        message: "El correo electrónico debe tener al menos 4 caracteres.",
       })
       .max(250, {
-        message: "El correo electronico debe tener menos de 250 caracteres",
+        message: "El correo electronico debe tener menos de 250 caracteres.",
       }),
     birthday: z
       .string()
       .regex(/^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])$/, {
-        message: "La fecha debe seguir el formato YYYY-MM-DD"
+        message: "La fecha debe seguir el formato YYYY-MM-DD."
       })
   })
 
@@ -112,26 +112,26 @@ export const Register = () => {
   };
 
   return (
-    <div className="flex  sm:w-full md:w-4/6 justify-center py-32 sm:py-24 md:py-24 lg:py-24  ">
-      <div className="bg-[#4DBDEB] w-full  sm:w-2/5 md:w-6/12 flex flex-col rounded-2xl">
+    <div className="w-full h-1/2 flex items-center justify-center py-8">
+      <div className="border-[#c7d3e1] bg-[#d6dfea] w-1/3 h-4/5 rounded-2xl">
         {/* header or title */}
         <div>
-          <h1 className="text-4xl text-white font-bold text-center mt-12">
-            Llena tu información
+          <h1 className="text-3xl font-bold text-center mt-12">
+            Completa tu información
           </h1>
         </div>
         {/* Form */}
 
-        <div className="flex justify-center">
+        <div className="flex justify-center mt-10">
           <form className="flex flex-col w-2/3" onSubmit={onSubmit}>
-            <div id="username-container" className="flex flex-col mt-12">
-              <label className="text-white font-semibold text-lg">
+            <div id="username-container" className="flex flex-col">
+              <label className=" font-semibold text-lg">
                 Nombre de usuario
               </label>
               <input
                 id="username-input"
                 type="text"
-                className="bg-transparent border-b-2  outline-none text-white"
+                className="bg-transparent border-b-2 outline-none px-2 py-1"
                 {...register("username")}
               ></input>
               {errors.username && (
@@ -140,14 +140,14 @@ export const Register = () => {
                 </span>
               )}
             </div>
-            <div id="firstName-container" className="flex flex-col mt-12">
-              <label className="text-white font-semibold text-lg">
+            <div id="firstName-container" className="flex flex-col mt-4">
+              <label className=" font-semibold text-lg">
                 Nombre
               </label>
               <input
                 id="firstName-input"
                 type="text"
-                className="bg-transparent border-b-2  outline-none text-white"
+                className="bg-transparent border-b-2 outline-none px-2 py-1"
                 {...register("name")}
               ></input>
               {errors.name && (
@@ -156,30 +156,30 @@ export const Register = () => {
                 </span>
               )}
             </div>
-            <div id="lastName-container" className="flex flex-col mt-12">
-              <label className="text-white font-semibold text-lg">
+            <div id="lastName-container" className="flex flex-col mt-4">
+              <label className=" font-semibold text-lg">
                 Apellido
               </label>
               <input
                 id="lastName-input"
                 type="text"
-                className="bg-transparent border-b-2  outline-none text-white"
+                className="bg-transparent border-b-2 outline-none px-2 py-1"
                 {...register("lastname")}
               ></input>
-              {errors.name && (
+              {errors.lastname && (
                 <span className="text-red-500 text-sm">
-                  {errors.name.message}
+                  {errors.lastname.message}
                 </span>
               )}
             </div>
-            <div id="email-container" className="flex flex-col mt-12">
-              <label className="text-white font-semibold text-lg">
+            <div id="email-container" className="flex flex-col mt-4">
+              <label className=" font-semibold text-lg">
                 Correo
               </label>
               <input
                 id="email-input"
                 type="text"
-                className="bg-transparent border-b-2  outline-none text-white"
+                className="bg-transparent border-b-2 outline-none px-2 py-1"
                 {...register("email")}
               ></input>
               {errors.email && (
@@ -188,15 +188,15 @@ export const Register = () => {
                 </span>
               )}
             </div>
-            <div id="birthday-container" className ="flex flex-col mt-12">
-              <label className = "text-white font-semibold text-lg">
+            <div id="birthday-container" className ="flex flex-col mt-4">
+              <label className = " font-semibold text-lg">
                 Fecha de Nacimiento
               </label>
               <input
                 id="birthday-input"
                 type="text"
                 placeholder="YYYY-MM-DD"
-                className="bg-transparent border-b-2 outline-none text-white"
+                className="bg-transparent border-b-2 outline-none px-2 py-1"
                 {...register("birthday")}
                 ></input>
                 {errors.birthday && (
@@ -207,7 +207,7 @@ export const Register = () => {
             </div>
             <div className="flex mt-16 justify-center mb-12">
               <button
-                className="bg-[#FFE08C] disabled:opacity-50 text-white text-center rounded-lg py-3 md:p-3 w-1/2"
+                className="bg-[#FCBF45] disabled:opacity-50 text-center rounded-lg py-3 w-1/2 font-bold"
                 disabled={!isDirty || !isValid}
               >
                 Regístrate
