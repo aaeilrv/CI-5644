@@ -54,6 +54,10 @@ class ExchangeRequest(
     fun getRequestedCard(): Card = this.requestedCard
     fun getRequestStatus(): ExchangeRequestStatus = this.status
     fun getCreatedAt(): Timestamp = this.createdAt
+    
+    fun updateRequester(newRequester: User) { this.requester = newRequester }
+    fun updateRequestedCard(newRequestedCard: Card) { this.requestedCard = newRequestedCard }
+    fun updateStatus(newStatus: ExchangeRequestStatus) { this.status = newStatus }
 }
 
 @Entity
@@ -66,22 +70,22 @@ class ExchangeOffer(
 
         @ManyToOne
         @JoinColumn(name = "bidder_id", nullable = false)
-        private val bidder: User,
+        private var bidder: User,
 
         @ManyToOne
         @JoinColumn(name = "exchange_request_id", nullable = false)
-        private val exchangeRequest: ExchangeRequest,
+        private var exchangeRequest: ExchangeRequest,
 
         @ManyToOne
         @JoinColumn(name = "offered_card_id", nullable = false)
-        private val offeredCard: Card,
+        private var offeredCard: Card,
 
         @Column(name = "status", nullable = false, columnDefinition = "varchar")
         @Enumerated(EnumType.STRING)
         var status: ExchangeOfferStatus,
 
         @Column(name = "created_at", nullable = false)
-        private val createdAt: java.sql.Timestamp,
+        private var createdAt: java.sql.Timestamp,
 
         ) {
     constructor() : this(-1, User(), ExchangeRequest(), Card(), ExchangeOfferStatus.PENDING, java.sql.Timestamp(0))
@@ -101,6 +105,13 @@ class ExchangeOffer(
     fun getOfferedCard(): Card = this.offeredCard
     fun getRequestStatus(): ExchangeOfferStatus = this.status
     fun getCreatedAt(): Timestamp = this.createdAt
+
+    fun updateBidder(newBidder: User) { this.bidder = newBidder }
+    fun updateExchangeRequest(newExchangeRequest: ExchangeRequest) { this.exchangeRequest = newExchangeRequest }
+    fun updateOfferedCard(newOfferedCard: Card) { this.offeredCard = newOfferedCard }
+    fun updateStatus(newStatus: ExchangeOfferStatus) { this.status = newStatus }
+    fun updateCreatedAt(newCreatedAt: Timestamp) { this.createdAt = newCreatedAt }
+    
 }
 
 @Entity
@@ -113,7 +124,7 @@ class ExchangeCounteroffer(
 
         @ManyToOne
         @JoinColumn(name = "offered_card_id", nullable = false)
-        private val card: Card,
+        private var card: Card,
 
         @Column(name = "status", nullable = false, columnDefinition = "varchar")
         @Enumerated(EnumType.STRING)
@@ -121,14 +132,14 @@ class ExchangeCounteroffer(
 
         @ManyToOne
         @JoinColumn(name = "exchange_request_id", nullable = false)
-        private val exchangeRequest: ExchangeRequest,
+        private var exchangeRequest: ExchangeRequest,
 
         @ManyToOne
         @JoinColumn(name = "exchange_offer_id", nullable = false)
-        private val exchangeOffer: ExchangeOffer,
+        private var exchangeOffer: ExchangeOffer,
 
         @Column(name = "created_at", nullable = false)
-        private val createdAt: java.sql.Timestamp,
+        private var createdAt: java.sql.Timestamp,
 
         ) {
     constructor() : this(-1, Card(), ExchangeRequestStatus.PENDING, ExchangeRequest(), ExchangeOffer(), java.sql.Timestamp(0))
@@ -148,4 +159,10 @@ class ExchangeCounteroffer(
     fun getExchangeRequest(): ExchangeRequest = this.exchangeRequest
     fun getExchangeOffer(): ExchangeOffer = this.exchangeOffer
     fun getCreatedAt(): Timestamp = this.createdAt
+
+    fun updateCard(newCard: Card) { this.card = newCard }
+    fun updateStatus(newStatus: ExchangeRequestStatus) { this.status = newStatus }
+    fun updateExchangeRequest(newExchangeRequest: ExchangeRequest) { this.exchangeRequest = newExchangeRequest }
+    fun updateExchangeOffer(newExchangeOffer: ExchangeOffer) { this.exchangeOffer = newExchangeOffer }
+    fun updateCreatedAt(newCreatedAt: Timestamp) { this.createdAt = newCreatedAt }
 }
