@@ -23,7 +23,7 @@ export default function ExchangeRequestsFromOtherUsers() {
     []
   );
   const API_EXCHANGE_REQUEST_URL =
-    process.env.NEXT_PUBLIC_EXCHANGE_REQUEST_URL + `/hasCards/${userId}`;
+    process.env.NEXT_PUBLIC_EXCHANGE_REQUEST_URL + `/hasCards/`;
 
   useEffect(() => {
     const getExchangeRequestData = async () => {

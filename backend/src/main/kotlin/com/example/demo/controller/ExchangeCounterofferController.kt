@@ -9,6 +9,7 @@ import org.springframework.data.domain.Pageable
 import org.springframework.format.annotation.DateTimeFormat
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.server.ResponseStatusException
 import java.util.*
@@ -23,13 +24,17 @@ class ExchangeCounterofferController {
     lateinit var exchangeCounterofferService: ExchangeCounterofferService
 
     @PostMapping
-    fun createExchangeOffer(@RequestBody request: CreateExchangeCounterofferDTO): ResponseEntity<ExchangeCounterofferDTO> {
-        return ResponseEntity.ok(ExchangeCounterofferDTO(exchangeCounterofferService.create(request)))
-    }
+    fun createExchangeOffer(principal: JwtAuthenticationToken, @RequestBody request: CreateExchangeCounterofferDTO): ResponseEntity<ExchangeCounterofferDTO> {
+        val userSub = principal.tokenAttributes["sub"] as String
+        val exchangeCounteroffer = exchangeCounterofferService.create(request, userSub)
+        return ResponseEntity.ok(ExchangeCounterofferDTO(exchangeCounteroffer))
+}
 
-    @PatchMapping
-    fun updateExchangeCounteroffer(@RequestBody request: UpdateExchangeCounterofferRequest) : ResponseEntity<ExchangeCounterofferDTO> {
-        return ResponseEntity.ok(ExchangeCounterofferDTO(exchangeCounterofferService.updateExchangeCounteroffer(request)))
+    @PatchMapping("/{id}")
+    fun updateExchangeCounteroffer(@RequestBody request: UpdateExchangeCounterofferRequest, principal: JwtAuthenticationToken): ResponseEntity<ExchangeCounterofferDTO> {
+        val sub = principal.tokenAttributes["sub"] as String
+        val updatedExchangeCounteroffer = exchangeCounterofferService.updateExchangeCounteroffer(request, sub)
+        return ResponseEntity.ok(ExchangeCounterofferDTO(updatedExchangeCounteroffer))
     }
 
     @GetMapping
@@ -46,15 +51,19 @@ class ExchangeCounterofferController {
     }
 
     // Todos los ECO creados por un usuario
-    @GetMapping("/creator/{id}")
-    fun getExchangeCounterofferByCreator(@PathVariable id: Long): List<ExchangeCounterofferDTO> {
-        return exchangeCounterofferService.getByCreator(id)
+    @GetMapping("/creator/me")
+    fun getExchangeCounteroffersByCreator(principal: JwtAuthenticationToken): ResponseEntity<List<ExchangeCounterofferDTO>> {
+        val sub = principal.tokenAttributes["sub"] as String
+        val exchangeCounteroffers = exchangeCounterofferService.getByCreatorSub(sub)
+        return ResponseEntity.ok(exchangeCounteroffers)
     }
 
-    // Todos los ECO recibidos por un usuario
-    @GetMapping("/receiver/{id}")
-    fun getExchangeCounterofferByReceiver(@PathVariable id: Long): List<ExchangeCounterofferDTO> {
-        return exchangeCounterofferService.getByReceiver(id)
+    // Todos los ECO recibidos por el usuario autenticado
+    @GetMapping("/receiver/me")
+    fun getExchangeCounteroffersByReceiver(principal: JwtAuthenticationToken): ResponseEntity<List<ExchangeCounterofferDTO>> {
+        val sub = principal.tokenAttributes["sub"] as String
+        val exchangeCounteroffers = exchangeCounterofferService.getByReceiverSub(sub)
+        return ResponseEntity.ok(exchangeCounteroffers)
     }
 
     // Todos los ECO de una barajita específica
@@ -75,33 +84,28 @@ class ExchangeCounterofferController {
         return exchangeCounterofferService.getByER(id)
     }
 
-    // Todos los ECO creados en un rango de tiempo
-    @GetMapping("/start/{start}/end/{end}")
-    fun getExchangeCounterofferByDateRange(
-            @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) start: Date,
-            @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) end: Date
-    ): List<ExchangeCounterofferDTO> {
-        return exchangeCounterofferService.getByDateRange(start, end)
-    }
-
-    // Todos los ECO creados por un usuario en un rango de tiempo
-    @GetMapping("/creator/{creatorId}/start/{start}/end/{end}")
+    // Todos los ECO creados por el usuario autenticado
+    @GetMapping("/creator/me/start/{start}/end/{end}")
     fun getExchangeCounterofferByCreatorAndDateRange(
-            @PathVariable creatorId: Long,
-            @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) start: Date,
-            @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) end: Date
-    ): List<ExchangeCounterofferDTO> {
-        return exchangeCounterofferService.getByCreatorAndDateRange(creatorId, start, end)
+        principal: JwtAuthenticationToken, 
+        @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) start: Date,
+        @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) end: Date
+    ): ResponseEntity<List<ExchangeCounterofferDTO>> {
+        val sub = principal.tokenAttributes["sub"] as String
+        val exchangeCounteroffers = exchangeCounterofferService.getByCreatorSubAndDateRange(sub, start, end)
+        return ResponseEntity.ok(exchangeCounteroffers)
     }
 
-    // Todos los ECO recibidos por un usuario en un rango de tiempo
-    @GetMapping("/receiver/{receiverId}/start/{start}/end/{end}")
+    // Todos los ECO recibidos por el usuario autenticado
+    @GetMapping("/receiver/me/start/{start}/end/{end}")
     fun getExchangeCounterofferByReceiverAndDateRange(
-            @PathVariable receiverId: Long,
-            @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) start: Date,
-            @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) end: Date
-    ): List<ExchangeCounterofferDTO> {
-        return exchangeCounterofferService.getByReceiverAndDateRange(receiverId, start, end)
+        principal: JwtAuthenticationToken, 
+        @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) start: Date,
+        @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) end: Date
+    ): ResponseEntity<List<ExchangeCounterofferDTO>> {
+        val sub = principal.tokenAttributes["sub"] as String
+        val exchangeCounteroffers = exchangeCounterofferService.getByReceiverSubAndDateRange(sub, start, end)
+        return ResponseEntity.ok(exchangeCounteroffers)
     }
 
     // *- los que no funcionan -* //
@@ -112,15 +116,19 @@ class ExchangeCounterofferController {
         return exchangeCounterofferService.getByStatus(status)
     }
 
-    // Todos los ECO con cierto estatus creados por un usuario
-    @GetMapping("/creator/{creatorId}/status/{status}")
-    fun getExchangeCounterofferByCreatorAndStatus(@PathVariable creatorId: Long, @PathVariable status: ExchangeRequestStatus): List<ExchangeCounterofferDTO> {
-        return exchangeCounterofferService.getByCreatorAndStatus(creatorId, status)
+    @GetMapping("/creator/me/status/{status}")
+    fun getMyExchangeCounteroffersByStatus(principal: JwtAuthenticationToken, @PathVariable status: ExchangeRequestStatus): ResponseEntity<List<ExchangeCounterofferDTO>> {
+        val sub = principal.tokenAttributes["sub"] as String
+        val exchangeCounteroffers = exchangeCounterofferService.getByCreatorSubAndStatus(sub, status)
+        return ResponseEntity.ok(exchangeCounteroffers)
     }
 
-    // Todos los ECO con cierto estatus creados por un usuario
-    @GetMapping("/receiver/{receiverId}/status/{status}")
-    fun getExchangeCounterofferByReceiverAndStatus(@PathVariable receiverId: Long, @PathVariable status: ExchangeRequestStatus): List<ExchangeCounterofferDTO> {
-        return exchangeCounterofferService.getByReceiverAndStatus(receiverId, status)
+
+    // Todos los ECO con cierto estatus recibidos por el usuario autenticado
+    @GetMapping("/receiver/me/status/{status}")
+    fun getExchangeCounteroffersForMeByStatus(principal: JwtAuthenticationToken, @PathVariable status: ExchangeRequestStatus): ResponseEntity<List<ExchangeCounterofferDTO>> {
+        val sub = principal.tokenAttributes["sub"] as String
+        val exchangeCounteroffers = exchangeCounterofferService.getByReceiverSubAndStatus(sub, status)
+        return ResponseEntity.ok(exchangeCounteroffers)
     }
 }

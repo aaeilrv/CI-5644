@@ -31,12 +31,12 @@ export default function CounterofferReceived() {
   const [exchangeRequest, setExchangeRequest] = useState(true);
   const [exchangedContent, setExchangedContent] = useState<counterOffer[]>([]);
   const API_EXCHANGE_REQUEST_URL =
-    process.env.NEXT_PUBLIC_EXCHANGE_COUNTEROFFER_URL + `/receiver/${userId}`;
+    process.env.NEXT_PUBLIC_EXCHANGE_COUNTEROFFER_URL + `/receiver/`;
 
   useEffect(() => {
     const getExchangeRequestData = async () => {
       const { token } = await getJwt();
-      const response = await fetch(API_EXCHANGE_REQUEST_URL, {
+      const response = await fetch(API_EXCHANGE_REQUEST_URL + token, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
