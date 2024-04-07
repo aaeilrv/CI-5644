@@ -25,12 +25,13 @@ type counterOffer = {
 };
 
 export default function CounterofferReceived() {
+  const userId = 1000;
   const CARD_PICTURE_LOC = "/static/images/cards/";
   const { user, isLoading } = useUser();
   const [exchangeRequest, setExchangeRequest] = useState(true);
   const [exchangedContent, setExchangedContent] = useState<counterOffer[]>([]);
   const API_EXCHANGE_REQUEST_URL =
-    process.env.NEXT_PUBLIC_EXCHANGE_COUNTEROFFER_URL + `/receiver/1`;
+    process.env.NEXT_PUBLIC_EXCHANGE_COUNTEROFFER_URL + `/receiver/${userId}`;
 
   useEffect(() => {
     const getExchangeRequestData = async () => {
@@ -98,8 +99,10 @@ export default function CounterofferReceived() {
           </div>
         ))
       ) : (
-        <div className="rounded-md bg-[#ab9ee6] px-2 py-2 text-xs font-medium text-white ring-1 ring-inset ring-blue-700/10 flex justify-between align-top">
-          No se ha recibido ninguna contraoferta.
+        <div className="py-4">
+          <div className="rounded-md bg-[#ab9ee6] px-2 py-2 text-xs font-medium text-white ring-1 ring-inset ring-blue-700/10 flex justify-between">
+            No existen contraofertas.
+          </div>
         </div>
       )}
     </div>

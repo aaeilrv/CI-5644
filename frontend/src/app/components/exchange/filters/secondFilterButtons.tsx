@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-const FilterButtons = ({currentFilter, setCurrentFilter}: {currentFilter: number, setCurrentFilter: React.Dispatch<React.SetStateAction<number>>}) => {
+const SecondFilter = ({currentFilter, setCurrentFilter}: {currentFilter: number, setCurrentFilter: React.Dispatch<React.SetStateAction<number>>}) => {
 
   const [filters, setFilters] = useState([
     {
@@ -31,7 +31,7 @@ const FilterButtons = ({currentFilter, setCurrentFilter}: {currentFilter: number
           filters.map((filter) => (
             <button
               key={filter.id}
-              className={`inline-flex items-center rounded-md ${filter.active ? filter.background : ''} px-2 py-1 text-xs font-medium text-black ring-1 ring-inset ${filter.ring}`}
+              className={`inline-flex items-center rounded-md ${filter.active ? 'bg-slate-400' : ''} px-2 py-1 text-xs font-medium text-black ring-1 ring-inset bg-ring-300`}
               onClick={() =>
                 handleButtonClick(filter.id)
               }
@@ -45,4 +45,4 @@ const FilterButtons = ({currentFilter, setCurrentFilter}: {currentFilter: number
   );
 };
 
-export default FilterButtons;
+export default SecondFilter;

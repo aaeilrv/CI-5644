@@ -1,6 +1,6 @@
 'use client';
-import React, { ReactNode } from 'react';
-import { Fragment, useState } from 'react'
+import React from 'react';
+import { useState } from 'react'
 import ExchangeRequestsFromOtherUsers from '@/app/components/exchange/requests/exchangeRequestsFromOtherUsers';
 import UserPendingExchanges from '@/app/components/exchange/requests/userPendingExchanges';
 import ExchangeOffersMade from '@/app/components/exchange/offers/exchangeOffersMade';
@@ -8,6 +8,7 @@ import ExchangeOffersReceived from '@/app/components/exchange/offers/exchangeOff
 import CounterofferReceived from '@/app/components/exchange/counterOffers/counterOfferReceived';
 import CounterofferSent from '@/app/components/exchange/counterOffers/counterOfferSent';
 import FilterButtons from '@/app/components/exchange/filters/filterButtons';
+import SecondFilter from '@/app/components/exchange/filters/secondFilterButtons';
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(' ')
@@ -28,36 +29,16 @@ export default function Exchange() {
               Crear solicitud
             </button>
           </div>
-          {/*<div className='space-x-2 -mt-4'>
-            {
-              filters[0].active && filters[0].buttons.map((it) => (
-                <button key={it.id} className={`inline-flex items-center rounded-md px-2 py-1 text-xs font-medium
-                ${it.active ? 'bg-gray-200' : ' bg-gray-50'}
-                ring-1 ring-inset ring-gray-300`}>{it.name}</button>
-              ))
-            }
-            {
-              filters[1].active && filters[1].buttons.map((it) => (
-                <button key={it.id} className={`inline-flex items-center rounded-md px-2 py-1 text-xs font-medium
-                ${it.active ? 'bg-gray-200' : ' bg-gray-50'}
-                ring-1 ring-inset ring-gray-300`}>{it.name}</button>
-              ))
-            }
-            {
-              filters[2].active && filters[2].buttons.map((it) => (
-                <button key={it.id} className={`inline-flex items-center rounded-md px-2 py-1 text-xs font-medium
-                ${it.active ? 'bg-gray-200' : ' bg-gray-50'}
-                ring-1 ring-inset ring-gray-300`}>{it.name}</button>
-              ))
-            }
-          </div>*/}
+          <div className='-mt-4'>
+            <SecondFilter currentFilter={secondFilter} setCurrentFilter={setSecondFilter}/>
+          </div>
           <div>
-            {currentFilter === 0 && <UserPendingExchanges />}
-            {currentFilter === 0 && <ExchangeRequestsFromOtherUsers />}
-            {currentFilter === 1 && <ExchangeOffersMade />}
-            {currentFilter === 1 && <ExchangeOffersReceived />}
-            {currentFilter === 2 && <CounterofferSent />}
-            {currentFilter === 2 && <CounterofferReceived />}
+            {currentFilter === 0 && secondFilter == 0 && <UserPendingExchanges />}
+            {currentFilter === 0 && secondFilter == 1 && <ExchangeRequestsFromOtherUsers />}
+            {currentFilter === 1 && secondFilter == 0 && <ExchangeOffersMade />}
+            {currentFilter === 1 && secondFilter == 1 && <ExchangeOffersReceived />}
+            {currentFilter === 2 && secondFilter == 0 && <CounterofferSent />}
+            {currentFilter === 2 && secondFilter == 1 && <CounterofferReceived />}
           </div>
         </div>
       </div>

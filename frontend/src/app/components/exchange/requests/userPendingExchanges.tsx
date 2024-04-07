@@ -20,12 +20,10 @@ type exchangeRequestD = {
 export default function UserPendingExchanges() {
   const CARD_PICTURE_LOC = "/static/images/cards/";
   const { user, isLoading } = useUser();
+  const [userId, setUserId] = useState("");
   const [exchangeRequest, setExchangeRequest] = useState(true);
-  const [exchangedContent, setExchangedContent] = useState<exchangeRequestD[]>(
-    []
-  );
-  const API_EXCHANGE_REQUEST_URL =
-    process.env.NEXT_PUBLIC_EXCHANGE_REQUEST_URL + `/user/3`;
+  const [exchangedContent, setExchangedContent] = useState<exchangeRequestD[]>([]);
+  const API_EXCHANGE_REQUEST_URL = process.env.NEXT_PUBLIC_EXCHANGE_REQUEST_URL + `/user/1`;
 
   useEffect(() => {
     const getExchangeRequestData = async () => {
@@ -70,19 +68,13 @@ export default function UserPendingExchanges() {
           </div>
         ))
       ) : (
-        <div>
-          <div className="w-full h-full rounded-lg bg-[#d6dfea] p-2 drop-shadow-md">
-            <div className="p-4">
-              <div className="flex justify-start items-center">
-                <h1 className="text-1xl font-bold space-y-4">
-                  {" "}
-                  {`No has solicitado ningun intercambio`}{" "}
-                </h1>
-              </div>
-            </div>
+        <div className="py-4">
+          <div className="rounded-md bg-[#ab9ee6] px-2 py-2 text-xs font-medium text-white ring-1 ring-inset ring-blue-700/10 flex justify-between">
+            No existen solicitudes.
           </div>
         </div>
       )}
+      <div>{user && user.name}</div>
     </div>
   );
 }

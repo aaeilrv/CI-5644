@@ -17,7 +17,7 @@ type exchangeRequestD = {
 
 export default function ExchangeRequestsFromOtherUsers() {
   
-  const userId = 1;
+  const userId = 1000;
   const CARD_PICTURE_LOC = "/static/images/cards/";
   const [exchangedContent, setExchangedContent] = useState<exchangeRequestD[]>(
     []

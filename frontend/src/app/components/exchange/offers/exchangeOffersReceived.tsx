@@ -20,11 +20,12 @@ type exchangeOffer = {
 };
 
 export default function ExchangeOffersReceived() {
+  const userId = 1000;
   const CARD_PICTURE_LOC = "/static/images/cards/";
   const [exchangeOffer, setExchangeOffer] = useState(true);
   const [offerContent, setOfferContent] = useState<exchangeOffer[]>([]);
   const API_EXCHANGE_REQUEST_OFFER_URL =
-    process.env.NEXT_PUBLIC_EXCHANGE_OFFER_URL + `/receiver/2`;
+    process.env.NEXT_PUBLIC_EXCHANGE_OFFER_URL + `/receiver/${userId}`;
 
   useEffect(() => {
     const getExchangeOfferData = async () => {
@@ -87,8 +88,10 @@ export default function ExchangeOffersReceived() {
           </div>
         ))
       ) : (
-        <div className="rounded-md bg-[#ab9ee6] px-2 py-2 text-xs font-medium text-white ring-1 ring-inset ring-blue-700/10 flex justify-between align-top">
-          No se ha recibido ninguna oferta.
+        <div className="py-4">
+          <div className="rounded-md bg-[#ab9ee6] px-2 py-2 text-xs font-medium text-white ring-1 ring-inset ring-blue-700/10 flex justify-between">
+            No existen ofertas.
+          </div>
         </div>
       )}
     </div>
