@@ -205,7 +205,7 @@ export const Register = () => {
                   </span>
                 )}
             </div>
-            <div className="flex mt-16 justify-center mb-12">
+            <div className="flex mt-10 justify-center mb-10">
               <button
                 className="bg-[#FCBF45] disabled:opacity-50 text-center rounded-lg py-3 w-1/2 font-bold"
                 disabled={!isDirty || !isValid}
