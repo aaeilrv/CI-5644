@@ -9,6 +9,8 @@ data class ExchangeCounterofferDTO(
         val id: Long,
         val offeredCardId: Long,
         val status: ExchangeRequestStatus,
+        val issuerId: Long,
+        val issuerUsername: String,
         val exchangeRequestId: Long,
         val exchangeOfferId: Long,
         val createdAt: Timestamp
@@ -17,6 +19,8 @@ data class ExchangeCounterofferDTO(
             exchangeCounterOffer.id!!,
             exchangeCounterOffer.card.id!!,
             exchangeCounterOffer.status,
+            exchangeCounterOffer.exchangeRequest.requester.id!!,
+            exchangeCounterOffer.exchangeRequest.requester.username,
             exchangeCounterOffer.exchangeRequest.id!!,
             exchangeCounterOffer.exchangeOffer.id!!,
             exchangeCounterOffer.createdAt

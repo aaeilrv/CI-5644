@@ -8,6 +8,7 @@ import java.util.Date
 data class ExchangeOfferDTO (
         val id: Long,
         val bidderId: Long,
+        val bidderUsername: String,
         val exchangeRequestId: Long,
         val offeredCardId: Long,
         val status: String,
@@ -16,6 +17,7 @@ data class ExchangeOfferDTO (
     constructor(exchangeOfferObject: ExchangeOffer): this(
             exchangeOfferObject.id!!,
             exchangeOfferObject.bidder.id!!,
+            exchangeOfferObject.bidder.username,
             exchangeOfferObject.exchangeRequest.id!!,
             exchangeOfferObject.offeredCard.id!!,
             exchangeOfferObject.status.toString(),
