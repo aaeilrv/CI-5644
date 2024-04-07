@@ -9,6 +9,7 @@ import org.springframework.data.domain.Pageable
 import org.springframework.format.annotation.DateTimeFormat
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.server.ResponseStatusException
 import java.util.*
@@ -22,13 +23,16 @@ class ExchangeOfferController {
     lateinit var exchangeOfferService: ExchangeOfferService
 
     @PostMapping
-    fun createExchangeOffer(@RequestBody request: CreateExchangeOfferDTO): ResponseEntity<ExchangeOfferDTO> {
-        return ResponseEntity.ok(ExchangeOfferDTO(exchangeOfferService.create(request)))
+    fun createExchangeOffer(principal: JwtAuthenticationToken, @RequestBody request: CreateExchangeOfferDTO): ResponseEntity<ExchangeOfferDTO> {
+        val sub = principal.tokenAttributes["sub"] as String
+        return ResponseEntity.ok(ExchangeOfferDTO(exchangeOfferService.create(request, sub)))
     }
 
-    @PatchMapping
-    fun updateExchangeOffer(@RequestBody request: UpdateExchangeOfferRequest) : ResponseEntity<ExchangeOfferDTO> {
-        return ResponseEntity.ok(ExchangeOfferDTO(exchangeOfferService.updateExchangeOffer(request)))
+    @PatchMapping("/{id}")
+    fun updateExchangeOffer( @RequestBody request: UpdateExchangeOfferRequest,principal: JwtAuthenticationToken): ResponseEntity<ExchangeOfferDTO> {
+        val sub = principal.tokenAttributes["sub"] as String
+        val updatedExchangeOffer = exchangeOfferService.updateExchangeOffer(request, sub)
+        return ResponseEntity.ok(ExchangeOfferDTO(updatedExchangeOffer))
     }
 
     @GetMapping
@@ -36,24 +40,18 @@ class ExchangeOfferController {
         return exchangeOfferService.getAll(pageable).map { exchangeOffer -> ExchangeOfferDTO(exchangeOffer) }
     }
 
-    @GetMapping("/{id}")
-    fun getExchangeOfferById(@PathVariable id: Long): ResponseEntity<ExchangeOfferDTO> {
-        val exchangeOffer = exchangeOfferService.getById(id).orElseThrow {
-            throw ResponseStatusException(HttpStatus.NOT_FOUND, "Exchange offer with $id not found.")
-        }
-        return ResponseEntity.ok(ExchangeOfferDTO(exchangeOffer))
-    }
-
-    // Todos los EO creados por un usuario
-    @GetMapping("/bidder/{id}")
-    fun getExchangeOfferByBidder(@PathVariable id: Long): List<ExchangeOfferDTO> {
-        return exchangeOfferService.getByBidderId(id)
+  
+    @GetMapping("/bidder/me")
+    fun getMyExchangeOffers(principal: JwtAuthenticationToken): List<ExchangeOfferDTO> {
+        val sub = principal.tokenAttributes["sub"] as String
+        return exchangeOfferService.getByBidderSub(sub)
     }
 
     // Todos los EO recibidos por un usuario
-    @GetMapping("/receiver/{id}")
-    fun getExchangeOfferByReceiver(@PathVariable id: Long): List<ExchangeOfferDTO> {
-        return exchangeOfferService.getByEOReceiver(id)
+    @GetMapping("/receiver/me")
+    fun getExchangeOffersForMe(principal: JwtAuthenticationToken): List<ExchangeOfferDTO> {
+        val sub = principal.tokenAttributes["sub"] as String
+        return exchangeOfferService.getByReceiverSub(sub)
     }
 
     // Todos los EO ofreciendo una barajita
@@ -69,9 +67,10 @@ class ExchangeOfferController {
     }
 
     // Todos los EO de un usuario ofreciendo una barajita particular
-    @GetMapping("/bidder/{bidderId}/card/{cardId}")
-    fun getExchangeOfferByBidderAndCard(@PathVariable bidderId: Long, @PathVariable cardId: Long): List<ExchangeOfferDTO> {
-        return exchangeOfferService.getByBidderIdAndCardId(bidderId, cardId)
+    @GetMapping("/bidder/me/card/{cardId}")
+    fun getMyExchangeOffersByCard(principal: JwtAuthenticationToken, @PathVariable cardId: Long): List<ExchangeOfferDTO> {
+        val sub = principal.tokenAttributes["sub"] as String
+        return exchangeOfferService.getByBidderSubAndCardId(sub, cardId)
     }
 
     // Todos los EO creados en cierto rango de tiempo
@@ -83,27 +82,26 @@ class ExchangeOfferController {
         return exchangeOfferService.getByDateRange(start, end)
     }
 
-    // Todos los EO creados en cierto rango de tiempo por un usuario
-    @GetMapping("/bidder/{bidderId}/start/{start}/end/{end}")
-    fun getExchangeOfferByBidderAndDateRange(
-            @PathVariable bidderId: Long,
-            @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) start: Date,
-            @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) end: Date
-    ): List<ExchangeOfferDTO> {
-        return exchangeOfferService.getByBidderAndDateRange(bidderId, start, end)
+    // Ofertas por sub en un rango de tiempo
+    @GetMapping("/bidder/me/start/{start}/end/{end}")
+    fun getMyExchangeOffersByDateRange(principal: JwtAuthenticationToken, 
+                                       @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) start: Date, 
+                                       @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) end: Date): List<ExchangeOfferDTO> {
+        val sub = principal.tokenAttributes["sub"] as String
+        return exchangeOfferService.getByBidderSubAndDateRange(sub, start, end)
     }
 
-    @GetMapping("/user/{receiverId}/start/{start}/end/{end}")
-    fun getExchangeOfferByReceiverAndDateRange(
-            @PathVariable receiverId: Long,
-            @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) start: Date,
-            @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) end: Date
-    ): List<ExchangeOfferDTO> {
-        return exchangeOfferService.getByReceiverAndDateRange(receiverId, start, end)
+    // Ofertas recibidas en un rango de tiempo identificado por sub
+    @GetMapping("/receiver/me/start/{start}/end/{end}")
+    fun getExchangeOffersForMeByDateRange(principal: JwtAuthenticationToken, 
+                                          @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) start: Date, 
+                                          @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) end: Date): List<ExchangeOfferDTO> {
+        val sub = principal.tokenAttributes["sub"] as String
+        return exchangeOfferService.getByReceiverSubAndDateRange(sub, start, end)
     }
 
-    // *- los que no funcionan -* //
-
+        // *- los que no funcionan -* //
+        
     // Todos los EO con un status particular
     @GetMapping("/status/{status}")
     fun getExchangeOfferByStatus(@PathVariable status: ExchangeOfferStatus): List<ExchangeOfferDTO> {
@@ -111,8 +109,9 @@ class ExchangeOfferController {
     }
 
     // Todos los EO creados por un usuario y con un estatus
-    @GetMapping("/bidder/{bidderId}/status/{status}")
-    fun getExchangeOfferByBidderAndStatus(@PathVariable bidderId: Long, @PathVariable status: ExchangeOfferStatus): List<ExchangeOfferDTO> {
-        return exchangeOfferService.getByBidderAndStatus(bidderId, status)
+    @GetMapping("/bidder/me/status/{status}")
+    fun getMyExchangeOffersByStatus(principal: JwtAuthenticationToken, @PathVariable status: ExchangeOfferStatus): List<ExchangeOfferDTO> {
+        val sub = principal.tokenAttributes["sub"] as String
+        return exchangeOfferService.getByBidderSubAndStatus(sub, status)
     }
 }
