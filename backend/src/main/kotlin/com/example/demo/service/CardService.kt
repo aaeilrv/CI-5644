@@ -27,6 +27,10 @@ class CardService(@Autowired private val cardRepository: CardRepository,
         return cardRepository.findById(id)
     }
 
+    fun getMultipleById(ids: List<Long>): List<Card> {
+        return cardRepository.findAllById(ids.asIterable())
+    }
+
     public fun getAll(pageable: Pageable): List<Card> {
         val cardEntities = cardRepository.findAll(pageable)
         val cards = cardEntities.map { it }

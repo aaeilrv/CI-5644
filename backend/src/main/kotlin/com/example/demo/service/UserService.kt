@@ -24,7 +24,6 @@ import java.math.BigDecimal
 import java.math.RoundingMode
 import java.util.stream.Collectors
 
-
 @Service
 class UserService (@Autowired private val userRepository: UserRepository,
                    @Autowired private val ownershipRepository: OwnershipRepository) {
@@ -39,15 +38,19 @@ class UserService (@Autowired private val userRepository: UserRepository,
         return userRepository.save(user)
     }
 
+    public fun getBySub(sub: String): Optional<User> {
+        return userRepository.findByAuth0Sub(sub)
+    }
+
     public fun getById(id: Long): Optional<User> {
         return userRepository.findById(id)
     }
 
-    public fun getCardsOwnedById(id:Long, pageable: Pageable): Page<Ownership>?{
-        val exists: Optional<User> = getById(id)
+
+    public fun getCardsOwnedBySub(sub: String, pageable: Pageable): Page<Ownership>?{
+        val exists: Optional<User> = getBySub(sub)
         if(exists.isPresent) {
             val user: User = exists.get()
-            //return ownershipRepository.findByUser(user, pageable)
             return ownershipRepository.findByUserOrderByCardCountry(user, pageable)
         }
         else{
@@ -55,8 +58,8 @@ class UserService (@Autowired private val userRepository: UserRepository,
         }
     }
 
-    public fun updateCardsOwnedList(id: Long, card : Card): User?{
-        val exists: Optional<User> = getById(id)
+    public fun addSingleCard(sub: String, card : Card): User?{
+        val exists: Optional<User> = getBySub(sub)
         if(exists.isPresent){
             val user: User = exists.get()
             //See if user already owns card
@@ -79,28 +82,49 @@ class UserService (@Autowired private val userRepository: UserRepository,
         return null
     }
 
+    fun addMultipleCards(sub: String, cards: List<Card>): User {
+        val user = getBySub(sub).orElseThrow { NoSuchElementException("User not found.") }
+        val ownershipValues = user.getCardsOwned()
+        cards.forEach { card ->
+           val ownershipValue: Ownership? = ownershipValues.firstOrNull { it.getCard().getId() == card.getId() }
+            if (ownershipValue == null) {
+                val newOwnership = Ownership(
+                    null,
+                    user,
+                    card,
+                    1
+                )
+                ownershipValues.add(newOwnership)
+            } else {
+                ownershipValue.setNumberOwned(ownershipValue.getNumberOwned() + 1)
+            }
+        }
+        ownershipRepository.saveAll(ownershipValues)
+        return userRepository.save(user)
+    }
+
     public fun getAll(pageable: Pageable): List<User> {
         val userEntities = userRepository.findAll(pageable)
         val users = userEntities.map { it }
         return users.content
     }
 
-    fun getProgress(id: Long):String{
-        val userOpt = getById(id)
+    fun getProgress(sub: String): String{
+        val userOpt = getBySub(sub)
         if (userOpt.isPresent) {
             val cnt = userOpt.get().getCardsOwned().size
             val percent = cnt*100.00/670
             val decimal = BigDecimal(percent).setScale(2, RoundingMode.HALF_EVEN)
             return "$decimal%"
         } else {
-            throw ResponseStatusException(HttpStatus.NOT_FOUND, "User with $id not found")
+            throw ResponseStatusException(HttpStatus.NOT_FOUND, "User with $sub not found")
         }
     }
     fun getLeaders(allUser: List<User>): List<LeaderboardResponse> {
         val listLeaders: MutableList<Pair<User, String>> = mutableListOf()
         var counter = 1
         for (user: User in allUser) {
-            listLeaders.add(user to getProgress(user.getId()))
+            listLeaders.add(user to getProgress(user.getAuth0Sub()))
         }
         listLeaders.sortBy { it.second }
         listLeaders.reverse()
@@ -116,6 +140,16 @@ class UserService (@Autowired private val userRepository: UserRepository,
             counter += 1
         }
         return listLeadersForPrinting
+    }
+
+    fun editUserData(user: User, body : Map<String, String>) : User{
+
+        user.setFirstName(body.get("firstName")!!)
+        user.setLastName(body.get("lastName")!!)
+        user.setUsername(body.get("username")!!)
+        user.setEmail(body.get("email")!!)
+
+        return userRepository.save(user)
     }
 
 

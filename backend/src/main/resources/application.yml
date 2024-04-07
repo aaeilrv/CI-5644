@@ -1,19 +1,27 @@
 auth0:
-  audience: { panik.us.auth0.com }
+  audience: { https://barajitas.com }
 spring:
   security:
     oauth2:
       resourceserver:
         jwt:
-          issuer-uri: https://{http://example.demo}/
+          issuer-uri: https://dev-crxb1uekqycez2b5.us.auth0.com/
   datasource:
-    url: jdbc:postgresql://localhost:5432/TestHerrWeb
+    url: jdbc:postgresql://localhost:5432/TestHerrWeb?reWriteBatchedInserts=true
     username: ci5644user
     password: ci5644redteam
   jpa:
     hibernate:
       ddl-auto: validate
     generate-ddl: true
+    show-sql: true
+    properties:
+      hibernate:
+        jdbc:
+          batch_size: 100
+          batch_versioned_data: true
+        order_updates: true
+        order_inserts: true
   flyway:
     enabled: true
     baseline-version: 000
@@ -25,3 +33,15 @@ logging:
     org:
       hibernate:
         SQL: DEBUG
+management:
+  endpoint:
+    health:
+      enabled: true
+  endpoints:
+    enabled-by-default: false
+    jmx:
+      exposure:
+        include: health
+    web:
+      exposure:
+        include: health
