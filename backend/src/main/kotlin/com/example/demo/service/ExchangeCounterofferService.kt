@@ -31,18 +31,18 @@ class ExchangeCounterofferService(
             ResponseStatusException(HttpStatus.NOT_FOUND, "Exchange offer not found.")
         }
     
-        if (exchangeOffer.getBidder().getAuth0Sub() != userSub) {
+        if (exchangeOffer.bidder.auth0Sub != userSub) {
             throw ResponseStatusException(HttpStatus.FORBIDDEN, "Not allowed.")
         }
-    
-        val newExchangeCounteroffer = ExchangeCounteroffer().apply {
-            updateCard(offeredCard)
-            updateExchangeRequest(exchangeOffer.getExchangeRequest())
-            updateExchangeOffer(exchangeOffer)
-            val statusToSet = request.status?.uppercase() ?: ExchangeRequestStatus.PENDING.name
-            updateStatus(ExchangeRequestStatus.valueOf(statusToSet))
-            updateCreatedAt(Timestamp.from(Instant.now()))
-        }
+
+        val newExchangeCounteroffer = ExchangeCounteroffer(
+            null,
+            offeredCard,
+            ExchangeRequestStatus.PENDING,
+            exchangeOffer.exchangeRequest,
+            exchangeOffer,
+            Timestamp(0)
+        )
     
         return exchangeCounterofferRepository.save(newExchangeCounteroffer)
     }
@@ -52,13 +52,13 @@ class ExchangeCounterofferService(
             ResponseStatusException(HttpStatus.NOT_FOUND, "Exchange counteroffer not found.")
         }
 
-        val creatorSub = exchangeCounterofferToUpdate.getExchangeOffer().getBidder().getAuth0Sub()
+        val creatorSub = exchangeCounterofferToUpdate.exchangeOffer.bidder.auth0Sub
         if (creatorSub != userSub) {
             throw ResponseStatusException(HttpStatus.FORBIDDEN, "User not authorized to update this exchange counteroffer.")
         }
     
         exchangeCounterofferToUpdate.apply {
-            updateStatus(ExchangeRequestStatus.valueOf(request.status.name))
+            status = ExchangeRequestStatus.valueOf(request.status.name)
         }
     
         return exchangeCounterofferRepository.save(exchangeCounterofferToUpdate)

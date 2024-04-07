@@ -27,18 +27,18 @@ class ExchangeRequestService(
 ) {
 
     fun create(request: CreateExchangeRequestDTO, userSub: String): ExchangeRequest {
-        val foundUser = userService.getBySub(userSub).orElseThrow {
-            ResponseStatusException(HttpStatus.NOT_FOUND, "User not found.")
-        }
+        val foundUser = userService.getBySub(userSub)
         val foundCard = cardService.getById(request.requestedCardId).orElseThrow {
             ResponseStatusException(HttpStatus.NOT_FOUND, "Card not found.")
         }
 
-        val newExchangeRequest = ExchangeRequest().also {
-            it.updateRequester(foundUser)
-            it.updateRequestedCard(foundCard)
-            it.updateStatus(ExchangeRequestStatus.PENDING)
-        }
+        val newExchangeRequest = ExchangeRequest(
+            null,
+            foundUser,
+            foundCard,
+            ExchangeRequestStatus.PENDING,
+            Timestamp(0)
+        )
 
         return exchangeRequestRepository.save(newExchangeRequest)
     }
@@ -64,10 +64,8 @@ class ExchangeRequestService(
     }
 
     fun getByUserSub(userSub: String): List<ExchangeRequestDTO> {
-        val user = userService.getBySub(userSub).orElseThrow {
-            ResponseStatusException(HttpStatus.NOT_FOUND, "User not found.")
-        }
-        val userId = user.getId()
+        val user = userService.getBySub(userSub)
+        val userId = user.id!!
         val exchangeRequests = exchangeRequestRepository.findByUserId(userId)
         return exchangeRequests.map { ExchangeRequestDTO(it) }
     }
@@ -91,10 +89,8 @@ class ExchangeRequestService(
     /////
 
     fun getByUserSubAndCardId(userSub: String, cardId: Long): List<ExchangeRequestDTO> {
-        val user = userService.getBySub(userSub).orElseThrow {
-            ResponseStatusException(HttpStatus.NOT_FOUND, "User not found.")
-        }
-        val exchangeRequests = exchangeRequestRepository.findByUserIdAndCardId(user.getId(), cardId)
+        val user = userService.getBySub(userSub)
+        val exchangeRequests = exchangeRequestRepository.findByUserIdAndCardId(user.id!!, cardId)
         return exchangeRequests.map { ExchangeRequestDTO(it) }
     }
 
@@ -104,29 +100,21 @@ class ExchangeRequestService(
     }
 
     fun getByUserSubWithinDateRange(userSub: String, startDate: Date, endDate: Date): List<ExchangeRequestDTO> {
-        val user = userService.getBySub(userSub).orElseThrow {
-            ResponseStatusException(HttpStatus.NOT_FOUND, "User not found.")
-        }
-        val exchangeRequests = exchangeRequestRepository.findByUserIdWithinDateRange(user.getId(), startDate, endDate)
+        val user = userService.getBySub(userSub)
+        val exchangeRequests = exchangeRequestRepository.findByUserIdWithinDateRange(user.id!!, startDate, endDate)
         return exchangeRequests.map { ExchangeRequestDTO(it) }
     }
 
     fun getAllPossibleERbyUserSub(userSub: String): List<ExchangeRequestDTO> {
-        val user = userService.getBySub(userSub).orElseThrow {
-            ResponseStatusException(HttpStatus.NOT_FOUND, "User not found.")
-        }
-        val exchangeRequests = exchangeRequestRepository.findAllERbyUserOwner(user.getId())
+        val user = userService.getBySub(userSub)
+        val exchangeRequests = exchangeRequestRepository.findAllERbyUserOwner(user.id!!)
         return exchangeRequests.map { ExchangeRequestDTO(it) }
     }
 
     fun getAllPossibleERbyCardsOwnerAndRequesterSub(ownerSub: String, requesterSub: String): List<ExchangeRequestDTO> {
-        val owner = userService.getBySub(ownerSub).orElseThrow {
-            ResponseStatusException(HttpStatus.NOT_FOUND, "Owner not found.")
-        }
-        val requester = userService.getBySub(requesterSub).orElseThrow {
-            ResponseStatusException(HttpStatus.NOT_FOUND, "Requester not found.")
-        }
-        val exchangeRequests = exchangeRequestRepository.findAllPossibleERbyCardsOwnerAndRequester(owner.getId(), requester.getId())
+        val owner = userService.getBySub(ownerSub)
+        val requester = userService.getBySub(requesterSub)
+        val exchangeRequests = exchangeRequestRepository.findAllPossibleERbyCardsOwnerAndRequester(owner.id!!, requester.id!!)
         return exchangeRequests.map { ExchangeRequestDTO(it) }
     }
     

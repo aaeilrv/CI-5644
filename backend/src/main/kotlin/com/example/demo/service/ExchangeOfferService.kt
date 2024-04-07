@@ -21,9 +21,7 @@ class ExchangeOfferService(
 ) {
 
     fun create(exchangeOfferDTO: CreateExchangeOfferDTO, userSub: String): ExchangeOffer {
-        val foundBidder = userService.getBySub(userSub).orElseThrow {
-            ResponseStatusException(HttpStatus.NOT_FOUND, "User not found.")
-        }
+        val foundBidder = userService.getBySub(userSub)
         val foundCard = cardService.getById(exchangeOfferDTO.offeredCardId).orElseThrow {
             ResponseStatusException(HttpStatus.NOT_FOUND, "Card not found.")
         }
@@ -31,13 +29,14 @@ class ExchangeOfferService(
             ResponseStatusException(HttpStatus.NOT_FOUND, "Exchange request not found.")
         }
 
-        val newExchangeOffer = ExchangeOffer().apply {
-            updateBidder(foundBidder)
-            updateOfferedCard(foundCard)
-            updateExchangeRequest(foundExchangeRequest)
-            updateStatus(ExchangeOfferStatus.PENDING) // Asume que el estado viene validado del DTO.
-            updateCreatedAt(Timestamp.from(Instant.now()))
-        }
+        val newExchangeOffer = ExchangeOffer(
+            null,
+            foundBidder,
+            foundExchangeRequest,
+            foundCard,
+            ExchangeOfferStatus.PENDING,
+            Timestamp(0)
+        )
 
         return exchangeOfferRepository.save(newExchangeOffer)
     }
@@ -46,13 +45,13 @@ class ExchangeOfferService(
         val exchangeOfferToUpdate = exchangeOfferRepository.findById(request.id).orElseThrow {
             ResponseStatusException(HttpStatus.NOT_FOUND, "Exchange offer not found.")
         }
-        val bidderSub = exchangeOfferToUpdate.getBidder().getAuth0Sub()
+        val bidderSub = exchangeOfferToUpdate.bidder.auth0Sub
         if (bidderSub != userSub) {
             throw ResponseStatusException(HttpStatus.FORBIDDEN, "User not authorized to update this exchange offer.")
         }
 
         exchangeOfferToUpdate.apply {
-            updateStatus(ExchangeOfferStatus.valueOf(request.status.name))
+            status = ExchangeOfferStatus.valueOf(request.status.name)
         }
 
         return exchangeOfferRepository.save(exchangeOfferToUpdate)
@@ -75,9 +74,7 @@ class ExchangeOfferService(
     // Todos los EO creados por un usuario
     fun getByBidderSub(userSub: String): List<ExchangeOfferDTO> {
         // Comprobar si el usuario existe podría ser útil para validar, pero no es necesario obtener su ID.
-        userService.getBySub(userSub).orElseThrow {
-            ResponseStatusException(HttpStatus.NOT_FOUND, "User not found.")
-        }
+        userService.getBySub(userSub)
         // Utiliza directamente el 'sub' para buscar las ofertas.
         return exchangeOfferRepository.findByBidderSub(userSub).map { ExchangeOfferDTO(it) }
     }
