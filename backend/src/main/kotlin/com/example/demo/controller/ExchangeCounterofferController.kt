@@ -39,12 +39,10 @@ class ExchangeCounterofferController {
 
     @GetMapping("/{id}")
     fun getExchangeCounterofferById(@PathVariable id: Long): ResponseEntity<ExchangeCounterofferDTO> {
-        val exchangeCounterOfferOpt = exchangeCounterofferService.getById(id)
-        if (exchangeCounterOfferOpt.isPresent) {
-            return ResponseEntity.ok(ExchangeCounterofferDTO(exchangeCounterOfferOpt.get()))
-        } else {
+        val exchangeCounterOffer = exchangeCounterofferService.getById(id).orElseThrow {
             throw ResponseStatusException(HttpStatus.NOT_FOUND, "Exchange counteroffer with $id not found.")
         }
+        return ResponseEntity.ok(ExchangeCounterofferDTO(exchangeCounterOffer))
     }
 
     // Todos los ECO creados por un usuario

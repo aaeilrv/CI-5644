@@ -13,9 +13,9 @@ import java.util.Optional
 interface CreditCardRepository: JpaRepository<CreditCard,Long> {
 
     @Query("SELECT cc FROM CreditCard cc WHERE cc.cardHolder.id = :id")
-    fun findByUserId(id:Long):List<CreditCard>
+    fun findByUserId(id: Long): Optional<List<CreditCard>>
 
     @Query("SELECT cc FROM CreditCard cc WHERE cc.cardHolder.auth0Sub = :sub")
-    fun findByUserSub(sub:String):List<CreditCard>
+    fun findByUserSub(sub: String): Optional<List<CreditCard>>
 
 }

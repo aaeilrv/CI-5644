@@ -38,12 +38,10 @@ class ExchangeOfferController {
 
     @GetMapping("/{id}")
     fun getExchangeOfferById(@PathVariable id: Long): ResponseEntity<ExchangeOfferDTO> {
-        val exchangeOfferOpt = exchangeOfferService.getById(id)
-        if (exchangeOfferOpt.isPresent) {
-            return ResponseEntity.ok(ExchangeOfferDTO(exchangeOfferOpt.get()))
-        } else {
+        val exchangeOffer = exchangeOfferService.getById(id).orElseThrow {
             throw ResponseStatusException(HttpStatus.NOT_FOUND, "Exchange offer with $id not found.")
         }
+        return ResponseEntity.ok(ExchangeOfferDTO(exchangeOffer))
     }
 
     // Todos los EO creados por un usuario
