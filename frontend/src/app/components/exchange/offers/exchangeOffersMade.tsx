@@ -24,12 +24,12 @@ export default function ExchangeOffersMade() {
   const [exchangeOffer, setExchangeOffer] = useState(true);
   const [offerContent, setOfferContent] = useState<exchangeOffer[]>([]);
   const API_EXCHANGE_REQUEST_OFFER_URL =
-    process.env.NEXT_PUBLIC_EXCHANGE_OFFER_URL + `/bidder/${userId}`;
+    process.env.NEXT_PUBLIC_EXCHANGE_OFFER_URL + `/bidder/`;
 
   useEffect(() => {
     const getExchangeOfferData = async () => {
       const { token } = await getJwt();
-      const response = await fetch(API_EXCHANGE_REQUEST_OFFER_URL, {
+      const response = await fetch(API_EXCHANGE_REQUEST_OFFER_URL + token, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",

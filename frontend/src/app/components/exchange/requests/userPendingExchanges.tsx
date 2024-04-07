@@ -23,7 +23,7 @@ export default function UserPendingExchanges() {
   const [userId, setUserId] = useState("");
   const [exchangeRequest, setExchangeRequest] = useState(true);
   const [exchangedContent, setExchangedContent] = useState<exchangeRequestD[]>([]);
-  const API_EXCHANGE_REQUEST_URL = process.env.NEXT_PUBLIC_EXCHANGE_REQUEST_URL + `/user/1`;
+  const API_EXCHANGE_REQUEST_URL = process.env.NEXT_PUBLIC_EXCHANGE_REQUEST_URL + `/bidder/me/`;
 
   useEffect(() => {
     const getExchangeRequestData = async () => {
