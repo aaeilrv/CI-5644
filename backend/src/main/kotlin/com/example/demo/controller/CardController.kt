@@ -30,16 +30,13 @@ class CardController {
         return ResponseEntity.ok(CardDTO(cardService.create(Card(request))))
     }
 
-    @PostMapping("createMultipleCards")
-    fun createCards(@RequestBody request: List<CreateCardRequest>): String {
-        for(r:CreateCardRequest in request) {
-            cardService.create(Card(r))
-        }
-        return "done"+request.size
-    }
     @GetMapping()
-    fun getAllCard(pageable: Pageable): List<CardDTO> {
-        return cardService.getAll(pageable).map {CardDTO(it)}
+    fun getAllCard(pageable: Pageable): ResponseEntity<List<CardDTO>> {
+        return try {
+            ResponseEntity.ok(cardService.getAll(pageable).map { CardDTO(it) })
+        } catch (e: Exception) {
+            ResponseEntity.internalServerError().build()
+        }
     }
 
     @GetMapping("/{id}")
@@ -51,8 +48,17 @@ class CardController {
     }
 
     @GetMapping("ownersOfCard/{cardId}")
-    fun getCardOwners(@PathVariable cardId: Long): List<UserWhoOwnsCardDTO>? {
-        return cardService.getOwnersById(cardId)?.map {UserWhoOwnsCardDTO(it)}
+    fun getCardOwners(@PathVariable cardId: Long): ResponseEntity<List<UserWhoOwnsCardDTO>> {
+        return try {
+            ResponseEntity.ok(
+                cardService.getOwnersById(cardId).map { UserWhoOwnsCardDTO(it) }
+            )
+        } catch(e: Exception) {
+            when (e) {
+                is NoSuchElementException -> ResponseEntity.notFound().build()
+                else -> ResponseEntity.internalServerError().build()
+            }
+        }
     }
 
 }

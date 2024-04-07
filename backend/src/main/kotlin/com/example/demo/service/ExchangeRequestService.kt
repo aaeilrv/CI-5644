@@ -25,9 +25,7 @@ class ExchangeRequestService(@Autowired private val exchangeRequestRepository: E
                              private val cardService: CardService) {
 
     public fun create(exchangeRequest: CreateExchangeRequestDTO): ExchangeRequest {
-        val foundUser = userService.getById(exchangeRequest.userId).orElseThrow{
-            NoSuchElementException("User not found.")
-        }
+        val foundUser = userService.getById(exchangeRequest.userId)
         val foundCard = cardService.getById(exchangeRequest.requestedCardId).orElseThrow{
             NoSuchElementException("Card not found.")
         }

@@ -9,6 +9,7 @@ import com.example.demo.model.User
 import org.springframework.data.domain.Sort
 import org.springframework.data.jpa.repository.Query
 import org.springframework.data.repository.query.Param
+import java.util.*
 
 @Repository
 interface OwnershipRepository: JpaRepository<Ownership, Long> {
@@ -18,8 +19,8 @@ interface OwnershipRepository: JpaRepository<Ownership, Long> {
             FROM card c LEFT JOIN (
             SELECT *
             FROM ownership
-            WHERE ownership.user_id = :#{#user_object.getId()}
+            WHERE ownership.user_id = :#{#user_object.id}
             ) o ON c.id = o.card_id;
         """)
-    fun findByUserOrderByCardCountry(@Param("user_object") user: User, pageable: Pageable): Page<Ownership>
+    fun findByUserOrderByCardCountry(@Param("user_object") user: User, pageable: Pageable): Optional<Page<Ownership>>
 }

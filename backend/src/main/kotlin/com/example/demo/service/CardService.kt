@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Service
 import java.util.*
 import java.util.stream.Collectors
+import kotlin.NoSuchElementException
 
 @Service
 class CardService(@Autowired private val cardRepository: CardRepository,
@@ -35,24 +36,20 @@ class CardService(@Autowired private val cardRepository: CardRepository,
         val cardEntities = cardRepository.findAll(pageable)
         return cardEntities.content
     }
-    public fun changeName(id:Long, name:String): Card?{
-        val exists: Optional<Card> = getById(id)
-        if(exists.isPresent){
-            val oldCard:Card = exists.get()
-            oldCard.name = name
-            val newCard:Card = cardRepository.save(oldCard)
-            return create(newCard)
+    public fun changeName(id:Long, name:String): Card {
+        val card = getById(id).orElseThrow {
+            throw NoSuchElementException("no card with id $id found")
         }
-        return null
+        card.name = name
+        return cardRepository.save(card)
+
     }
 
-    public fun getOwnersById(cardId: Long): List<Ownership>? {
-        val cardOpt = getById(cardId)
-        if (cardOpt.isPresent) {
-            val cardObj = cardOpt.get()
-            return cardObj.users
+    public fun getOwnersById(cardId: Long): List<Ownership> {
+        val card = getById(cardId).orElseThrow {
+            throw NoSuchElementException("no card with id $cardId found")
         }
-        return null
+        return card.users
     }
 
 }

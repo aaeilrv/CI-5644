@@ -19,9 +19,7 @@ class ExchangeOfferService(@Autowired private val exchangeOfferRepository: Excha
                            private val exchangeRequestService: ExchangeRequestService) {
 
     public fun create(exchangeOffer: CreateExchangeOfferDTO): ExchangeOffer {
-        val foundBidder = userService.getById(exchangeOffer.bidderId).orElseThrow{
-            NoSuchElementException("User not found.")
-        }
+        val foundBidder = userService.getById(exchangeOffer.bidderId)
         val foundCard = cardService.getById(exchangeOffer.offeredCardId).orElseThrow{
             NoSuchElementException("Card not found.")
         }

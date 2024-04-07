@@ -24,9 +24,7 @@ class PurchaseService(@Autowired private val purchaseRepository: PurchaseReposit
                       private val creditCardService: CreditCardService) {
 
     public fun create(purchase: CreatePurchaseDTO, sub: String): Purchase {
-        val foundUser = userService.getBySub(sub).orElseThrow{
-            NoSuchElementException("User not found.")
-        }
+        val foundUser = userService.getBySub(sub)
         val foundCreditCard = creditCardService.getById(1).orElseThrow{
             NoSuchElementException("Credit card not found.")
         }

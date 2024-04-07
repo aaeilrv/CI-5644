@@ -18,29 +18,32 @@ import org.springframework.web.server.ResponseStatusException
 import java.math.BigDecimal
 import java.math.RoundingMode
 import java.util.stream.Collectors
+import kotlin.NoSuchElementException
 
 @Service
 class CreditCardService(@Autowired private val creditCardRepository: CreditCardRepository,
                         private val userService: UserService) {
 
-    public fun getById(id:Long):Optional<CreditCard>{
+    public fun getById(id: Long): Optional<CreditCard>{
         return creditCardRepository.findById(id)
     }
 
-    fun getByUserId(id:Long):List<CreditCardDTO>{
-        val creditCards = creditCardRepository.findByUserId(id)
+    fun getByUserId(id: Long): List<CreditCardDTO>{
+        val creditCards = creditCardRepository.findByUserId(id).orElseThrow {
+            throw NoSuchElementException("no user with id $id found")
+        }
         return creditCards.map { cards -> CreditCardDTO(cards) }
     }
 
-    fun getBySub(sub:String):List<CreditCardDTO>{
-        val creditCardByUser =  creditCardRepository.findByUserSub(sub)
+    fun getBySub(sub:String): List<CreditCardDTO>{
+        val creditCardByUser = creditCardRepository.findByUserSub(sub).orElseThrow {
+            throw NoSuchElementException("no user with sub $sub found")
+        }
         return creditCardByUser.map { cards -> CreditCardDTO(cards) }
     }
 
-    public fun create(creditCard:CreateCreditCardDTO, sub:String):CreditCard{
-        val foundUser = userService.getBySub(sub).orElseThrow{
-            NoSuchElementException("User not found.")
-        }
+    public fun create(creditCard: CreateCreditCardDTO, sub: String): CreditCard{
+        val foundUser = userService.getBySub(sub)
         val newCreditCard:CreateCreditCardRequest
         try {
             newCreditCard = CreateCreditCardRequest(
@@ -51,7 +54,7 @@ class CreditCardService(@Autowired private val creditCardRepository: CreditCardR
                 bank = creditCard.bank,
                 cardType = creditCard.cardType
             )
-        }catch (e:IllegalArgumentException){
+        }catch (e: IllegalArgumentException){
             throw IllegalArgumentException("Error adding the credit card to user")
         }
         return creditCardRepository.save(CreditCard(newCreditCard))
