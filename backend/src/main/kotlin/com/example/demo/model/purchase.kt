@@ -14,24 +14,24 @@ class Purchase(
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private val id: Long?,
+    val id: Long?,
 
     @Column(name = "purchase_timestamp", nullable = false)
-    private val timestamp: java.sql.Timestamp,
+    val timestamp: java.sql.Timestamp,
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
-    private val purchasingUser: User,
+    val purchasingUser: User,
 
     @Column(name = "packets_purchased", nullable = false)
-    private val packetsPurchased: Int,
+    val packetsPurchased: Int,
 
     @Column(name = "base_amount", nullable = false)
-    private val baseAmount: Int,
+    val baseAmount: Int,
 
     @OneToOne(cascade = [(CascadeType.ALL)])
     @JoinColumn(name = "credit_card_id", referencedColumnName = "id")
-    private val creditCard: CreditCard,
+    val creditCard: CreditCard,
 
 ) {
     constructor() : this(null,
@@ -40,18 +40,6 @@ class Purchase(
         0,
         0,
         CreditCard())
-
-    fun getId(): Long = this.id!!
-
-    fun getCreatedAt(): Timestamp = this.timestamp
-
-    fun getUser(): User = this.purchasingUser
-
-    fun getPacketsPurchased(): Int = this.packetsPurchased
-
-    fun getBaseAmount(): Int = this.baseAmount
-
-    fun getCreditCard(): CreditCard = this.creditCard
 
     constructor(request: CreatePurchaseRequest) :this(
         null,

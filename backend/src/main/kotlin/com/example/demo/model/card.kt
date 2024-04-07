@@ -17,26 +17,26 @@ class Card(
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private val id: Long?,
+    val id: Long?,
 
     @Column(nullable = false, length = 100)
-    private var name: String,
+    var name: String,
 
     @Column(nullable = false)
-    private var playerNumber: Short,
+    var playerNumber: Short,
 
     @Column(name = "photo_url", nullable = true)
-    private var photoURL: String?,
+    var photoURL: String?,
 
     @Column(name= "player_position", nullable = false, columnDefinition = "varchar")
     @Enumerated(EnumType.STRING)
-    private var playerPosition: FieldPosition,
+    var playerPosition: FieldPosition,
 
     @Column(name = "country", nullable = false)
-    private var country: String,
+    var country: String,
 
     @OneToMany(mappedBy = "card", fetch = FetchType.LAZY, cascade = [(CascadeType.ALL)])
-    private var users: Set<Ownership> = mutableSetOf(),
+    var users: MutableList<Ownership> = mutableListOf(),
 
     ) {
     constructor() : this(null, "", -1, "", FieldPosition.MIDFIELDER, "")
@@ -49,15 +49,4 @@ class Card(
         FieldPosition.valueOf(request.playerPosition.uppercase()),
         request.country
     )
-
-    fun getId(): Long = this.id!!
-    fun getName(): String = this.name
-    fun getPlayerPosition(): FieldPosition = this.playerPosition
-    fun getPlayerNumber(): Short = this.playerNumber
-    fun getCountry(): String = this.country
-    fun getPhotoURL(): String? = this.photoURL
-    fun getUsers(): MutableList<Ownership> = this.users.toMutableList()
-    fun setName(newName: String) {
-        this.name = newName
-    }
 }

@@ -19,18 +19,40 @@ class CreditCardController {
     @PostMapping
     fun addCreditCard(principal: JwtAuthenticationToken, @RequestBody request: CreateCreditCardDTO): ResponseEntity<CreditCardDTO>{
         val sub = principal.tokenAttributes["sub"]?.toString() ?: return ResponseEntity.internalServerError().build()
-        return ResponseEntity.ok(CreditCardDTO(creditCardService.create(request,sub)))
+        return try {
+            ResponseEntity.ok(CreditCardDTO(creditCardService.create(request, sub)))
+        } catch (e: Exception) {
+            when (e) {
+                is NoSuchElementException -> ResponseEntity.notFound().build()
+                is IllegalArgumentException -> ResponseEntity.badRequest().build()
+                else -> ResponseEntity.internalServerError().build()
+            }
+        }
     }
 
     @GetMapping("/user/{id}")
-    fun getCreditCardById(@PathVariable id:Long): List<CreditCardDTO>{
-        return creditCardService.getByUserId(id)
+    fun getCreditCardById(@PathVariable id:Long): ResponseEntity<List<CreditCardDTO>>{
+        return try {
+            ResponseEntity.ok(creditCardService.getByUserId(id))
+        } catch (e: Exception) {
+            when (e) {
+                is NoSuchElementException -> ResponseEntity.notFound().build()
+                else -> ResponseEntity.internalServerError().build()
+            }
+        }
     }
 
     @GetMapping
-    fun getCardsBySub(principal: JwtAuthenticationToken):List<CreditCardDTO>{
+    fun getCardsBySub(principal: JwtAuthenticationToken): ResponseEntity<List<CreditCardDTO>> {
         val sub = principal.tokenAttributes["sub"].toString()
-        return creditCardService.getBySub(sub)
+        return try {
+            ResponseEntity.ok(creditCardService.getBySub(sub))
+        } catch(e: Exception) {
+            when (e) {
+                is NoSuchElementException -> ResponseEntity.notFound().build()
+                else -> ResponseEntity.internalServerError().build()
+            }
+        }
     }
 
 }

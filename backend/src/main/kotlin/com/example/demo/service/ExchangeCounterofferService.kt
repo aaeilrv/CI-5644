@@ -28,20 +28,20 @@ class ExchangeCounterofferService(@Autowired private val exchangeCounterofferRep
             NoSuchElementException("Exchange offer not found.")
         }
 
-        val foundExchangeRequest = exchangeRequestService.getById(foundExchangeOffer.getExchangeRequest().getId()).orElseThrow {
+        val foundExchangeRequest = exchangeRequestService.getById(foundExchangeOffer.exchangeRequest.id!!).orElseThrow {
             NoSuchElementException("Exchange request not found.")
         }
 
         if (exchangeCounteroffer.exchangeRequestId != null &&
-                foundExchangeRequest.getId() != exchangeCounteroffer.exchangeRequestId) {
+                foundExchangeRequest.id != exchangeCounteroffer.exchangeRequestId) {
             throw IllegalArgumentException("Wrong exchange request ID. Either use the right one or don't add it.")
         }
 
-        if (exchangeCounteroffer.offeredCardId == foundExchangeOffer.getOfferedCard().getId()) {
+        if (exchangeCounteroffer.offeredCardId == foundExchangeOffer.offeredCard.id) {
             throw IllegalArgumentException("Can't counteroffer the same card you're receiving.")
         }
 
-        if (exchangeCounteroffer.offeredCardId == foundExchangeOffer.getExchangeRequest().getRequestedCard().getId()) {
+        if (exchangeCounteroffer.offeredCardId == foundExchangeOffer.exchangeRequest.requestedCard.id) {
             throw IllegalArgumentException("Can't counteroffer the same card initially requested.")
         }
 
@@ -49,7 +49,7 @@ class ExchangeCounterofferService(@Autowired private val exchangeCounterofferRep
         try {
             newECO = CreateExchangeCounterofferRequest(
                     offeredCard = foundCard,
-                    exchangeRequest = foundExchangeOffer.getExchangeRequest(),
+                    exchangeRequest = foundExchangeOffer.exchangeRequest,
                     exchangeOffer = foundExchangeOffer,
                     status = "PENDING",
                     createdAt = Timestamp.from(Instant.now())

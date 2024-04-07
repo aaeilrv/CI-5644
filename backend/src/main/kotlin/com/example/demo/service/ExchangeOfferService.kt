@@ -19,9 +19,7 @@ class ExchangeOfferService(@Autowired private val exchangeOfferRepository: Excha
                            private val exchangeRequestService: ExchangeRequestService) {
 
     public fun create(exchangeOffer: CreateExchangeOfferDTO): ExchangeOffer {
-        val foundBidder = userService.getById(exchangeOffer.bidderId).orElseThrow{
-            NoSuchElementException("User not found.")
-        }
+        val foundBidder = userService.getById(exchangeOffer.bidderId)
         val foundCard = cardService.getById(exchangeOffer.offeredCardId).orElseThrow{
             NoSuchElementException("Card not found.")
         }
@@ -29,7 +27,7 @@ class ExchangeOfferService(@Autowired private val exchangeOfferRepository: Excha
             NoSuchElementException("Exchange request not found.")
         }
 
-        if (exchangeOffer.offeredCardId == foundExchangeRequest.getRequestedCard().getId()) {
+        if (exchangeOffer.offeredCardId == foundExchangeRequest.requestedCard.id) {
             throw IllegalArgumentException("Can't bid the same card of the request.")
         }
 
