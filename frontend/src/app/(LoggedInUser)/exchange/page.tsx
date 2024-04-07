@@ -5,10 +5,11 @@ import { useUser } from "@auth0/nextjs-auth0/client";
 import ExchangeNotifications from "../../components/exchange/offers/exchangeOffersReceived";
 import ExchangeNotificationsMade from "../../components/exchange/offers/exchangeOffersMade";
 import ExchangeRequest from "../../components/exchange/requests/exchangeRequest";
-import ExchangeResquestFromOtherUsers from "../../components/exchange/requests/exchangeResquestsFromOtherUsers";
+import ExchangeRequestsFromOtherUsers from "../../components/exchange/requests/exchangeRequestsFromOtherUsers";
 import UserPendingExchanges from "../../components/exchange/requests/userPendingExchanges";
 import UserCounteroffers from "../../components/exchange/counterOffers/counterOfferReceived";
 import UserCounteroffersMade from "../../components/exchange/counterOffers/counterOfferSended";
+import OffersSidebar from "@/app/components/exchange/offersSidebar/offersSidebar";
 
 export default function Exchange() {
   const { user, isLoading } = useUser();
@@ -16,10 +17,11 @@ export default function Exchange() {
 
   return (
     <div>
-      <div>
+      <OffersSidebar />
+      {/*<div>
         <ExchangeRequest />
-      </div>
-      <div>
+      </div>*/}
+      {/*<div>
         <div className="p-4">
           <h1 className="text-2xl font-bold space-y-4 mt-4">
             {" "}
@@ -84,7 +86,7 @@ export default function Exchange() {
         <div className="p-4">
           <UserCounteroffersMade />
         </div>
-      </div>
+    </div>*/}
     </div>
   );
 }

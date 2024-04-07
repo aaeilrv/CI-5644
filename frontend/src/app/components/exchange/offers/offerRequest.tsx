@@ -32,10 +32,7 @@ export default function OfferRequest() {
 
   return (
     <div>
-      <div className="flex justify-center space-x-4">
-        <Button onClick={handleAccept} text="Ofertar" />
-        <Button onClick={clickMe} text={`Ver album del solicitante`} />
-      </div>
+      <Button onClick={handleAccept} text="Ofertar"/>
       {showPopup && (
         <div>
           <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">

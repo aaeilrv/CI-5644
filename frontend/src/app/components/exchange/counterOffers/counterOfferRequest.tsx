@@ -30,10 +30,7 @@ export default function CounterOfferRequest() {
 
   return (
     <div>
-      <div className="flex justify-center space-x-4 m-4">
-        <Button onClick={handleAccept} text="Contraoferta" />
-        <Button onClick={clickMe} text={`Ver album del solicitante`} />
-      </div>
+      <Button onClick={handleAccept} text="Contraoferta" />
       {showPopup && (
         <div>
           <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">

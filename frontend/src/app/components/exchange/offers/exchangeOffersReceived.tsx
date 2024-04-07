@@ -19,7 +19,7 @@ type exchangeOffer = {
   status: "PENDING" | "ACCEPTED" | "REJECTED";
 };
 
-export default function ExchangeNotifications() {
+export default function ExchangeOffersReceived() {
   const CARD_PICTURE_LOC = "/static/images/cards/";
   const [exchangeOffer, setExchangeOffer] = useState(true);
   const [offerContent, setOfferContent] = useState<exchangeOffer[]>([]);
@@ -48,65 +48,27 @@ export default function ExchangeNotifications() {
       {offerContent.length > 0 ? (
         offerContent.map((offer, index) => (
           <div key={index} className="p-4">
-            <div>
-              <div className="w-full h-full rounded-lg bg-[#d6dfea] p-2 drop-shadow-md">
-                <div className="p-4">
-                  <div className="flex justify-start items-center">
-                    <h1 className="text-1xl font-bold space-y-4">
-                      {" "}
-                      {`Alguien quiere intercambiar su barajita`}{" "}
-                    </h1>
-                    <div className="flex items-center">
-                      <span>
-                        <Image
-                          src={
-                            CARD_PICTURE_LOC + offer.offeredCardName + ".jpeg"
-                          }
-                          alt={offer.offeredCardName}
-                          className="w-20 ml-2 mr-2"
-                          width={1080}
-                          height={1080}
-                        />
-                      </span>
-                      <h1 className="text-1xl font-bold space-y-4">
-                        {" "}
-                        {` por tu barajita `}{" "}
-                      </h1>
-                      <span>
-                        <Image
-                          src={
-                            CARD_PICTURE_LOC + offer.requestedCardName + ".jpeg"
-                          }
-                          alt={offer.requestedCardName}
-                          className="w-20 ml-2 mr-2"
-                          width={1080}
-                          height={1080}
-                        />
-                      </span>
-                    </div>
-                  </div>
-                </div>
-                <div className="flex justify-center space-x-4">
-                  <h1 className="text-1xl font-bold space-y-4">
-                    {" "}
-                    {`Estatus de la oferta: ${offer.status}`}{" "}
-                  </h1>
-                </div>
-                <div className="flex justify-center space-x-4 mt-4">
-                  <Button
-                    onClick={() =>
-                      UpdateExchangeOffer(
-                        offer.id,
-                        offer.bidderId,
-                        offer.exchangerequestId,
-                        offer.offeredCardId,
-                        "ACCEPTED"
-                      )
-                    }
-                    text="Aceptar"
-                    color="green"
-                  />
-                  <Button
+            <div className="rounded-md bg-[#ab9ee6] px-2 py-2 text-xs font-medium text-white ring-1 ring-inset ring-blue-700/10 flex justify-between align-top">
+              <div className="flex">Solicitud: {offer.requestedCardName}</div>
+              <div className="flex">Oferta: {offer.offeredCardName}</div>
+              <div className="flex">Creado por: {offer.exchangerequestId}</div>
+              <div className="flex">Recibido por: {offer.bidderId}</div>
+              <div className="flex">{offer.status}</div>
+              <div className="flex space-x-2">
+                <Button
+                  onClick={() =>
+                    UpdateExchangeOffer(
+                      offer.id,
+                      offer.bidderId,
+                      offer.exchangerequestId,
+                      offer.offeredCardId,
+                      "ACCEPTED"
+                    )
+                  }
+                  text="Aceptar"
+                  color="green"
+                />
+                <Button
                     onClick={() =>
                       UpdateExchangeOffer(
                         offer.id,
@@ -119,24 +81,14 @@ export default function ExchangeNotifications() {
                     text="Rechazar"
                     color="red"
                   />
-                </div>
                 <CounterOfferRequest />
               </div>
             </div>
           </div>
         ))
       ) : (
-        <div>
-          <div className="w-full h-full rounded-lg bg-[#d6dfea] p-2 drop-shadow-md">
-            <div className="p-4">
-              <div className="flex justify-start items-center">
-                <h1 className="text-1xl font-bold space-y-4">
-                  {" "}
-                  {`No ha realizado ninguna oferta`}{" "}
-                </h1>
-              </div>
-            </div>
-          </div>
+        <div className="rounded-md bg-[#ab9ee6] px-2 py-2 text-xs font-medium text-white ring-1 ring-inset ring-blue-700/10 flex justify-between align-top">
+          No se ha recibido ninguna oferta.
         </div>
       )}
     </div>

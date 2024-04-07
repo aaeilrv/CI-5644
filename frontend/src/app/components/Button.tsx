@@ -22,7 +22,7 @@ export default function Button({ link, text, style, onClick, color = 'indigo' ,t
       data-testid={testId}
       style={style}
       onClick={onClick}
-      className={`rounded px-2 py-2 text-sm font-semibold text-white shadow-sm ${colorClass}`}
+      className={`inline-flex items-center rounded-md px-2 py-1 text-xs font-medium ring-1 ring-inset ring-red-600/10 ${colorClass}`}
     >
       {link ? <link href={link}>{text}</link> : text}
     </button>
