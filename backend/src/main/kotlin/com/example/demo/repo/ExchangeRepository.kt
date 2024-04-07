@@ -17,6 +17,9 @@ interface ExchangeRequestRepository: JpaRepository<ExchangeRequest, Long> {
     @Query("SELECT er FROM ExchangeRequest er WHERE er.requester.id = :id")
     fun findByUserId(id: Long): List<ExchangeRequest>
 
+    @Query("SELECT er FROM ExchangeRequest er WHERE er.requester.auth0Sub = :sub")
+    fun findByUserSub(sub:String):List<ExchangeRequest>
+
     // Todos los ER de una barajita en particular
     @Query("SELECT er FROM ExchangeRequest er WHERE er.requestedCard.id = :id")
     fun findByCardId(id: Long): List<ExchangeRequest>
@@ -107,6 +110,24 @@ interface ExchangeOfferRepository: JpaRepository<ExchangeOffer, Long> {
     // Todos los EO de un usuario ofreciendo cierta barajita
     @Query("SELECT eo FROM ExchangeOffer eo WHERE eo.exchangeRequest.requester.id = :bidderId AND eo.offeredCard.id = :cardId")
     fun findByUserAndCardId(bidderId: Long, cardId: Long): List<ExchangeOffer>
+
+    @Query("SELECT eo FROM ExchangeOffer eo WHERE eo.bidder.auth0Sub = :sub")
+    fun findByBidderSub(sub: String): List<ExchangeOffer>
+
+    @Query("SELECT eo FROM ExchangeOffer eo JOIN eo.exchangeRequest er WHERE er.requester.auth0Sub = :receiverSub")
+    fun findByReceiverSub(receiverSub: String): List<ExchangeOffer>
+
+    @Query("SELECT eo FROM ExchangeOffer eo WHERE eo.offeredCard.id = :cardId AND eo.bidder.auth0Sub = :bidderSub")
+    fun findByBidderSubAndCardId(bidderSub: String, cardId: Long): List<ExchangeOffer>
+
+    @Query("SELECT eo FROM ExchangeOffer eo WHERE eo.bidder.auth0Sub = :bidderSub AND eo.status = :status")
+    fun findByBidderSubAndStatus(bidderSub: String, status: ExchangeOfferStatus): List<ExchangeOffer>
+
+    @Query("SELECT eo FROM ExchangeOffer eo WHERE eo.bidder.auth0Sub = :bidderSub AND eo.createdAt BETWEEN :start AND :end")
+    fun findByBidderSubAndDateRange(bidderSub: String, start: Date, end: Date): List<ExchangeOffer>
+
+    @Query("SELECT eo FROM ExchangeOffer eo JOIN eo.exchangeRequest er WHERE er.requester.auth0Sub = :receiverSub AND eo.createdAt BETWEEN :start AND :end")
+    fun findByReceiverSubAndDateRange(receiverSub: String, start: Date, end: Date): List<ExchangeOffer>
 }
 
 @Repository
@@ -154,4 +175,29 @@ interface ExchangeCounterofferRepository: JpaRepository<ExchangeCounteroffer, Lo
     // Todos los ECO recibidos por cierto usuario en cierto período de tiempo
     @Query("SELECT eco FROM ExchangeCounteroffer eco WHERE eco.exchangeOffer.bidder.id = :receiverId AND eco.createdAt BETWEEN :startDate AND :endDate")
     fun findByDateRangeAndReceiverId(receiverId: Long, startDate: Date, endDate: Date): List<ExchangeCounteroffer>
+
+    // Todos los ECO creados por un usuario identificado por sub
+    @Query("SELECT eco FROM ExchangeCounteroffer eco WHERE eco.exchangeRequest.requester.auth0Sub = :sub")
+    fun findByCreatorSub(sub: String): List<ExchangeCounteroffer>
+
+    // Todos los ECO recibidos por un usuario identificado por sub
+    @Query("SELECT eco FROM ExchangeCounteroffer eco JOIN eco.exchangeOffer eo JOIN eo.exchangeRequest er WHERE er.requester.auth0Sub = :sub")
+    fun findByReceiverSub(sub: String): List<ExchangeCounteroffer>
+
+    // Todos los ECO creados por cierto usuario y con cierto estatus, identificado por sub
+    @Query("SELECT eco FROM ExchangeCounteroffer eco WHERE eco.exchangeRequest.requester.auth0Sub = :sub AND eco.status = :status")
+    fun findByCreatorSubAndStatus(sub: String, status: ExchangeRequestStatus): List<ExchangeCounteroffer>
+
+    // Todos los ECO recibidos por cierto usuario y con cierto estatus, identificado por sub
+    @Query("SELECT eco FROM ExchangeCounteroffer eco JOIN eco.exchangeOffer eo JOIN eo.exchangeRequest er WHERE er.requester.auth0Sub = :receiverSub AND eco.status = :status")
+    fun findByReceiverSubAndStatus(receiverSub: String, status: ExchangeRequestStatus): List<ExchangeCounteroffer>
+
+    // Todos los ECO creados por cierto usuario en cierto período de tiempo, identificado por sub
+    @Query("SELECT eco FROM ExchangeCounteroffer eco WHERE eco.exchangeRequest.requester.auth0Sub = :creatorSub AND eco.createdAt BETWEEN :startDate AND :endDate")
+    fun findByCreatorSubAndDateRange(creatorSub: String, startDate: Date, endDate: Date): List<ExchangeCounteroffer>
+
+    // Todos los ECO recibidos por cierto usuario en cierto período de tiempo, identificado por sub
+    @Query("SELECT eco FROM ExchangeCounteroffer eco JOIN eco.exchangeOffer eo JOIN eo.exchangeRequest er WHERE er.requester.auth0Sub = :receiverSub AND eco.createdAt BETWEEN :startDate AND :endDate")
+    fun findByReceiverSubAndDateRange(receiverSub: String, startDate: Date, endDate: Date): List<ExchangeCounteroffer>
+
 }

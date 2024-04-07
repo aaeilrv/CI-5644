@@ -9,6 +9,8 @@ import org.springframework.data.domain.Pageable
 import org.springframework.format.annotation.DateTimeFormat
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import org.springframework.security.core.annotation.AuthenticationPrincipal
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.server.ResponseStatusException
 import java.util.*
@@ -23,8 +25,9 @@ class ExchangeRequestController {
     lateinit var exchangeRequestService: ExchangeRequestService
 
     @PostMapping
-    fun createExchangeRequest(@RequestBody request: CreateExchangeRequestDTO): ResponseEntity<ExchangeRequestDTO> {
-        return ResponseEntity.ok(ExchangeRequestDTO(exchangeRequestService.create(request)))
+    fun createExchangeRequest(principal: JwtAuthenticationToken, @RequestBody request: CreateExchangeRequestDTO): ResponseEntity<ExchangeRequestDTO> {
+        val sub = principal.tokenAttributes["sub"] as String
+        return ResponseEntity.ok(ExchangeRequestDTO(exchangeRequestService.create(request, sub)))
     }
 
     @PatchMapping
@@ -46,9 +49,10 @@ class ExchangeRequestController {
     }
 
     // Todos los Exchange Requests creados por un usuario
-    @GetMapping("/user/{id}")
-    fun getExchangeRequestByUserId(@PathVariable id: Long): List<ExchangeRequestDTO> {
-        return exchangeRequestService.getByUserid(id)
+    @GetMapping("/user/me")
+    fun getMyExchangeRequests(principal: JwtAuthenticationToken): List<ExchangeRequestDTO> {
+        val sub = principal.tokenAttributes["sub"] as String
+        return exchangeRequestService.getByUserSub(sub)
     }
 
     // Todos los ER de una barajita en particular
@@ -58,39 +62,33 @@ class ExchangeRequestController {
     }
 
     // Todos los ER de un usuario y de una barajita de ese usuario
-    @GetMapping("/user/{userId}/card/{cardId}")
-    fun getExchangeRequestByUserIdAndCardId(@PathVariable userId: Long, @PathVariable cardId: Long): List<ExchangeRequestDTO> {
-        return exchangeRequestService.getByUserIdAndCardId(cardId, userId)
+    @GetMapping("/user/me/card/{cardId}")
+    fun getMyExchangeRequestByCardId(principal: JwtAuthenticationToken, @PathVariable cardId: Long): List<ExchangeRequestDTO> {
+        val sub = principal.tokenAttributes["sub"] as String
+        return exchangeRequestService.getByUserSubAndCardId(sub, cardId)
     }
 
     // Todos los ER por rango de fechas
-    @GetMapping("/start/{start}/end/{end}")
-    fun getExchangeRequestByDateRange(
-            @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) start: Date,
-            @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) end: Date):
-            List<ExchangeRequestDTO> {
-        return exchangeRequestService.getByDateRange(start, end)
-    }
-
-    // Todos los ER de un usuario por rango de fechas
-    @GetMapping("/user/{id}/start/{start}/end/{end}")
-    fun getExchangeRequestByUserWithinDateRange(
-            @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) start: Date,
-            @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) end: Date,
-            @PathVariable id: Long): List<ExchangeRequestDTO> {
-        return exchangeRequestService.getByUserIdWithinDateRange(id, start, end)
+    @GetMapping("/user/me/start/{start}/end/{end}")
+    fun getMyExchangeRequestsByDateRange(principal: JwtAuthenticationToken, 
+                                         @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) start: Date, 
+                                         @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) end: Date): List<ExchangeRequestDTO> {
+        val sub = principal.tokenAttributes["sub"] as String
+        return exchangeRequestService.getByUserSubWithinDateRange(sub, start, end)
     }
 
     // Todos los ER que piden barajitas que un usuario tiene
-    @GetMapping("/hasCards/{id}")
-    fun getExchangeRequestByOwnership(@PathVariable id: Long): List<ExchangeRequestDTO> {
-        return exchangeRequestService.getAllPossibleERbyUser(id)
+    @GetMapping("/my/hasCards")
+    fun getMyExchangeRequestsByOwnership(principal: JwtAuthenticationToken): List<ExchangeRequestDTO> {
+        val sub = principal.tokenAttributes["sub"] as String
+        return exchangeRequestService.getAllPossibleERbyUserSub(sub)
     }
 
     // Todos los ER creados por user que piden barajitas que owner tiene
-    @GetMapping("hasCards/{ownerId}/user/{creatorId}")
-    fun getExchangeRequestByOwnerAndUser(@PathVariable ownerId: Long, @PathVariable creatorId: Long): List<ExchangeRequestDTO> {
-        return exchangeRequestService.getAllPossibleERbyCardsOwnerAndRequester(ownerId, creatorId)
+    @GetMapping("/hasCards/{ownerSub}/user/me")
+    fun getExchangeRequestsForMyCardsOwnedByOther(principal: JwtAuthenticationToken, @PathVariable ownerSub: String): List<ExchangeRequestDTO> {
+        val sub = principal.tokenAttributes["sub"] as String
+        return exchangeRequestService.getAllPossibleERbyCardsOwnerAndRequesterSub(ownerSub, sub)
     }
 
     // *- los que no funcionan -* //
