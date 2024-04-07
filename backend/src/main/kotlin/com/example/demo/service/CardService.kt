@@ -33,8 +33,7 @@ class CardService(@Autowired private val cardRepository: CardRepository,
 
     public fun getAll(pageable: Pageable): List<Card> {
         val cardEntities = cardRepository.findAll(pageable)
-        val cards = cardEntities.map { it }
-        return cards.content
+        return cardEntities.content
     }
     public fun changeName(id:Long, name:String): Card?{
         val exists: Optional<Card> = getById(id)

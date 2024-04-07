@@ -28,7 +28,7 @@ class PurchaseService(@Autowired private val purchaseRepository: PurchaseReposit
             NoSuchElementException("User not found.")
         }
         val foundCreditCard = creditCardService.getById(1).orElseThrow{
-            java.util.NoSuchElementException("Credit card not found.")
+            NoSuchElementException("Credit card not found.")
         }
 
         val newPurchase:CreatePurchaseRequest
