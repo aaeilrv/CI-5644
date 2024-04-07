@@ -16,7 +16,7 @@ INSERT INTO card (name, player_position, player_number, country, photo_url) VALU
 ('Raphaël Varane', 'DEFENDER', 4, 'France', '/cards/Raphaël Varane.jpg'),
 ('Theo Hernández', 'DEFENDER', 22, 'France', '/cards/Theo Hernández.jpg'),
 ('Aurélien Tchouaméni', 'MIDFIELDER', 8, 'France', '/cards/Aurélien Tchouaméni.jpg'),
-('N\'Golo Kanté', 'MIDFIELDER', 13, 'France', '/cards/N\'Golo Kanté.jpg'),
+('N´Golo Kanté', 'MIDFIELDER', 13, 'France', '/cards/N´Golo Kanté.jpg'),
 ('Adrien Rabiot', 'MIDFIELDER', 14, 'France', '/cards/Adrien Rabiot.jpg'),
 ('Antoine Griezmann', 'FORWARD', 7, 'France', '/cards/Antoine Griezmann.jpg'),
 ('Karim Benzema', 'FORWARD', 19, 'France', '/cards/Karim Benzema.jpg'),
