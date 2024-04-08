@@ -35,7 +35,7 @@ class Purchase(
 
 ) {
     constructor() : this(null,
-        java.sql.Timestamp(0),
+        java.sql.Timestamp(System.currentTimeMillis()),
         User(),
         0,
         0,
