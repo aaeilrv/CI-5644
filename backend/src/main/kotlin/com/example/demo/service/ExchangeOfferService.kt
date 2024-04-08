@@ -28,6 +28,7 @@ class ExchangeOfferService(
         val foundExchangeRequest = exchangeRequestService.getById(exchangeOfferDTO.exchangeRequestId).orElseThrow {
             ResponseStatusException(HttpStatus.NOT_FOUND, "Exchange request not found.")
         }
+        val now = System.currentTimeMillis();
 
         val newExchangeOffer = ExchangeOffer(
             null,
@@ -35,7 +36,7 @@ class ExchangeOfferService(
             foundExchangeRequest,
             foundCard,
             ExchangeOfferStatus.PENDING,
-            Timestamp(0)
+            Timestamp(now)
         )
 
         return exchangeOfferRepository.save(newExchangeOffer)

@@ -31,13 +31,14 @@ class ExchangeRequestService(
         val foundCard = cardService.getById(request.requestedCardId).orElseThrow {
             ResponseStatusException(HttpStatus.NOT_FOUND, "Card not found.")
         }
+        val now = System.currentTimeMillis();
 
         val newExchangeRequest = ExchangeRequest(
             null,
             foundUser,
             foundCard,
             ExchangeRequestStatus.PENDING,
-            Timestamp(0)
+            Timestamp(now)
         )
 
         return exchangeRequestRepository.save(newExchangeRequest)

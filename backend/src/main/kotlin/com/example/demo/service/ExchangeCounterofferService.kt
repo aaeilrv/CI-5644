@@ -34,14 +34,14 @@ class ExchangeCounterofferService(
         if (exchangeOffer.bidder.auth0Sub != userSub) {
             throw ResponseStatusException(HttpStatus.FORBIDDEN, "Not allowed.")
         }
-
+        val now = System.currentTimeMillis();
         val newExchangeCounteroffer = ExchangeCounteroffer(
             null,
             offeredCard,
             ExchangeRequestStatus.PENDING,
             exchangeOffer.exchangeRequest,
             exchangeOffer,
-            Timestamp(0)
+            Timestamp(now)
         )
     
         return exchangeCounterofferRepository.save(newExchangeCounteroffer)
