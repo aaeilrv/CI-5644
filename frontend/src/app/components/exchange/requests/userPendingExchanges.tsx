@@ -18,7 +18,6 @@ type exchangeRequestD = {
 };
 
 export default function UserPendingExchanges() {
-  const CARD_PICTURE_LOC = "/static/images/cards/";
   const { user, isLoading } = useUser();
   const [exchangeRequest, setExchangeRequest] = useState(true);
   const [exchangedContent, setExchangedContent] = useState<exchangeRequestD[]>([]);
@@ -74,7 +73,6 @@ export default function UserPendingExchanges() {
           </div>
         </div>
       )}
-      <div>{user && user.name}</div>
     </div>
   );
 }

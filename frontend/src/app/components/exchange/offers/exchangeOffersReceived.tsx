@@ -12,11 +12,13 @@ import UpdateExchangeOffer from "./updateExchangeOffer";
 type exchangeOffer = {
   id: number;
   bidderId: number;
-  exchangerequestId: number;
+  bidderUsername: number;
   offeredCardId: number;
-  requestedCardName: string;
+  offerCreator: string;
   offeredCardName: string;
-  status: "PENDING" | "ACCEPTED" | "REJECTED";
+  exchangeRequestId: number;
+  exchangeRequestCardName: String,
+  status: string;
 };
 
 export default function ExchangeOffersReceived() {
@@ -49,10 +51,9 @@ export default function ExchangeOffersReceived() {
         offerContent.map((it) => (
           <div key={it.id} className="p-4">
             <div className="rounded-md bg-[#ab9ee6] px-2 py-2 text-xs font-medium text-white ring-1 ring-inset ring-blue-700/10 flex justify-between align-top">
-              <div className="flex">Solicitud: {it.requestedCardName}</div>
-              <div className="flex">Oferta: {it.offeredCardName}</div>
-              <div className="flex">Creado por: {it.exchangerequestId}</div>
-              <div className="flex">Recibido por: {it.bidderId}</div>
+              <div className="flex">Barajita a Obtener: {it.offeredCardName}</div>
+              <div className="flex">Mi Barajita: {it.exchangeRequestCardName}</div>
+              <div className="flex">Transacción con: {it.bidderUsername}</div>
               <div className="flex">{it.status}</div>
               <div className="flex space-x-2">
                 <Button
@@ -60,7 +61,7 @@ export default function ExchangeOffersReceived() {
                     UpdateExchangeOffer(
                       it.id,
                       it.bidderId,
-                      it.exchangerequestId,
+                      it.exchangeRequestId,
                       it.offeredCardId,
                       "ACCEPTED"
                     )
@@ -69,18 +70,18 @@ export default function ExchangeOffersReceived() {
                   color="green"
                 />
                 <Button
-                    onClick={() =>
-                      UpdateExchangeOffer(
-                        it.id,
-                        it.bidderId,
-                        it.exchangerequestId,
-                        it.offeredCardId,
-                        "REJECTED"
-                      )
-                    }
-                    text="Rechazar"
-                    color="red"
-                  />
+                  onClick={() =>
+                    UpdateExchangeOffer(
+                      it.id,
+                      it.bidderId,
+                      it.exchangeRequestId,
+                      it.offeredCardId,
+                      "REJECTED"
+                    )
+                  }
+                  text="Rechazar"
+                  color="red"
+                />
                 <CounterOfferRequest />
               </div>
             </div>

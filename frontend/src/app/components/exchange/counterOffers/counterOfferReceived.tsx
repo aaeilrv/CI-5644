@@ -14,14 +14,15 @@ function clickMe() {
 }
 
 type counterOffer = {
-  id: number;
-  offeredCardId: number;
-  exchangeRequestId: number;
-  exchangeOfferId: number;
-  status: string;
-  requestCardName: string;
-  offeredCardName: string;
-  counterOfferedCardName: string;
+  id: number,
+  exchangeOfferId: number,
+  counterofferCardId: number,
+  counterofferCardName: String,
+  counterofferCreatorName: String,
+  exchangeOfferCreatorName: String,
+  exchangeRequestId: number,
+  exchangeRequestCardName: String,
+  status: string
 };
 
 export default function CounterofferReceived() {
@@ -56,9 +57,10 @@ export default function CounterofferReceived() {
           <div key={it.id} className="p-4">
             <div>
             <div className="rounded-md bg-[#ab9ee6] px-2 py-2 text-xs font-medium text-white ring-1 ring-inset ring-blue-700/10 flex justify-between align-top">
-              <div className='flex'>Contraoferta: {it.counterOfferedCardName}</div>
-              <div className="flex">Oferta original: to do</div>
-              <div className='flex'>Barajita que ofrezco: {it.requestCardName}</div>
+              <div className='flex'>Contraoferta Recibida: {it.counterofferCardName}</div>
+              <div className="flex">Oferta original: {it.exchangeRequestCardName}</div>
+              <div className='flex'>Barajita que ofrezco: {it.exchangeOfferCreatorName}</div>
+              <div className='flex'>Transacción con: {it.counterofferCreatorName}</div>
               <div className="flex">{it.status}</div>
                 <div className="flex justify-center space-x-4">
                   <Button
@@ -67,7 +69,7 @@ export default function CounterofferReceived() {
                         it.id,
                         it.exchangeOfferId,
                         it.exchangeRequestId,
-                        it.offeredCardId,
+                        it.counterofferCardId,
                         "ACCEPTED"
                       )
                     }
@@ -80,7 +82,7 @@ export default function CounterofferReceived() {
                         it.id,
                         it.exchangeOfferId,
                         it.exchangeRequestId,
-                        it.offeredCardId,
+                        it.counterofferCardId,
                         "REJECTED"
                       )
                     }

@@ -7,16 +7,15 @@ import Image from "next/image";
 import { Fragment, useState, useEffect } from "react";
 import getJwt from "../../../helpers/getJwtClient";
 import Button from "../../Button";
+import { number, string } from "zod";
 
 type counterOffer = {
-  id: number;
-  offeredCardId: number;
-  exchangeRequestId: number;
-  exchangeOfferId: number;
-  status: string;
-  requestCardName: string;
-  offeredCardName: string;
-  counterOfferedCardName: string;
+  id: number,
+  counterofferCardName: String,
+  exchangeOfferCreatorName: String,
+  exchangeOfferCardName: String,
+  exchangeRequestCardName: String,
+  status: string
 };
 
 export default function CounterofferSent() {
@@ -51,9 +50,10 @@ export default function CounterofferSent() {
         exchangedContent.map((it, index) => (
           <div key={it.id} className="p-4">
             <div className="rounded-md bg-[#ab9ee6] px-2 py-2 text-xs font-medium text-white ring-1 ring-inset ring-blue-700/10 flex justify-between align-top">
-              <div className='flex'>Mi contraoferta: {it.counterOfferedCardName}</div>
-              <div className="flex">Barajita a recibir: {it.status}</div>
-              <div className='flex'>Mi oferta original: {it.counterOfferedCardName}</div>
+              <div className='flex'>Mi Contraoferta: {it.counterofferCardName}</div>
+              <div className="flex">Por: {it.exchangeOfferCardName}</div>
+              <div className='flex'>Mi Oferta Original: {it.exchangeRequestCardName}</div>
+              <div className='flex'>Transacción con: {it.exchangeOfferCreatorName}</div>          
               <div className="flex">{it.status}</div>
               <Button
                 onClick={() =>
