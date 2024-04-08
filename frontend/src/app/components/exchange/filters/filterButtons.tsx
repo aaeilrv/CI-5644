@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-const FilterButtons = ({currentFilter, setCurrentFilter}: {currentFilter: number, setCurrentFilter: React.Dispatch<React.SetStateAction<number>>}) => {
+const FilterButtons = ({setCurrentFilter, setNewReq}: {setCurrentFilter: React.Dispatch<React.SetStateAction<number>>, setNewReq: React.Dispatch<React.SetStateAction<boolean>>}) => {
 
   const [filters, setFilters] = useState([
     {
@@ -33,6 +33,7 @@ const FilterButtons = ({currentFilter, setCurrentFilter}: {currentFilter: number
       )
     );
     setCurrentFilter(filterId);
+    setNewReq(false);
   };
 
   return (
