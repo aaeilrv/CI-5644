@@ -11,15 +11,14 @@ import UpdateExchangeOffer from "./updateExchangeOffer";
 type exchangeOffer = {
   id: number;
   bidderId: number;
+  bidderUsername: string;
   exchangerequestId: number;
   offeredCardId: number;
-  requestedCardName: string;
   offeredCardName: string;
-  status: "PENDING" | "ACCEPTED" | "REJECTED";
+  status: string;
 };
 
 export default function ExchangeOffersMade() {
-  const CARD_PICTURE_LOC = "/static/images/cards/";
   const [exchangeOffer, setExchangeOffer] = useState(true);
   const [offerContent, setOfferContent] = useState<exchangeOffer[]>([]);
   const API_EXCHANGE_REQUEST_OFFER_URL =
@@ -28,6 +27,7 @@ export default function ExchangeOffersMade() {
   useEffect(() => {
     const getExchangeOfferData = async () => {
       const { token } = await getJwt();
+      console.log("EO creadas")
       const response = await fetch(API_EXCHANGE_REQUEST_OFFER_URL, {
         method: "GET",
         headers: {
@@ -48,8 +48,8 @@ export default function ExchangeOffersMade() {
         offerContent.map((it, index) => (
           <div key={it.id} className="p-4">
             <div className="rounded-md bg-[#ab9ee6] px-2 py-2 text-xs font-medium text-white ring-1 ring-inset ring-blue-700/10 flex justify-between align-top">
-              <div className='flex'>Solicitud: {it.requestedCardName}</div>
-              <div className='flex'>Oferta: {it.offeredCardName}</div>
+              <div className='flex'>Mi Oferta: <div className="text-black ml-2">{it.offeredCardName}</div></div>
+              <div className='flex'>Barajita a Obtener: <div className="text-black ml-2">{it.bidderUsername}</div></div>
               <div className="flex">{it.status}</div>
               <Button
                 onClick={() =>

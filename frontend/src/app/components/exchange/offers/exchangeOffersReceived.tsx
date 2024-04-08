@@ -28,6 +28,7 @@ export default function ExchangeOffersReceived() {
   useEffect(() => {
     const getExchangeOfferData = async () => {
       const { token } = await getJwt();
+      console.log("EO recibidas.")
       const response = await fetch(API_EXCHANGE_REQUEST_OFFER_URL, {
         method: "GET",
         headers: {
