@@ -50,10 +50,10 @@ export default function CounterofferSent() {
         exchangedContent.map((it, index) => (
           <div key={it.id} className="p-4">
             <div className="rounded-md bg-[#ab9ee6] px-2 py-2 text-xs font-medium text-white ring-1 ring-inset ring-blue-700/10 flex justify-between align-top">
-              <div className='flex'>Mi Contraoferta: {it.counterofferCardName}</div>
-              <div className="flex">Por: {it.exchangeOfferCardName}</div>
-              <div className='flex'>Mi Oferta Original: {it.exchangeRequestCardName}</div>
-              <div className='flex'>Transacción con: {it.exchangeOfferCreatorName}</div>          
+              <div className='flex'>Mi Contraoferta: <div className="text-black ml-2">{it.counterofferCardName}</div></div>
+              <div className="flex">Por: <div className="text-black ml-2">{it.exchangeOfferCardName}</div></div>
+              <div className='flex'>Mi Oferta Original: <div className="text-black ml-2">{it.exchangeRequestCardName}</div></div>
+              <div className='flex'>Transacción con: <div className="text-black ml-2">{it.exchangeOfferCreatorName}</div></div>          
               <div className="flex">{it.status}</div>
               <Button
                 onClick={() =>

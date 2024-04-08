@@ -8,6 +8,7 @@ import { Fragment, useState, useEffect } from "react";
 import CounterOfferRequest from "../counterOffers/counterOfferRequest";
 import getJwt from "../../../helpers/getJwtClient";
 import UpdateExchangeOffer from "./updateExchangeOffer";
+import OfferRequest from "./offerRequest";
 
 type exchangeOffer = {
   id: number;
@@ -51,11 +52,11 @@ export default function ExchangeOffersReceived() {
         offerContent.map((it) => (
           <div key={it.id} className="p-4">
             <div className="rounded-md bg-[#ab9ee6] px-2 py-2 text-xs font-medium text-white ring-1 ring-inset ring-blue-700/10 flex justify-between align-top">
-              <div className="flex">Barajita a Obtener: {it.offeredCardName}</div>
-              <div className="flex">Mi Barajita: {it.exchangeRequestCardName}</div>
-              <div className="flex">Transacción con: {it.bidderUsername}</div>
+              <div className="flex">Barajita a Obtener: <div className="text-black ml-2">{it.offeredCardName}</div></div>
+              <div className="flex">Mi Barajita: <div className="text-black ml-2">{it.exchangeRequestCardName}</div></div>
+              <div className="flex">Transacción con: <div className="text-black ml-2">{it.bidderUsername}</div></div>
               <div className="flex">{it.status}</div>
-              <div className="flex space-x-2">
+              <div className="flex space-x-2 ">
                 <Button
                   onClick={() =>
                     UpdateExchangeOffer(

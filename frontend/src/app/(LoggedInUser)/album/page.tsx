@@ -49,7 +49,6 @@ export default function Barajitas() {
   const API_ALBUM_DATA_URL = process.env.NEXT_PUBLIC_USER_API_URL + `/cardsOwned?page=${pageNumber}&size=10`;
   const EMPTY_CARD_IMG_LOC = '/static/images/emptycard.png'
   const CARD_PICTURE_LOC = '/static/images/cards/'
-  const country_name = "Argentina";
 
   useEffect(() => {
     const getAlbumData = async () => {
@@ -78,7 +77,7 @@ export default function Barajitas() {
     <div>
       <div className="w-full mx-auto">
         <div className="mb-10 w-full flex justify-between space-x-4 items-center">
-          <h1 className={`text-5xl text-white ${ProtestRiot.className}`}>{country_name}</h1>
+          <h1 className={`text-5xl text-white ${ProtestRiot.className}`}>Qatar 2022</h1>
          {/* <Button link="/buy" text="¡Compra barajitas!" />*/}
         </div>
         <div className="flex justify-between items-center space-x-4">

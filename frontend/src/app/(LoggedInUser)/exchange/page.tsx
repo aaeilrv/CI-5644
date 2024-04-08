@@ -16,7 +16,6 @@ function classNames(...classes: string[]) {
 }
 
 export default function Exchange() {
-
   const [currentFilter, setCurrentFilter] = useState(0);
   const [secondFilter, setSecondFilter] = useState(0);
   const [newReq, setNewReq] = useState(false);

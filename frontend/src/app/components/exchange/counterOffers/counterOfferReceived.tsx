@@ -9,10 +9,6 @@ import { Fragment, useState, useEffect } from "react";
 import getJwt from "../../../helpers/getJwtClient";
 import UpdateCounterOffer from "./updateCounterOffer";
 
-function clickMe() {
-  alert("You clicked me!");
-}
-
 type counterOffer = {
   id: number,
   exchangeOfferId: number,
@@ -57,12 +53,11 @@ export default function CounterofferReceived() {
           <div key={it.id} className="p-4">
             <div>
             <div className="rounded-md bg-[#ab9ee6] px-2 py-2 text-xs font-medium text-white ring-1 ring-inset ring-blue-700/10 flex justify-between align-top">
-              <div className='flex'>Contraoferta Recibida: {it.counterofferCardName}</div>
-              <div className="flex">Oferta original: {it.exchangeRequestCardName}</div>
-              <div className='flex'>Barajita que ofrezco: {it.exchangeOfferCreatorName}</div>
-              <div className='flex'>Transacción con: {it.counterofferCreatorName}</div>
+              <div className='flex'>Contraoferta: <div className="text-black ml-2">{it.counterofferCardName}</div></div>
+              <div className='flex'>Barajita que ofrezco: <div className="text-black ml-2">{it.counterofferCardName}</div></div>
+              <div className='flex'>Transacción con: <div className="text-black ml-2">{it.counterofferCreatorName}</div></div>
               <div className="flex">{it.status}</div>
-                <div className="flex justify-center space-x-4">
+                <div className="flex justify-center space-x-2">
                   <Button
                     onClick={() =>
                       UpdateCounterOffer(
@@ -88,10 +83,6 @@ export default function CounterofferReceived() {
                     }
                     text="Rechazar"
                     color="red"
-                  />
-                  <Button
-                    onClick={clickMe}
-                    text={`Ver album del solicitante`}
                   />
                 </div>
               </div>
