@@ -25,14 +25,14 @@ class ExchangeCounterofferController {
 
     @PostMapping
     fun createExchangeOffer(principal: JwtAuthenticationToken, @RequestBody request: CreateExchangeCounterofferDTO): ResponseEntity<ExchangeCounterofferDTO> {
-        val userSub = principal.tokenAttributes["sub"] as String
-        val exchangeCounteroffer = exchangeCounterofferService.create(request, userSub)
+        val sub = principal.tokenAttributes["sub"]?.toString() ?: return ResponseEntity.internalServerError().build()
+        val exchangeCounteroffer = exchangeCounterofferService.create(request, sub)
         return ResponseEntity.ok(ExchangeCounterofferDTO(exchangeCounteroffer))
 }
 
     @PatchMapping("/{id}")
     fun updateExchangeCounteroffer(@RequestBody request: UpdateExchangeCounterofferRequest, principal: JwtAuthenticationToken): ResponseEntity<ExchangeCounterofferDTO> {
-        val sub = principal.tokenAttributes["sub"] as String
+        val sub = principal.tokenAttributes["sub"]?.toString() ?: return ResponseEntity.internalServerError().build()
         val updatedExchangeCounteroffer = exchangeCounterofferService.updateExchangeCounteroffer(request, sub)
         return ResponseEntity.ok(ExchangeCounterofferDTO(updatedExchangeCounteroffer))
     }
@@ -53,7 +53,7 @@ class ExchangeCounterofferController {
     // Todos los ECO creados por un usuario
     @GetMapping("/creator/me")
     fun getExchangeCounteroffersByCreator(principal: JwtAuthenticationToken): ResponseEntity<List<ExchangeCounterofferDTO>> {
-        val sub = principal.tokenAttributes["sub"] as String
+        val sub = principal.tokenAttributes["sub"]?.toString() ?: return ResponseEntity.internalServerError().build()
         val exchangeCounteroffers = exchangeCounterofferService.getByCreatorSub(sub)
         return ResponseEntity.ok(exchangeCounteroffers)
     }
@@ -61,7 +61,7 @@ class ExchangeCounterofferController {
     // Todos los ECO recibidos por el usuario autenticado
     @GetMapping("/receiver/me")
     fun getExchangeCounteroffersByReceiver(principal: JwtAuthenticationToken): ResponseEntity<List<ExchangeCounterofferDTO>> {
-        val sub = principal.tokenAttributes["sub"] as String
+        val sub = principal.tokenAttributes["sub"]?.toString() ?: return ResponseEntity.internalServerError().build()
         val exchangeCounteroffers = exchangeCounterofferService.getByReceiverSub(sub)
         return ResponseEntity.ok(exchangeCounteroffers)
     }
@@ -91,7 +91,7 @@ class ExchangeCounterofferController {
         @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) start: Date,
         @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) end: Date
     ): ResponseEntity<List<ExchangeCounterofferDTO>> {
-        val sub = principal.tokenAttributes["sub"] as String
+        val sub = principal.tokenAttributes["sub"]?.toString() ?: return ResponseEntity.internalServerError().build()
         val exchangeCounteroffers = exchangeCounterofferService.getByCreatorSubAndDateRange(sub, start, end)
         return ResponseEntity.ok(exchangeCounteroffers)
     }
@@ -118,7 +118,7 @@ class ExchangeCounterofferController {
 
     @GetMapping("/creator/me/status/{status}")
     fun getMyExchangeCounteroffersByStatus(principal: JwtAuthenticationToken, @PathVariable status: ExchangeRequestStatus): ResponseEntity<List<ExchangeCounterofferDTO>> {
-        val sub = principal.tokenAttributes["sub"] as String
+        val sub = principal.tokenAttributes["sub"]?.toString() ?: return ResponseEntity.internalServerError().build()
         val exchangeCounteroffers = exchangeCounterofferService.getByCreatorSubAndStatus(sub, status)
         return ResponseEntity.ok(exchangeCounteroffers)
     }
@@ -127,7 +127,7 @@ class ExchangeCounterofferController {
     // Todos los ECO con cierto estatus recibidos por el usuario autenticado
     @GetMapping("/receiver/me/status/{status}")
     fun getExchangeCounteroffersForMeByStatus(principal: JwtAuthenticationToken, @PathVariable status: ExchangeRequestStatus): ResponseEntity<List<ExchangeCounterofferDTO>> {
-        val sub = principal.tokenAttributes["sub"] as String
+        val sub = principal.tokenAttributes["sub"]?.toString() ?: return ResponseEntity.internalServerError().build()
         val exchangeCounteroffers = exchangeCounterofferService.getByReceiverSubAndStatus(sub, status)
         return ResponseEntity.ok(exchangeCounteroffers)
     }
