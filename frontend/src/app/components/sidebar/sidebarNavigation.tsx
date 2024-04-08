@@ -16,7 +16,7 @@ export default function SidebarNavigation() {
   const navigation = [
     { name: 'Mi álbum', href: '/album', icon: BookOpenIcon, current: pathname === '/album' },
     { name: 'Intercambio', href: '/exchange', icon: ArrowPathIcon, current: pathname === '/exchange' },
-    { name: 'Comprar barajitas', href: '#', icon: CreditCardIcon, current: pathname === '/buy' },
+    { name: 'Comprar barajitas', href: '/buy', icon: CreditCardIcon, current: pathname === '/buy' },
     { name: 'Leaderboard', href: '/leaderboard', icon: UsersIcon, current: pathname === '/leaderboard' },
   ]
   
