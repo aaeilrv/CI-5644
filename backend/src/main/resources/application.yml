@@ -7,7 +7,7 @@ spring:
         jwt:
           issuer-uri: https://dev-crxb1uekqycez2b5.us.auth0.com/
   datasource:
-    url: jdbc:postgresql://localhost:5432/TestHerrWeb
+    url: jdbc:postgresql://localhost:5432/TestHerrWeb?reWriteBatchedInserts=true
     username: ci5644user
     password: ci5644redteam
   jpa:
@@ -15,6 +15,13 @@ spring:
       ddl-auto: validate
     generate-ddl: true
     show-sql: true
+    properties:
+      hibernate:
+        jdbc:
+          batch_size: 100
+          batch_versioned_data: true
+        order_updates: true
+        order_inserts: true
   flyway:
     enabled: true
     baseline-version: 000

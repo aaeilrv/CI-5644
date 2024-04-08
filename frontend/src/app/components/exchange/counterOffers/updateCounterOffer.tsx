@@ -36,8 +36,8 @@ export default function UpdateCounterOffer(
   };
   patchRequest();
   if (statustoUpdate == "ACCEPTED") {
-    alert("Oferta aceptada!");
+    alert("Contraoferta aceptada!");
   } else {
-    alert("Oferta rechazada!");
+    alert("Contraoferta rechazada!");
   }
 }

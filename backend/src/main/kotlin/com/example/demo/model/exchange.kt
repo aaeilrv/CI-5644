@@ -23,22 +23,22 @@ class ExchangeRequest(
         @Id
         @Column(name = "id")
         @GeneratedValue(strategy = GenerationType.IDENTITY)
-        private val id: Long?,
+        val id: Long?,
 
         @ManyToOne
         @JoinColumn(name = "user_id", nullable = false)
-        private var requester: User,
+        var requester: User,
 
         @ManyToOne
         @JoinColumn(name = "requested_card_id", nullable = false)
-        private var requestedCard: Card,
+        var requestedCard: Card,
 
         @Column(name = "status", nullable = false, columnDefinition = "varchar")
         @Enumerated(EnumType.STRING)
         var status: ExchangeRequestStatus,
 
         @Column(name = "created_at", nullable = false)
-        private val createdAt: java.sql.Timestamp,
+        val createdAt: java.sql.Timestamp,
         ) {
     constructor() : this(-1, User(), Card(), ExchangeRequestStatus.PENDING, java.sql.Timestamp(0))
     constructor(request: CreateExchangeRequestRequest) : this(
@@ -48,12 +48,6 @@ class ExchangeRequest(
             ExchangeRequestStatus.valueOf(request.requestStatus.uppercase()),
             request.createdAt
     )
-
-    fun getId(): Long = this.id!!
-    fun getUser(): User = this.requester
-    fun getRequestedCard(): Card = this.requestedCard
-    fun getRequestStatus(): ExchangeRequestStatus = this.status
-    fun getCreatedAt(): Timestamp = this.createdAt
 }
 
 @Entity
@@ -62,26 +56,26 @@ class ExchangeOffer(
         @Id
         @Column(name = "id")
         @GeneratedValue(strategy = GenerationType.IDENTITY)
-        private val id: Long?,
+        val id: Long?,
 
         @ManyToOne
         @JoinColumn(name = "bidder_id", nullable = false)
-        private val bidder: User,
+        val bidder: User,
 
         @ManyToOne
         @JoinColumn(name = "exchange_request_id", nullable = false)
-        private val exchangeRequest: ExchangeRequest,
+        val exchangeRequest: ExchangeRequest,
 
         @ManyToOne
         @JoinColumn(name = "offered_card_id", nullable = false)
-        private val offeredCard: Card,
+        val offeredCard: Card,
 
         @Column(name = "status", nullable = false, columnDefinition = "varchar")
         @Enumerated(EnumType.STRING)
         var status: ExchangeOfferStatus,
 
         @Column(name = "created_at", nullable = false)
-        private val createdAt: java.sql.Timestamp,
+        val createdAt: java.sql.Timestamp,
 
         ) {
     constructor() : this(-1, User(), ExchangeRequest(), Card(), ExchangeOfferStatus.PENDING, java.sql.Timestamp(0))
@@ -94,13 +88,6 @@ class ExchangeOffer(
             ExchangeOfferStatus.valueOf(request.status.uppercase()),
             request.createdAt
     )
-
-    fun getId(): Long = this.id!!
-    fun getBidder(): User = this.bidder
-    fun getExchangeRequest(): ExchangeRequest = this.exchangeRequest
-    fun getOfferedCard(): Card = this.offeredCard
-    fun getRequestStatus(): ExchangeOfferStatus = this.status
-    fun getCreatedAt(): Timestamp = this.createdAt
 }
 
 @Entity
@@ -109,11 +96,11 @@ class ExchangeCounteroffer(
         @Id
         @Column(name = "id")
         @GeneratedValue(strategy = GenerationType.IDENTITY)
-        private val id: Long?,
+        val id: Long?,
 
         @ManyToOne
         @JoinColumn(name = "offered_card_id", nullable = false)
-        private val card: Card,
+        val card: Card,
 
         @Column(name = "status", nullable = false, columnDefinition = "varchar")
         @Enumerated(EnumType.STRING)
@@ -121,14 +108,14 @@ class ExchangeCounteroffer(
 
         @ManyToOne
         @JoinColumn(name = "exchange_request_id", nullable = false)
-        private val exchangeRequest: ExchangeRequest,
+        val exchangeRequest: ExchangeRequest,
 
         @ManyToOne
         @JoinColumn(name = "exchange_offer_id", nullable = false)
-        private val exchangeOffer: ExchangeOffer,
+        val exchangeOffer: ExchangeOffer,
 
         @Column(name = "created_at", nullable = false)
-        private val createdAt: java.sql.Timestamp,
+        val createdAt: java.sql.Timestamp,
 
         ) {
     constructor() : this(-1, Card(), ExchangeRequestStatus.PENDING, ExchangeRequest(), ExchangeOffer(), java.sql.Timestamp(0))
@@ -141,11 +128,4 @@ class ExchangeCounteroffer(
             request.exchangeOffer,
             request.createdAt
     )
-
-    fun getId(): Long = this.id!!
-    fun getOfferedCard(): Card = this.card
-    fun getRequestStatus(): ExchangeRequestStatus = this.status
-    fun getExchangeRequest(): ExchangeRequest = this.exchangeRequest
-    fun getExchangeOffer(): ExchangeOffer = this.exchangeOffer
-    fun getCreatedAt(): Timestamp = this.createdAt
 }
