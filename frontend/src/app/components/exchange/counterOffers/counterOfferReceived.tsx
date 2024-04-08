@@ -25,18 +25,16 @@ type counterOffer = {
 };
 
 export default function CounterofferReceived() {
-  const userId = 1000;
-  const CARD_PICTURE_LOC = "/static/images/cards/";
   const { user, isLoading } = useUser();
   const [exchangeRequest, setExchangeRequest] = useState(true);
   const [exchangedContent, setExchangedContent] = useState<counterOffer[]>([]);
   const API_EXCHANGE_REQUEST_URL =
-    process.env.NEXT_PUBLIC_EXCHANGE_COUNTEROFFER_URL + `/receiver/`;
+    process.env.NEXT_PUBLIC_EXCHANGE_COUNTEROFFER_URL + `/receiver/me`;
 
   useEffect(() => {
     const getExchangeRequestData = async () => {
       const { token } = await getJwt();
-      const response = await fetch(API_EXCHANGE_REQUEST_URL + token, {
+      const response = await fetch(API_EXCHANGE_REQUEST_URL, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",

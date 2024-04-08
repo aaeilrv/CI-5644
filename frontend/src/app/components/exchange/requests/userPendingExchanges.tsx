@@ -20,19 +20,19 @@ type exchangeRequestD = {
 export default function UserPendingExchanges() {
   const CARD_PICTURE_LOC = "/static/images/cards/";
   const { user, isLoading } = useUser();
-  const [userId, setUserId] = useState("");
   const [exchangeRequest, setExchangeRequest] = useState(true);
   const [exchangedContent, setExchangedContent] = useState<exchangeRequestD[]>([]);
-  const API_EXCHANGE_REQUEST_URL = process.env.NEXT_PUBLIC_EXCHANGE_REQUEST_URL + `/bidder/me/`;
+  const API_EXCHANGE_REQUEST_URL = process.env.NEXT_PUBLIC_EXCHANGE_REQUEST_URL + `/user/me/`;
 
   useEffect(() => {
     const getExchangeRequestData = async () => {
       const { token } = await getJwt();
+      console.log(token)
       const response = await fetch(API_EXCHANGE_REQUEST_URL, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
+          "Authorization": `Bearer ${token}`,
         },
       });
       const data = await response.json();

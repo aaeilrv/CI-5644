@@ -16,14 +16,12 @@ type exchangeRequestD = {
 };
 
 export default function ExchangeRequestsFromOtherUsers() {
-  
-  const userId = 1000;
   const CARD_PICTURE_LOC = "/static/images/cards/";
   const [exchangedContent, setExchangedContent] = useState<exchangeRequestD[]>(
     []
   );
   const API_EXCHANGE_REQUEST_URL =
-    process.env.NEXT_PUBLIC_EXCHANGE_REQUEST_URL + `/hasCards/`;
+    process.env.NEXT_PUBLIC_EXCHANGE_REQUEST_URL + `my/hasCards/`;
 
   useEffect(() => {
     const getExchangeRequestData = async () => {

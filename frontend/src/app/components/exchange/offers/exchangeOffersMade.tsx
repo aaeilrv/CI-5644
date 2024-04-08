@@ -19,17 +19,16 @@ type exchangeOffer = {
 };
 
 export default function ExchangeOffersMade() {
-  const userId = 1000;
   const CARD_PICTURE_LOC = "/static/images/cards/";
   const [exchangeOffer, setExchangeOffer] = useState(true);
   const [offerContent, setOfferContent] = useState<exchangeOffer[]>([]);
   const API_EXCHANGE_REQUEST_OFFER_URL =
-    process.env.NEXT_PUBLIC_EXCHANGE_OFFER_URL + `/bidder/`;
+    process.env.NEXT_PUBLIC_EXCHANGE_OFFER_URL + `/bidder/me`;
 
   useEffect(() => {
     const getExchangeOfferData = async () => {
       const { token } = await getJwt();
-      const response = await fetch(API_EXCHANGE_REQUEST_OFFER_URL + token, {
+      const response = await fetch(API_EXCHANGE_REQUEST_OFFER_URL, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",

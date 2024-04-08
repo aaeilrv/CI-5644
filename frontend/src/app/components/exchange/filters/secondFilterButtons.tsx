@@ -5,14 +5,14 @@ const SecondFilter = ({currentFilter, setCurrentFilter}: {currentFilter: number,
   const [filters, setFilters] = useState([
     {
       id: 0,
-      name: "Recibidas",
-      active: true
+      name: "Creadas por mi",
+      active: false
     },
     {
       id: 1,
-      name: "Creadas por mi",
-      active: false
-    }
+      name: "Recibidas",
+      active: true
+    },
   ])
 
   const handleButtonClick = (filterId: number) => {
