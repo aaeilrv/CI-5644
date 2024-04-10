@@ -63,7 +63,7 @@ class PurchaseService(@Autowired private val purchaseRepository: PurchaseReposit
     private fun generatePacket(randomGen: SecureRandom): MutableList<Long> {
         val idList: MutableList<Long> = mutableListOf()
         while (idList.size < 5) {
-            val newId = randomGen.nextLong(1, 36)
+            val newId = randomGen.nextLong(1, 88)
             if (!idList.contains(newId)) {
                 idList.add(newId)
             }
