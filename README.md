@@ -10,15 +10,34 @@ Correr `dev script` con:
 ```
 npm run dev
 ```
-Versión utilizada de node: 20.0.0
+
+En caso de querer empaquetar, ejecutar:
+```
+npm run package
+```
+
+Posteriormente puede ejecutarse el paquete generado mediante:
+```
+npm run start
+```
+
+Versión utilizada de node: >= 20.X
 
 **Nota:** Debe hacerse en el directorio `./frontend`
 
 ## Backend
 
-Para correr, utilizar IntelliJ IDEA
+La aplicación de backend puede ejecutarse haciendo uso del plugin de Spring Boot para el administrador de proyectos Maven:
+```
+mvn spring-boot:run
+```
 
-Dar `play` dentro del directorio `./backend`
+**Nota:** Debe hacerse desde el directorio `./backend`
+
+## Docker
+
+Ambas aplicaciones pueden ejecutarse en simultáneo en contenedores de Docker utilizando el script `docker-compose.yml` ubicado en este directorio. 
+La base de datos de Postgres no corre dentro de un contenedor y debe estar funcionando como un servicio dentro del sistema huésped.
 
 Versión utilizada de JDK: 17
 Versión utilizada de Kotlin: 1.9.21
