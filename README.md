@@ -41,6 +41,3 @@ Versión utilizada de Kotlin: >= 1.9.21
 
 Ambas aplicaciones pueden ejecutarse en simultáneo en contenedores de Docker utilizando el script `docker-compose.yml` ubicado en este directorio. 
 La base de datos de Postgres no corre dentro de un contenedor y debe estar funcionando como un servicio dentro del sistema huésped.
-
-Versión utilizada de JDK: 17
-Versión utilizada de Kotlin: 1.9.21
