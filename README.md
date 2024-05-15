@@ -13,7 +13,7 @@ npm run dev
 
 En caso de querer empaquetar, ejecutar:
 ```
-npm run package
+npm run build
 ```
 
 Posteriormente puede ejecutarse el paquete generado mediante:
