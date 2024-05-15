@@ -32,6 +32,9 @@ La aplicación de backend puede ejecutarse haciendo uso del plugin de Spring Boo
 mvn spring-boot:run
 ```
 
+Versión utilizada de JVM: >= 17.X
+Versión utilizada de Kotlin: >= 1.9.21
+
 **Nota:** Debe hacerse desde el directorio `./backend`
 
 ## Docker
