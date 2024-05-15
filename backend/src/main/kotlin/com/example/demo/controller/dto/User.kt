@@ -4,43 +4,20 @@ import java.io.Serializable
 import com.example.demo.model.User
 
 data class UserDTO (
-    private val id: Long,
-    private val firstName: String,
-    private val lastName: String,
-    private val birthDay: String,
-    private val username: String,
-    private val emailAddress: String
+    val id: Long,
+    val firstName: String,
+    val lastName: String,
+    val birthDay: String,
+    val username: String,
+    val emailAddress: String
 ): Serializable {
 
     constructor(userObject: User): this(
-        userObject.getId(),
-        userObject.getFirstName(),
-        userObject.getLastName(),
-        userObject.getBirthDay().toString(),
-        userObject.getUsername(),
-        userObject.getEmailAddress()
+        userObject.id!!,
+        userObject.firstName,
+        userObject.lastName,
+        userObject.birthday.toString(),
+        userObject.username,
+        userObject.email
     )
-    fun getId(): Long {
-        return this.id
-    }
-
-    fun getFirstName(): String {
-        return this.firstName
-    }
-
-    fun getLastName(): String {
-        return this.lastName
-    }
-
-    fun getBirthDay(): String {
-        return this.birthDay
-    }
-
-    fun getUsername(): String {
-        return this.username
-    }
-
-    fun getEmailAddress(): String {
-        return this.emailAddress
-    }
 }

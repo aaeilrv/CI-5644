@@ -15,8 +15,10 @@ import org.springframework.web.bind.annotation.*
 import org.springframework.web.server.ResponseStatusException
 import java.security.Principal
 import com.example.demo.security.SecurityConfig
+import org.apache.coyote.Response
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken
 import java.util.*
+import kotlin.NoSuchElementException
 
 
 @CrossOrigin(value = ["http://localhost:3000", "http://207.246.119.200:3000"])
@@ -37,30 +39,27 @@ class UserController {
         return ResponseEntity.ok(UserDTO(userService.create(User(request, sub))))
     }
 
-    @PostMapping("/createMultipleUsers")
-    fun createUsers(@RequestBody request: List<CreateUserRequest>): String {
-        for(r: CreateUserRequest in request) {
-            userService.create(User(r, ""))
-        }
-        return "done " + request.size
-    }
-
     @GetMapping()
-    fun getUserById(@RequestHeader("Authorization") token: String,
-                    principal: JwtAuthenticationToken): ResponseEntity<UserDTO> {
-        val sub: String = principal.tokenAttributes["sub"].toString()
-        val userOpt = userService.getBySub(sub)
-        if (userOpt.isPresent) {
-            return ResponseEntity.ok(UserDTO(userOpt.get()))
-        } else {
-            throw ResponseStatusException(HttpStatus.NOT_FOUND, "User with $sub not found")
+    fun getUserBySub(principal: JwtAuthenticationToken): ResponseEntity<UserDTO> {
+        val sub = principal.tokenAttributes["sub"]?.toString() ?: return ResponseEntity.internalServerError().build()
+        return try {
+            ResponseEntity.ok(UserDTO(userService.getBySub(sub)))
+        } catch(e: Exception) {
+            when (e) {
+                is NoSuchElementException -> ResponseEntity.notFound().build()
+                else -> ResponseEntity.internalServerError().build()
+            }
         }
     }
 
     @GetMapping("/leaders")
-    fun getLeaders(pageable: Pageable):List<LeaderboardResponse> {
+    fun getLeaders(pageable: Pageable): ResponseEntity<List<LeaderboardResponse>> {
         val allUser = userService.getAll(pageable)
-        return userService.getLeaders(allUser)
+        return try {
+            ResponseEntity.ok(userService.getLeaders(allUser))
+        } catch (e: Exception) {
+            ResponseEntity.internalServerError().build()
+        }
     }
 
     @GetMapping("/all")
@@ -69,14 +68,20 @@ class UserController {
     }
 
     @GetMapping("/cardsOwned")
-    fun getCardsOwned(principal: JwtAuthenticationToken,
-                      pageable: Pageable): Page<CardOwnedByUserDTO?>?{
-        val sub = principal.tokenAttributes["sub"].toString()
-        return userService.getCardsOwnedBySub(sub, pageable)?.map {ownership ->
-            if (ownership == null) {
-                null
-            } else {
-                CardOwnedByUserDTO(ownership)
+    fun getCardsOwned(principal: JwtAuthenticationToken, pageable: Pageable): ResponseEntity<Page<CardOwnedByUserDTO?>> {
+        val sub = principal.tokenAttributes["sub"]?.toString() ?: return ResponseEntity.internalServerError().build()
+        return try {
+            ResponseEntity.ok(userService.getCardsOwnedBySub(sub, pageable).map { ownership ->
+                if (ownership == null) {
+                    null
+                } else {
+                    CardOwnedByUserDTO(ownership)
+                }
+            })
+        } catch(e: Exception) {
+            when (e) {
+                is NoSuchElementException -> ResponseEntity.notFound().build()
+                else -> ResponseEntity.internalServerError().build()
             }
         }
     }
@@ -84,49 +89,52 @@ class UserController {
     @GetMapping("/progress")
     fun progress(principal: JwtAuthenticationToken): ResponseEntity<String>{
         val sub = principal.tokenAttributes["sub"] ?: return ResponseEntity.internalServerError().build()
-        return ResponseEntity.ok(userService.getProgress(sub.toString()))
+        return try {
+            ResponseEntity.ok(userService.getProgress(sub.toString()))
+        } catch(e: Exception) {
+            when (e) {
+                is NoSuchElementException -> ResponseEntity.notFound().build()
+                else -> ResponseEntity.internalServerError().build()
+            }
+        }
     }
 
     @GetMapping("progressAll")
-    fun getProgressForAll(pageable: Pageable): List<String>{
+    fun getProgressForAll(pageable: Pageable): ResponseEntity<List<String>> {
         val listProgress:MutableList<String> = mutableListOf()
         val allUser = userService.getAll(pageable)
         for(user:User in allUser){
-            listProgress.add("${user.getUsername()}: " + userService.getProgress(user.getAuth0Sub()))
+            listProgress.add("${user.username}: " + userService.getProgress(user.auth0Sub))
         }
-        return listProgress
+        return ResponseEntity.ok(listProgress)
     }
 
     @PatchMapping()
-    fun addCard(@RequestBody request: AddCardToOwnerRequest):ResponseEntity<UserDTO>{
-        val cardOpt = cardService.getById(request.cardId)
-        if (cardOpt.isPresent) {
-            val userWithNewCard: User? = userService.updateCardsOwnedList(request.ownerSub, cardOpt.get())
-            return ResponseEntity.ok(if (userWithNewCard == null) null else UserDTO(userWithNewCard))
-        } else {
+    fun addCard(@RequestBody request: AddCardToOwnerRequest): ResponseEntity<UserDTO>{
+        val card = cardService.getById(request.cardId).orElseThrow {
             throw ResponseStatusException(HttpStatus.NOT_FOUND, "Card with ${request.cardId} not found")
+        }
+        return try {
+            ResponseEntity.ok(UserDTO(userService.addSingleCard(request.ownerSub, card)))
+        } catch(e: Exception) {
+            when (e) {
+                is NoSuchElementException -> ResponseEntity.notFound().build()
+                else -> ResponseEntity.internalServerError().build()
+            }
         }
     }
 
     @PutMapping("/edit")
-    fun profileEdit (@RequestHeader("Authorization") token: String,
-                     principal: JwtAuthenticationToken,
+    fun profileEdit (principal: JwtAuthenticationToken,
                      @RequestBody request : Map<String, String>): ResponseEntity<UserDTO>{
-
-        val sub: String = principal.tokenAttributes["sub"].toString()
-        val current: Optional<User> = userService.getBySub(sub)
-
-        if (current.isPresent) {            
-            return ResponseEntity.ok(UserDTO(userService.editUserData(current.get(), request)))
-        } else {
-            throw ResponseStatusException(HttpStatus.NOT_FOUND, "User with $sub not found")  
+        val sub = principal.tokenAttributes["sub"]?.toString() ?: return ResponseEntity.internalServerError().build()
+        return try {
+            ResponseEntity.ok(UserDTO(userService.editUserData(sub, request)))
+        } catch(e: Exception) {
+            when (e) {
+                is NoSuchElementException -> ResponseEntity.notFound().build()
+                else -> ResponseEntity.internalServerError().build()
+            }
         }
-    }
-
-    @GetMapping("/hello-oauth")
-    fun hello(@RequestHeader("Authorization") token:  String, principal: JwtAuthenticationToken): String {
-        println("Llega al controlador")
-        println(principal.tokenAttributes)
-        return "Hello, $token"
     }
 }

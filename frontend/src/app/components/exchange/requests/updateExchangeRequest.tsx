@@ -33,5 +33,5 @@ export default function UpdateExchangeRequest(
       });
   };
   patchRequest();
-  alert("Request deleted!");
+  alert("Solicitud eliminada!");
 }

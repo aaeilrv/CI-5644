@@ -1,0 +1,7 @@
+DELETE FROM ownership CASCADE;
+DELETE FROM purchase CASCADE;
+DELETE FROM exchange_request CASCADE;
+DELETE FROM exchange_offer CASCADE;
+DELETE FROM exchange_counteroffer CASCADE;
+DELETE FROM credit_card CASCADE;
+DELETE FROM users CASCADE;

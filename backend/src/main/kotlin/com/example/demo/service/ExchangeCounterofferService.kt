@@ -14,63 +14,54 @@ import java.util.*
 import kotlin.NoSuchElementException
 
 @Service
-class ExchangeCounterofferService(@Autowired private val exchangeCounterofferRepository: ExchangeCounterofferRepository,
-                                  private val exchangeOfferService: ExchangeOfferService,
-                                  private val exchangeRequestService: ExchangeRequestService,
-                                  private val cardService: CardService) {
+class ExchangeCounterofferService(
+    @Autowired private val exchangeCounterofferRepository: ExchangeCounterofferRepository,
+    @Autowired private val userService: UserService,
+    @Autowired private val cardService: CardService,
+    @Autowired private val exchangeOfferService: ExchangeOfferService,
+    @Autowired private val exchangeRequestService: ExchangeRequestService
+) {
 
-    public fun create(exchangeCounteroffer: CreateExchangeCounterofferDTO): ExchangeCounteroffer {
-        val foundCard = cardService.getById(exchangeCounteroffer.offeredCardId).orElseThrow {
-            NoSuchElementException("Card not found.")
+    fun create(request: CreateExchangeCounterofferDTO, userSub: String): ExchangeCounteroffer {
+        
+        val offeredCard = cardService.getById(request.offeredCardId).orElseThrow {
+            ResponseStatusException(HttpStatus.NOT_FOUND, "Card not found.")
         }
-
-        val foundExchangeOffer = exchangeOfferService.getById(exchangeCounteroffer.exchangeOfferId).orElseThrow{
-            NoSuchElementException("Exchange offer not found.")
+        val exchangeOffer = exchangeOfferService.getById(request.exchangeOfferId).orElseThrow {
+            ResponseStatusException(HttpStatus.NOT_FOUND, "Exchange offer not found.")
         }
-
-        val foundExchangeRequest = exchangeRequestService.getById(foundExchangeOffer.getExchangeRequest().getId()).orElseThrow {
-            NoSuchElementException("Exchange request not found.")
+    
+        if (exchangeOffer.bidder.auth0Sub != userSub) {
+            throw ResponseStatusException(HttpStatus.FORBIDDEN, "Not allowed.")
         }
-
-        if (exchangeCounteroffer.exchangeRequestId != null &&
-                foundExchangeRequest.getId() != exchangeCounteroffer.exchangeRequestId) {
-            throw IllegalArgumentException("Wrong exchange request ID. Either use the right one or don't add it.")
-        }
-
-        if (exchangeCounteroffer.offeredCardId == foundExchangeOffer.getOfferedCard().getId()) {
-            throw IllegalArgumentException("Can't counteroffer the same card you're receiving.")
-        }
-
-        if (exchangeCounteroffer.offeredCardId == foundExchangeOffer.getExchangeRequest().getRequestedCard().getId()) {
-            throw IllegalArgumentException("Can't counteroffer the same card initially requested.")
-        }
-
-        val newECO: CreateExchangeCounterofferRequest
-        try {
-            newECO = CreateExchangeCounterofferRequest(
-                    offeredCard = foundCard,
-                    exchangeRequest = foundExchangeOffer.getExchangeRequest(),
-                    exchangeOffer = foundExchangeOffer,
-                    status = "PENDING",
-                    createdAt = Timestamp.from(Instant.now())
-            )
-
-        } catch (e: IllegalArgumentException) {
-            throw IllegalArgumentException("Error creating the exchange offer")
-        }
-        return exchangeCounterofferRepository.save(ExchangeCounteroffer(newECO))
+        val now = System.currentTimeMillis();
+        val newExchangeCounteroffer = ExchangeCounteroffer(
+            null,
+            offeredCard,
+            ExchangeRequestStatus.PENDING,
+            exchangeOffer.exchangeRequest,
+            exchangeOffer,
+            Timestamp(now)
+        )
+    
+        return exchangeCounterofferRepository.save(newExchangeCounteroffer)
     }
 
-    public fun updateExchangeCounteroffer(request: UpdateExchangeCounterofferRequest): ExchangeCounteroffer {
-        val exchangeCounterofferToUpdate = exchangeCounterofferRepository.findById(request.id)
-
-        if (exchangeCounterofferToUpdate.isPresent) {
-            val currentECO = exchangeCounterofferToUpdate.get()
-            currentECO.status = request.status
-            return exchangeCounterofferRepository.save(currentECO)
-        } else {
-            throw ResponseStatusException(HttpStatus.NOT_FOUND, "Exchange request not found.")
+    fun updateExchangeCounteroffer(request: UpdateExchangeCounterofferRequest, userSub: String): ExchangeCounteroffer {
+        val exchangeCounterofferToUpdate = exchangeCounterofferRepository.findById(request.id).orElseThrow {
+            ResponseStatusException(HttpStatus.NOT_FOUND, "Exchange counteroffer not found.")
         }
+
+        val creatorSub = exchangeCounterofferToUpdate.exchangeOffer.bidder.auth0Sub
+        if (creatorSub != userSub) {
+            throw ResponseStatusException(HttpStatus.FORBIDDEN, "User not authorized to update this exchange counteroffer.")
+        }
+    
+        exchangeCounterofferToUpdate.apply {
+            status = ExchangeRequestStatus.valueOf(request.status.name)
+        }
+    
+        return exchangeCounterofferRepository.save(exchangeCounterofferToUpdate)
     }
 
     public fun getAll(pageable: Pageable): List<ExchangeCounteroffer> {
@@ -83,14 +74,14 @@ class ExchangeCounterofferService(@Autowired private val exchangeCounterofferRep
         return exchangeCounterofferRepository.findById(id)
     }
 
-    public fun getByCreator(id: Long): List<ExchangeCounterofferDTO> {
-        val counterOffers = exchangeCounterofferRepository.findByCreatorId(id)
-        return counterOffers.map { co -> ExchangeCounterofferDTO(co) }
+    fun getByCreatorSub(Usersub: String): List<ExchangeCounterofferDTO> {
+        val counterOffers = exchangeCounterofferRepository.findByCreatorSub(Usersub)
+        return counterOffers.map { ExchangeCounterofferDTO(it) }
     }
 
-    public fun getByReceiver(id: Long): List<ExchangeCounterofferDTO> {
-        val counterOffers = exchangeCounterofferRepository.findByReceiverId(id)
-        return counterOffers.map { co -> ExchangeCounterofferDTO(co) }
+    fun getByReceiverSub(Usersub: String): List<ExchangeCounterofferDTO> {
+        val counterOffers = exchangeCounterofferRepository.findByReceiverSub(Usersub)
+        return counterOffers.map { ExchangeCounterofferDTO(it) }
     }
 
     public fun getByCard(id: Long): List<ExchangeCounterofferDTO> {
@@ -118,23 +109,23 @@ class ExchangeCounterofferService(@Autowired private val exchangeCounterofferRep
         return counterOffers.map { co -> ExchangeCounterofferDTO(co) }
     }
 
-    public fun getByCreatorAndDateRange(id: Long, start: Date, end: Date): List<ExchangeCounterofferDTO> {
-        val counteroffer = exchangeCounterofferRepository.findByDateRangeAndCreatorId(id, start, end)
-        return counteroffer.map { co -> ExchangeCounterofferDTO(co) }
+    fun getByCreatorSubAndDateRange(Usersub: String, start: Date, end: Date): List<ExchangeCounterofferDTO> {
+        val counterOffers = exchangeCounterofferRepository.findByCreatorSubAndDateRange(Usersub, start, end)
+        return counterOffers.map { ExchangeCounterofferDTO(it) }
     }
 
-    public fun getByReceiverAndDateRange(id: Long, start: Date, end: Date): List<ExchangeCounterofferDTO> {
-        val counteroffer = exchangeCounterofferRepository.findByDateRangeAndReceiverId(id, start, end)
-        return counteroffer.map { co -> ExchangeCounterofferDTO(co) }
+    fun getByReceiverSubAndDateRange(Usersub: String, start: Date, end: Date): List<ExchangeCounterofferDTO> {
+        val counterOffers = exchangeCounterofferRepository.findByReceiverSubAndDateRange(Usersub, start, end)
+        return counterOffers.map { ExchangeCounterofferDTO(it) }
     }
 
-    public fun getByCreatorAndStatus(id: Long, status: ExchangeRequestStatus): List<ExchangeCounterofferDTO> {
-        val counteroffer = exchangeCounterofferRepository.findByCreatorAndStatus(id, status)
-        return counteroffer.map { co -> ExchangeCounterofferDTO(co) }
+    fun getByCreatorSubAndStatus(Usersub: String, status: ExchangeRequestStatus): List<ExchangeCounterofferDTO> {
+        val counterOffers = exchangeCounterofferRepository.findByCreatorSubAndStatus(Usersub, status)
+        return counterOffers.map { ExchangeCounterofferDTO(it) }
     }
 
-    public fun getByReceiverAndStatus(id: Long, status: ExchangeRequestStatus): List<ExchangeCounterofferDTO> {
-        val counteroffer = exchangeCounterofferRepository.findByReceiverAndStatus(id, status)
-        return counteroffer.map { co -> ExchangeCounterofferDTO(co) }
+    fun getByReceiverSubAndStatus(Usersub: String, status: ExchangeRequestStatus): List<ExchangeCounterofferDTO> {
+        val counterOffers = exchangeCounterofferRepository.findByReceiverSubAndStatus(Usersub, status)
+        return counterOffers.map { ExchangeCounterofferDTO(it) }
     }
 }

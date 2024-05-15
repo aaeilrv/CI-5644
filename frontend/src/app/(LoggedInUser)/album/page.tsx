@@ -44,12 +44,11 @@ type Barajita = {
 export default function Barajitas() {
   const { user, isLoading } = useUser();
   let [loadingAlbum, setLoadingAlbum] = useState(true);
-  let [pageNumber, setPageNumber] = useState(-1);
+  let [pageNumber, setPageNumber] = useState(0);
   let [pageContents, setPageContents] = useState<Barajita[]>([]);
   const API_ALBUM_DATA_URL = process.env.NEXT_PUBLIC_USER_API_URL + `/cardsOwned?page=${pageNumber}&size=10`;
   const EMPTY_CARD_IMG_LOC = '/static/images/emptycard.png'
   const CARD_PICTURE_LOC = '/static/images/cards/'
-  const country_name = "Argentina";
 
   useEffect(() => {
     const getAlbumData = async () => {
@@ -78,7 +77,7 @@ export default function Barajitas() {
     <div>
       <div className="w-full mx-auto">
         <div className="mb-10 w-full flex justify-between space-x-4 items-center">
-          <h1 className={`text-5xl text-white ${ProtestRiot.className}`}>{country_name}</h1>
+          <h1 className={`text-5xl text-white ${ProtestRiot.className}`}>Qatar 2022</h1>
          {/* <Button link="/buy" text="¡Compra barajitas!" />*/}
         </div>
         <div className="flex justify-between items-center space-x-4">
@@ -89,8 +88,8 @@ export default function Barajitas() {
           </button>
           <div className="grid grid-cols-5 gap-10">
             {pageContents.map((barajita, index) => ( barajita ?
-              <div className="rounded-lg bg-white p-2 drop-shadow-md hover:bg-slate-300" key={index}>
-                <Image src={CARD_PICTURE_LOC + barajita.playerName + '.jpeg'} alt={barajita.playerName} className="w-full" width={1080} height={1080} />
+              <div className="rounded-lg bg-white p-2 drop-shadow-md hover:bg-slate-300" key={barajita.id}>
+                <Image src={CARD_PICTURE_LOC + barajita.playerName + '.jpg'} alt={barajita.playerName} className="w-full" width={1080} height={1080} />
               </div> : 
               <div className="rounded-lg bg-white p-2 drop-shadow-md hover:bg-slate-300" key={index}>
                 <Image src={EMPTY_CARD_IMG_LOC} alt={'empty card'} className="w-full" width={1080} height={1080} />

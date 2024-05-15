@@ -9,37 +9,24 @@ import { Fragment, useState, useEffect } from "react";
 import getJwt from "../../../helpers/getJwtClient";
 import UpdateCounterOffer from "./updateCounterOffer";
 
-function clickMe() {
-  alert("You clicked me!");
-}
-
-type barajita = {
-  id: number;
-  name: string;
-  playerPosition: string;
-  playerNumber: number;
-  numberOwned: number;
-  country: string;
-  photoURL: string;
-};
-
 type counterOffer = {
-  id: number;
-  offeredCardId: number;
-  exchangeRequestId: number;
-  exchangeOfferId: number;
-  status: string;
+  id: number,
+  exchangeOfferId: number,
+  counterofferCardId: number,
+  counterofferCardName: String,
+  counterofferCreatorName: String,
+  exchangeOfferCreatorName: String,
+  exchangeRequestId: number,
+  exchangeRequestCardName: String,
+  status: string
 };
 
-export default function UserCounteroffers() {
-  const CARD_PICTURE_LOC = "/static/images/cards/";
+export default function CounterofferReceived() {
   const { user, isLoading } = useUser();
   const [exchangeRequest, setExchangeRequest] = useState(true);
   const [exchangedContent, setExchangedContent] = useState<counterOffer[]>([]);
-  const [cardContent, setCardContent] = useState<barajita>();
-  const [cardId, setCardId] = useState(true);
   const API_EXCHANGE_REQUEST_URL =
-    process.env.NEXT_PUBLIC_EXCHANGE_COUNTEROFFER_URL + `/receiver/2`;
+    process.env.NEXT_PUBLIC_EXCHANGE_COUNTEROFFER_URL + `/receiver/me`;
 
   useEffect(() => {
     const getExchangeRequestData = async () => {
@@ -48,7 +35,7 @@ export default function UserCounteroffers() {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
+          "Authorization": `Bearer ${token}`,
         },
       });
       const data = await response.json();
@@ -58,68 +45,26 @@ export default function UserCounteroffers() {
     getExchangeRequestData();
   }, []);
 
-  const API_CARD_URL = process.env.NEXT_PUBLIC_CARD_API_URL + `/${5}`;
-
-  useEffect(() => {
-    const getCardData = async () => {
-      const { token } = await getJwt();
-      const response = await fetch(API_CARD_URL, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      const data = await response.json();
-      setCardContent(data);
-      setCardId(false);
-    };
-    getCardData();
-  }, []);
-  const cardRequested = cardContent ? cardContent.name : "Kylian Mbappé";
   if (isLoading || exchangeRequest) return <div>Loading...</div>;
   return (
     <div>
       {exchangedContent.length > 0 ? (
-        exchangedContent.map((exchange, index) => (
-          <div key={index} className="p-4">
+        exchangedContent.map((it, index) => (
+          <div key={it.id} className="p-4">
             <div>
-              <div className="w-full h-full rounded-lg bg-[#d6dfea] p-2 drop-shadow-md">
-                <div className="p-4">
-                  <div className="flex justify-start items-center">
-                    <h1 className="text-1xl font-bold space-y-4">
-                      {" "}
-                      {`Contraoferta de la barajita`}{" "}
-                    </h1>
-                    <span>
-                      <Image
-                        src={CARD_PICTURE_LOC + cardRequested + ".jpeg"}
-                        alt={cardRequested}
-                        className="w-20 ml-2 mr-2"
-                        width={1080}
-                        height={1080}
-                      />
-                    </span>
-                    <h1 className="text-1xl font-bold space-y-4">
-                      {" "}
-                      {` en la oferta ${exchange.exchangeRequestId} `}{" "}
-                    </h1>
-                  </div>
-                </div>
-                <div className="flex justify-center space-x-4">
-                  <h1 className="text-1xl font-bold space-y-4">
-                    {" "}
-                    {`Estatus de la contraoferta: ${exchange.status}`}{" "}
-                  </h1>
-                </div>
-                <div className="flex justify-center space-x-4">
+            <div className="rounded-md bg-[#ab9ee6] px-2 py-2 text-xs font-medium text-white ring-1 ring-inset ring-blue-700/10 flex justify-between align-top">
+              <div className='flex'>Contraoferta: <div className="text-black ml-2">{it.counterofferCardName}</div></div>
+              <div className='flex'>Barajita que ofrezco: <div className="text-black ml-2">{it.counterofferCardName}</div></div>
+              <div className='flex'>Transacción con: <div className="text-black ml-2">{it.counterofferCreatorName}</div></div>
+              <div className="flex">{it.status}</div>
+                <div className="flex justify-center space-x-2">
                   <Button
                     onClick={() =>
                       UpdateCounterOffer(
-                        exchange.id,
-                        exchange.exchangeOfferId,
-                        exchange.exchangeRequestId,
-                        exchange.offeredCardId,
+                        it.id,
+                        it.exchangeOfferId,
+                        it.exchangeRequestId,
+                        it.counterofferCardId,
                         "ACCEPTED"
                       )
                     }
@@ -129,19 +74,15 @@ export default function UserCounteroffers() {
                   <Button
                     onClick={() =>
                       UpdateCounterOffer(
-                        exchange.id,
-                        exchange.exchangeOfferId,
-                        exchange.exchangeRequestId,
-                        exchange.offeredCardId,
+                        it.id,
+                        it.exchangeOfferId,
+                        it.exchangeRequestId,
+                        it.counterofferCardId,
                         "REJECTED"
                       )
                     }
                     text="Rechazar"
                     color="red"
-                  />
-                  <Button
-                    onClick={clickMe}
-                    text={`Ver album del solicitante`}
                   />
                 </div>
               </div>
@@ -149,16 +90,9 @@ export default function UserCounteroffers() {
           </div>
         ))
       ) : (
-        <div>
-          <div className="w-full h-full rounded-lg bg-[#d6dfea] p-2 drop-shadow-md">
-            <div className="p-4">
-              <div className="flex justify-start items-center">
-                <h1 className="text-1xl font-bold space-y-4">
-                  {" "}
-                  {`No ha recibido ninguna contraoferta`}{" "}
-                </h1>
-              </div>
-            </div>
+        <div className="py-4">
+          <div className="rounded-md bg-[#ab9ee6] px-2 py-2 text-xs font-medium text-white ring-1 ring-inset ring-blue-700/10 flex justify-between">
+            No existen contraofertas.
           </div>
         </div>
       )}

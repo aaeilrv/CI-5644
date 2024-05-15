@@ -42,10 +42,10 @@ CREATE TABLE IF NOT EXISTS credit_card(
 
 CREATE TABLE IF NOT EXISTS purchase(
     id BIGSERIAL PRIMARY KEY,
-    purchase_timestamp TIMESTAMP NOT NULL,
+    purchase_timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     user_id BIGINT NOT NULL REFERENCES users(id),
     packets_purchased INT NOT NULL CHECK(packets_purchased > 0),
-    base_amount NUMERIC GENERATED ALWAYS AS (packets_purchased*5) STORED, --Precio hipotetico de $5 por paquete
+    base_amount INT NOT NULL, --Precio hipotetico de $5 por paquete
     credit_card_id BIGINT NOT NULL REFERENCES credit_card(id)
 );
 
